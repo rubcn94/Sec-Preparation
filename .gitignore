@@ -88,3 +88,5 @@ youtube_cookies.txt
 www.youtube.com_cookies.txt
 
 *.md
+
+!README.md
