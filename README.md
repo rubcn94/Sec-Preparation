@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Security+ SY0-701 - Material de Preparación Completo
 
 > **Objetivo:** Aprobar CompTIA Security+ SY0-701 con 85%+ antes de mayo 2026
@@ -271,3 +272,7 @@ Este proyecto está bajo licencia MIT - ver [LICENSE](LICENSE) para detalles.
 ---
 
 **¡Éxito en tu certificación! 🚀**
+=======
+# Sec-Preparation
+
+>>>>>>> 1f53cec6d73604458ec8095e7ab9c4d8173c8a78
