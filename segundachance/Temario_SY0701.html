@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temario Security+ SY0-701</title>
+<style>
+:root {
+  --d1: #7c3aed; --d1l: #ede9fe; --d1b: #4c1d95;
+  --d2: #ea580c; --d2l: #fff7ed; --d2b: #7c2d12;
+  --d3: #0891b2; --d3l: #ecfeff; --d3b: #164e63;
+  --d4: #d97706; --d4l: #fffbeb; --d4b: #78350f;
+  --d5: #16a34a; --d5l: #f0fdf4; --d5b: #14532d;
+  --bg: #0f172a; --card: #1e293b; --border: #334155;
+  --text: #e2e8f0; --muted: #94a3b8; --white: #f8fafc;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; font-size: 15px; line-height: 1.6; }
+
+/* SIDEBAR */
+#sidebar {
+  width: 280px; min-width: 280px; background: #0d1526; border-right: 1px solid var(--border);
+  height: 100vh; overflow-y: auto; position: sticky; top: 0;
+  padding: 0 0 40px;
+}
+#sidebar h1 { padding: 20px 16px 16px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); border-bottom: 1px solid var(--border); }
+#search-box { width: calc(100% - 24px); margin: 12px; padding: 8px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none; }
+#search-box::placeholder { color: var(--muted); }
+.domain-group { margin-top: 8px; }
+.domain-header {
+  padding: 10px 16px; font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.8px; cursor: pointer; display: flex; align-items: center; gap: 8px;
+  border-left: 3px solid transparent; transition: all 0.2s;
+}
+.domain-header:hover { background: rgba(255,255,255,0.04); }
+.d1-h { color: var(--d1); border-left-color: var(--d1); }
+.d2-h { color: var(--d2); border-left-color: var(--d2); }
+.d3-h { color: var(--d3); border-left-color: var(--d3); }
+.d4-h { color: var(--d4); border-left-color: var(--d4); }
+.d5-h { color: var(--d5); border-left-color: var(--d5); }
+.nav-link {
+  display: block; padding: 7px 16px 7px 28px; font-size: 13px; color: var(--muted);
+  text-decoration: none; cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s;
+}
+.nav-link:hover, .nav-link.active { color: var(--white); background: rgba(255,255,255,0.05); }
+.nav-link .check { float: right; color: #22c55e; font-size: 11px; opacity: 0; }
+.nav-link.done .check { opacity: 1; }
+
+/* MAIN */
+#main { flex: 1; padding: 32px 40px; max-width: 960px; }
+#top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+#top-bar h2 { font-size: 22px; color: var(--white); }
+#progress-bar { background: var(--card); border-radius: 99px; height: 8px; width: 200px; overflow: hidden; }
+#progress-fill { height: 100%; background: #22c55e; border-radius: 99px; width: 0%; transition: width 0.4s; }
+
+/* SECTION CARD */
+.section-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  margin-bottom: 28px; overflow: hidden; scroll-margin-top: 20px;
+}
+.section-header {
+  padding: 20px 24px; display: flex; align-items: center; gap: 14px;
+  cursor: pointer; user-select: none;
+}
+.section-badge {
+  font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px;
+  letter-spacing: 0.5px; flex-shrink: 0;
+}
+.section-title { font-size: 17px; font-weight: 600; flex: 1; }
+.section-toggle { color: var(--muted); font-size: 18px; transition: transform 0.25s; }
+.section-body { padding: 0 24px 24px; display: none; }
+.section-body.open { display: block; }
+
+/* CONTENT BLOCKS */
+.block { border-radius: 8px; padding: 16px 18px; margin-top: 14px; }
+.block h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 10px; }
+.block p, .block li { font-size: 14px; line-height: 1.7; }
+.block ul { padding-left: 18px; }
+.block li { margin-bottom: 4px; }
+
+.b-concepto { background: #1a2744; border-left: 4px solid #3b82f6; }
+.b-concepto h4 { color: #60a5fa; }
+.b-uso { background: #1a2d2d; border-left: 4px solid #0891b2; }
+.b-uso h4 { color: #22d3ee; }
+.b-casos { background: #1a2d1a; border-left: 4px solid #16a34a; }
+.b-casos h4 { color: #4ade80; }
+.b-trampa { background: #2d1a1a; border-left: 4px solid #dc2626; }
+.b-trampa h4 { color: #f87171; }
+
+/* Domain colors for badges */
+.d1 .section-badge { background: var(--d1l); color: var(--d1b); }
+.d1 .section-header { border-top: 3px solid var(--d1); }
+.d2 .section-badge { background: #fff3e6; color: var(--d2b); }
+.d2 .section-header { border-top: 3px solid var(--d2); }
+.d3 .section-badge { background: #e6f7fa; color: var(--d3b); }
+.d3 .section-header { border-top: 3px solid var(--d3); }
+.d4 .section-badge { background: #fef3c7; color: var(--d4b); }
+.d4 .section-header { border-top: 3px solid var(--d4); }
+.d5 .section-badge { background: #dcfce7; color: var(--d5b); }
+.d5 .section-header { border-top: 3px solid var(--d5); }
+
+.done-btn { margin-top: 18px; padding: 8px 18px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 13px; cursor: pointer; transition: all 0.2s; }
+.done-btn:hover { background: #22c55e22; border-color: #22c55e; color: #4ade80; }
+.done-btn.marked { background: #22c55e22; border-color: #22c55e; color: #4ade80; }
+
+.scenario-box { background: #12202e; border: 1px solid #2563eb44; border-radius: 8px; padding: 14px 16px; margin: 10px 0; font-size: 13px; }
+.scenario-box strong { color: #93c5fd; display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+code { background: #0f172a; padding: 1px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; color: #a78bfa; }
+
+.tag { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; margin: 2px; }
+.tag-red { background: #7f1d1d; color: #fca5a5; }
+.tag-green { background: #14532d; color: #86efac; }
+.tag-blue { background: #1e3a5f; color: #93c5fd; }
+.tag-yellow { background: #78350f; color: #fcd34d; }
+
+@media (max-width: 768px) {
+  #sidebar { display: none; }
+  #main { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<nav id="sidebar">
+  <h1>🔐 Security+ SY0-701</h1>
+  <input type="text" id="search-box" placeholder="Buscar concepto...">
+
+  <div class="domain-group">
+    <div class="domain-header d1-h">▸ D1 · General Security (12%)</div>
+    <a class="nav-link" onclick="goto('s12')">1.2 Conceptos Fundamentales<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s13')">1.3 Change Management<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s14')">1.4 Criptografía<span class="check">✓</span></a>
+  </div>
+  <div class="domain-group">
+    <div class="domain-header d2-h">▸ D2 · Threats & Vulns (22%)</div>
+    <a class="nav-link" onclick="goto('s23')">2.3 Tipos de Vulnerabilidades<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s24')">2.4 Indicadores de Actividad Maliciosa<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s25')">2.5 Técnicas de Mitigación<span class="check">✓</span></a>
+  </div>
+  <div class="domain-group">
+    <div class="domain-header d3-h">▸ D3 · Architecture (18%)</div>
+    <a class="nav-link" onclick="goto('s31')">3.1 Modelos de Arquitectura<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s32')">3.2 Infraestructura Empresarial<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s33')">3.3 Protección de Datos<span class="check">✓</span></a>
+  </div>
+  <div class="domain-group">
+    <div class="domain-header d4-h">▸ D4 · Security Ops (28%)</div>
+    <a class="nav-link" onclick="goto('s41')">4.1 Seguridad en Cómputo<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s42')">4.2 Gestión de Activos<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s43')">4.3 Gestión de Vulnerabilidades<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s44')">4.4 Monitorización y Alertas<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s45')">4.5 Capacidades Empresariales<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s46')">4.6 Identity & Access Management<span class="check">✓</span></a>
+  </div>
+  <div class="domain-group">
+    <div class="domain-header d5-h">▸ D5 · Governance (20%)</div>
+    <a class="nav-link" onclick="goto('s51')">5.1 Gobernanza de Seguridad<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s52')">5.2 Gestión de Riesgos<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s53')">5.3 Riesgo de Terceros<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s54')">5.4 Compliance<span class="check">✓</span></a>
+    <a class="nav-link" onclick="goto('s56')">5.6 Security Awareness<span class="check">✓</span></a>
+  </div>
+</nav>
+
+<main id="main">
+  <div id="top-bar">
+    <h2>📚 Temario Orientado al Examen</h2>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="progress-text" style="font-size:13px;color:var(--muted)">0 / 15 secciones</span>
+      <div id="progress-bar"><div id="progress-fill"></div></div>
+    </div>
+  </div>
+
+<!-- ============================================================ -->
+<!-- DOMAIN 1 -->
+<!-- ============================================================ -->
+
+<!-- 1.2 -->
+<div class="section-card d1" id="s12">
+  <div class="section-header" onclick="toggle('s12')">
+    <span class="section-badge">1.2</span>
+    <span class="section-title">Summarize fundamental security concepts</span>
+    <span class="section-toggle" id="t-s12">▼</span>
+  </div>
+  <div class="section-body" id="b-s12">
+
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>CIA Triad:</strong> Confidentiality (solo acceden los autorizados) · Integrity (los datos no se alteran sin autorización) · Availability (los sistemas están operativos cuando se necesitan)</li>
+        <li><strong>Non-repudiation:</strong> Nadie puede negar haber enviado o firmado algo. Requiere firma digital (PKI). El receptor puede probar quién lo envió.</li>
+        <li><strong>AAA:</strong> Authentication (¿quién eres?) → Authorization (¿qué puedes hacer?) → Accounting (¿qué hiciste?). Son tres pasos distintos y secuenciales.</li>
+        <li><strong>Gap analysis:</strong> Comparar el estado actual de seguridad con el objetivo o estándar deseado (ej. ISO 27001). Identifica qué falta implementar.</li>
+        <li><strong>Zero Trust:</strong> "Never trust, always verify." Ningún usuario o dispositivo es de confianza por defecto, ni dentro de la red.
+          <ul>
+            <li>Control Plane: Policy Engine + Policy Administrator (deciden si se permite el acceso)</li>
+            <li>Data Plane: Policy Enforcement Point (ejecuta la decisión — permite o bloquea)</li>
+          </ul>
+        </li>
+        <li><strong>Deception technology:</strong> Honeypot (sistema señuelo) · Honeynet (red de honeypots) · Honeyfile (archivo trampa) · Honeytoken (credencial/token trampa)</li>
+        <li><strong>Physical security:</strong> Bollards, access control vestibule (mantrap), fencing, video surveillance, security badges, sensors (infrared/microwave/ultrasonic)</li>
+      </ul>
+    </div>
+
+    <div class="block b-uso">
+      <h4>🎯 Uso Real — ¿Cuándo aplica cada concepto?</h4>
+      <ul>
+        <li><strong>CIA:</strong> Un ransomware viola Availability (y Confidentiality). Un insider que modifica registros viola Integrity. Un atacante que lee emails viola Confidentiality.</li>
+        <li><strong>Non-repudiation:</strong> Contratos digitales, logs de auditoría, transacciones bancarias. Si un empleado niega haber enviado un email malicioso, la firma digital lo prueba.</li>
+        <li><strong>AAA en RADIUS/TACACS+:</strong> El usuario se autentica (usuario+contraseña), el servidor AAA autoriza qué comandos puede ejecutar, y registra todas las acciones en logs.</li>
+        <li><strong>Zero Trust:</strong> Se aplica cuando ya no puedes confiar en el perímetro de red — empleados remotos, cloud, BYOD. Cada acceso se verifica explícitamente.</li>
+        <li><strong>Honeytoken:</strong> Credencial de AWS falsa en un repositorio público. Si alguien la usa, sabes que está intentando pivotar a tu cloud.</li>
+      </ul>
+    </div>
+
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos tipo Examen</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un atacante cifra todos los servidores de producción y pide rescate. ¿Qué pilar CIA se ha visto afectado principalmente?
+        <br><br>→ <span class="tag tag-green">Availability</span> (los sistemas no están disponibles). También puede afectar Confidentiality si exfiltró datos antes.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Tu empresa quiere desplegar señuelos para detectar movimiento lateral interno. ¿Qué tecnología usas?
+        <br><br>→ <span class="tag tag-green">Honeynet</span> (red completa de señuelos). Un honeypot sería un sistema individual.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un usuario afirma que no envió una transferencia bancaria. El banco tiene firma digital del mensaje. ¿Qué principio aplica?
+        <br><br>→ <span class="tag tag-green">Non-repudiation</span>
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Tu arquitectura Zero Trust necesita un componente que evalúe las políticas de acceso y tome decisiones. ¿Qué es?
+        <br><br>→ <span class="tag tag-green">Policy Engine</span> (en el Control Plane). El Policy Enforcement Point solo ejecuta la decisión.
+      </div>
+    </div>
+
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>Honeypot ≠ IDS:</strong> El honeypot atrae atacantes y registra su actividad; no detecta intrusiones en tu red real.</li>
+        <li><strong>Non-repudiation requiere PKI</strong> (firma digital con clave privada). La autenticación simple (usuario/contraseña) NO garantiza non-repudiation.</li>
+        <li><strong>Zero Trust ≠ "sin zonas de red":</strong> Puedes tener VLANs y seguir siendo Zero Trust — lo que cambia es que nunca confías implícitamente en ninguna zona.</li>
+        <li><strong>AAA:</strong> Authentication → Authorization → Accounting en ese orden. No puedes autorizar sin autenticar primero.</li>
+        <li><strong>Vestibule ≠ lobby:</strong> Un access control vestibule (mantrap) es una sala pequeña con dos puertas: la primera se cierra antes de abrir la segunda.</li>
+        <li><strong>Honeyfile vs Honeytoken:</strong> Honeyfile = archivo señuelo en el filesystem. Honeytoken = credencial/dato trampa (puede ser un API key, un registro de BD, etc.).</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s12')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 1.3 -->
+<div class="section-card d1" id="s13">
+  <div class="section-header" onclick="toggle('s13')">
+    <span class="section-badge">1.3</span>
+    <span class="section-title">Change Management and its impact to security</span>
+    <span class="section-toggle" id="t-s13">▼</span>
+  </div>
+  <div class="section-body" id="b-s13">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Change Management:</strong> Proceso formal para gestionar cambios en sistemas, configuraciones o procesos de forma controlada y segura.</li>
+        <li><strong>Business processes:</strong> Approval process · Ownership · Stakeholders · Impact analysis · Test results · Backout plan · Maintenance window · SOP</li>
+        <li><strong>Technical implications:</strong> Allow/deny lists · Restricted activities · Downtime · Service/app restart · Legacy apps · Dependencies</li>
+        <li><strong>Documentation:</strong> Updating diagrams · Updating policies/procedures · Version control</li>
+        <li><strong>Backout plan:</strong> Procedimiento para revertir el cambio si algo falla. Debe existir y estar aprobado ANTES de ejecutar el cambio.</li>
+        <li><strong>Maintenance window:</strong> Período acordado (generalmente fuera de horas pico) para realizar cambios que puedan causar interrupción.</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real</h4>
+      <ul>
+        <li>Un admin va a actualizar el firewall. Antes: pide aprobación, define backout plan (cómo volver a la config anterior), elige una maintenance window (3am domingo), notifica stakeholders.</li>
+        <li>Un cambio en las allow/deny lists puede bloquear tráfico legítimo si no se prueba antes. El impact analysis previene esto.</li>
+        <li>Legacy applications pueden tener dependencias no documentadas — el impact analysis y las pruebas en staging son críticas.</li>
+        <li>Version control no es solo para código: también para documentos de política y diagramas de red.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Se aplica un parche en producción sin backout plan. El servidor falla y no se puede restaurar en 4 horas. ¿Qué proceso falló?
+        <br><br>→ <span class="tag tag-green">Change Management</span> — no había backout plan ni maintenance window acordada.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un técnico quiere hacer un cambio de configuración urgente en el firewall sin seguir el proceso formal. ¿Cuál es el riesgo principal?
+        <br><br>→ Sin approval process ni impact analysis, el cambio puede introducir vulnerabilidades o bloquear tráfico legítimo. Además viola la política de change management.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>Backout plan ANTES del cambio</strong>, nunca después. Si no hay backout plan, el cambio no debería aprobarse.</li>
+        <li><strong>Change management NO es solo IT</strong>: incluye cambios físicos, organizacionales, de políticas.</li>
+        <li><strong>Maintenance window ≠ downtime programado:</strong> Es la ventana aprobada en la que se PUEDE hacer el cambio, no garantiza que habrá downtime.</li>
+        <li><strong>Version control</strong> aplicado a documentación de seguridad ayuda a mantener el historial de cambios en políticas y configuraciones.</li>
+        <li>Un cambio en la <strong>allow list</strong> (solo apps aprobadas) es más seguro que en block list, pero más restrictivo — puede romper apps legítimas si no se prueba.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s13')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 1.4 -->
+<div class="section-card d1" id="s14">
+  <div class="section-header" onclick="toggle('s14')">
+    <span class="section-badge">1.4</span>
+    <span class="section-title">Cryptographic solutions</span>
+    <span class="section-toggle" id="t-s14">▼</span>
+  </div>
+  <div class="section-body" id="b-s14">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Simétrico:</strong> Misma clave para cifrar y descifrar. Rápido, ideal para grandes volúmenes. Algoritmos: <code>AES</code>, 3DES. Problema: distribución segura de la clave.</li>
+        <li><strong>Asimétrico:</strong> Par clave pública/privada. Lento. Para intercambio de claves y firmas. Algoritmos: <code>RSA</code>, <code>ECC</code>.</li>
+        <li><strong>Hashing:</strong> Función unidireccional. NO es cifrado (sin clave, no reversible). Para integridad. <code>SHA-256</code> (seguro), MD5 (obsoleto).</li>
+        <li><strong>Salting:</strong> Añadir valor aleatorio al password antes de hashear. Protege contra rainbow tables y ataques de diccionario precomputados.</li>
+        <li><strong>Key stretching:</strong> PBKDF2, bcrypt — hacen el hashing lento (costoso computacionalmente) para dificultar ataques de fuerza bruta.</li>
+        <li><strong>Digital signatures:</strong> Se firma con clave PRIVADA del emisor. Se verifica con clave PÚBLICA del emisor. Garantiza autenticidad e integridad.</li>
+        <li><strong>PKI:</strong> CA raíz → CA intermedia → certificado de usuario/servidor. La cadena de confianza.</li>
+        <li><strong>Certificados:</strong> CSR (Certificate Signing Request) → CA lo firma → certificado emitido. CRL o OCSP para revocación.</li>
+        <li><strong>TPM:</strong> Chip en la placa madre. Almacena claves de cifrado de disco (BitLocker), medidas de integridad del boot.</li>
+        <li><strong>HSM:</strong> Hardware dedicado para generación y gestión de claves criptográficas. Más seguro y potente que TPM.</li>
+        <li><strong>Ofuscación:</strong> Steganografía (ocultar datos en archivos) · Tokenización (token sin valor matemático, típico en PCI) · Data masking (****1234)</li>
+        <li><strong>Blockchain:</strong> Open public ledger — registro inmutable y distribuido.</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real</h4>
+      <ul>
+        <li><strong>HTTPS = TLS</strong> que usa asimétrico para el handshake (intercambiar clave simétrica de sesión), luego simétrico para la comunicación. Lo mejor de los dos mundos.</li>
+        <li><strong>OCSP vs CRL:</strong> CRL = lista de certificados revocados (descargas periódica, puede ser grande). OCSP = consulta en tiempo real si un certificado está revocado (más eficiente).</li>
+        <li><strong>Self-signed certificate:</strong> No firmado por CA de confianza. El navegador muestra advertencia. Riesgo de MITM porque no hay tercero que verifique la identidad.</li>
+        <li><strong>Key escrow:</strong> Copia de la clave guardada por un tercero (la empresa o el gobierno). Permite recuperar datos si se pierde la clave original — pero es un riesgo si el tercero es comprometido.</li>
+        <li><strong>Tokenización en PCI-DSS:</strong> El número de tarjeta se reemplaza por un token. El token se almacena en los sistemas del merchant. El número real solo está en el vault del proveedor de pagos.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Dos usuarios tienen el mismo password "P@ssw0rd". Sus hashes en la BD son diferentes. ¿Por qué?
+        <br><br>→ <span class="tag tag-green">Salting</span> — se añadió un valor aleatorio único a cada password antes de hashear.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Una empresa necesita que ni siquiera el admin IT pueda leer los datos cifrados de un empleado. ¿Qué implementan?
+        <br><br>→ Cifrado con clave gestionada por el usuario (no key escrow). O <span class="tag tag-green">HSM</span> con acceso controlado por política.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Quieres verificar que un email fue realmente enviado por el CEO y no modificado en tránsito. ¿Qué necesitas?
+        <br><br>→ <span class="tag tag-green">Digital signature</span>. El CEO firma con su clave privada, tú verificas con su clave pública.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un investigador forense descubre una imagen PNG que contiene documentos robados ocultos dentro. ¿Qué técnica usó el atacante?
+        <br><br>→ <span class="tag tag-green">Steganografía</span>
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>Hashing ≠ cifrado:</strong> No tiene clave, no es reversible. Solo verifica integridad.</li>
+        <li><strong>Firma digital:</strong> Privada para firmar, pública para verificar. Al revés del cifrado asimétrico (pública para cifrar, privada para descifrar).</li>
+        <li><strong>ECC vs RSA:</strong> ECC ofrece la misma seguridad con claves más cortas → más eficiente en dispositivos móviles e IoT.</li>
+        <li><strong>MD5 está roto</strong> (colisiones conocidas). SHA-1 también. Usar SHA-256 o superior.</li>
+        <li><strong>Perfect Forward Secrecy (PFS):</strong> Cada sesión TLS usa una clave efímera. Si la clave privada del servidor se compromete, las sesiones pasadas NO se pueden descifrar.</li>
+        <li><strong>ECB mode es inseguro:</strong> Mismo bloque de texto plano = mismo bloque cifrado. Los patrones son visibles.</li>
+        <li><strong>Tokenización ≠ cifrado:</strong> El token no tiene relación matemática con el dato original. El dato real está en un vault separado.</li>
+        <li><strong>Wildcard certificate:</strong> <code>*.ejemplo.com</code> cubre todos los subdominios de un nivel, pero NO <code>a.b.ejemplo.com</code>.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s14')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DOMAIN 2 -->
+<!-- ============================================================ -->
+
+<!-- 2.3 -->
+<div class="section-card d2" id="s23">
+  <div class="section-header" onclick="toggle('s23')">
+    <span class="section-badge">2.3</span>
+    <span class="section-title">Explain various types of vulnerabilities</span>
+    <span class="section-toggle" id="t-s23">▼</span>
+  </div>
+  <div class="section-body" id="b-s23">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Buffer overflow:</strong> Se escriben más datos de los que caben en un buffer → sobrescribe memoria adyacente → puede ejecutar código arbitrario (RCE).</li>
+        <li><strong>Race condition (TOC/TOU):</strong> Time-of-Check = cuando se verifica el permiso. Time-of-Use = cuando se usa el recurso. Entre ambos, otro proceso puede modificar el estado.</li>
+        <li><strong>Memory injection:</strong> Código malicioso inyectado en el espacio de memoria de un proceso legítimo (ej. DLL injection).</li>
+        <li><strong>Malicious update:</strong> Actualización del software/firmware comprometida por el atacante (supply chain).</li>
+        <li><strong>SQLi:</strong> Código SQL inyectado en input no sanitizado → accede o modifica la base de datos.</li>
+        <li><strong>XSS (Cross-Site Scripting):</strong> JavaScript malicioso inyectado en páginas web. Afecta al navegador del usuario víctima.</li>
+        <li><strong>VM escape:</strong> Proceso dentro de una VM logra acceder al hypervisor o a otras VMs del mismo host.</li>
+        <li><strong>Resource reuse:</strong> Datos de una VM pueden quedar en memoria compartida y ser accesibles por otra VM (sin limpieza correcta).</li>
+        <li><strong>Supply chain:</strong> Vulnerabilidad introducida por proveedor de hardware, software o servicios (ej. SolarWinds).</li>
+        <li><strong>Cryptographic vulnerabilities:</strong> Algoritmos obsoletos (MD5, DES, WEP), implementación incorrecta, longitudes de clave insuficientes.</li>
+        <li><strong>Zero-day:</strong> Vulnerabilidad desconocida para el vendor → no hay parche disponible. El atacante tiene ventaja desde el día 0.</li>
+        <li><strong>Mobile:</strong> Side loading (instalar apps fuera de la tienda oficial) · Jailbreaking/Rooting (eliminar restricciones del SO).</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real</h4>
+      <ul>
+        <li><strong>SQLi:</strong> Formulario de login con input <code>' OR '1'='1</code> → bypass de autenticación sin saber la contraseña.</li>
+        <li><strong>XSS stored:</strong> Atacante publica un comentario en un foro con JavaScript malicioso. Cada usuario que lee el comentario ejecuta el script (roba cookies de sesión).</li>
+        <li><strong>TOC/TOU:</strong> Una app verifica si tienes permiso para escribir un archivo (TOC), luego el atacante remplaza el archivo por un symlink a /etc/passwd (TOU). La escritura va al archivo del sistema.</li>
+        <li><strong>VM escape:</strong> Vulnerabilidad en VMware o Hyper-V que permite a un proceso de guest VM ejecutar código en el host. Crítico en entornos cloud multitenancy.</li>
+        <li><strong>Supply chain (hardware):</strong> Chips con backdoor instalado en fábrica. Imposible detectar una vez desplegado.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un app web muestra un error de BD cuando introduces <code>'</code> en el campo de búsqueda. ¿Qué vulnerabilidad sugiere?
+        <br><br>→ <span class="tag tag-green">SQLi</span> — el input no está sanitizado y el error revela que llega directo a la consulta SQL.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Tu empresa usa software de un proveedor. El proveedor es comprometido y los atacantes añaden malware en una actualización legítima. ¿Qué tipo de vulnerabilidad es?
+        <br><br>→ <span class="tag tag-green">Supply chain / malicious update</span>
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un sistema ICS/SCADA lleva 5 años sin actualizarse porque no puede reiniciarse. El vendor ya no da soporte. ¿Cuál es el riesgo principal?
+        <br><br>→ <span class="tag tag-green">End-of-life / Legacy</span> hardware vulnerability. Sin parches disponibles, sin soporte. Mitigación: segmentación y controles compensatorios.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>XSS afecta al navegador del usuario, SQLi afecta al servidor de BD.</strong> Son vulnerabilidades en capas distintas.</li>
+        <li><strong>TOC ≠ TOU:</strong> Son los dos momentos de una race condition. La vulnerabilidad existe en la ventana ENTRE ambos.</li>
+        <li><strong>Zero-day ≠ zero conocimiento:</strong> El atacante SÍ lo conoce; el vendor y el público NO. "Zero days" = días que el vendor lleva sin poder reaccionar (cero).</li>
+        <li><strong>Jailbreaking (iOS) = Rooting (Android):</strong> Mismo concepto, plataforma diferente. Ambos eliminan las restricciones de seguridad del fabricante.</li>
+        <li><strong>VM escape ≠ VM compromise:</strong> Escape = salir de la VM al host. Un sistema puede comprometer la VM sin escapar de ella.</li>
+        <li><strong>Misconfiguration</strong> es una de las causas más comunes de brechas — no es un bug del software, es un error humano de configuración.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s23')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 2.4 -->
+<div class="section-card d2" id="s24">
+  <div class="section-header" onclick="toggle('s24')">
+    <span class="section-badge">2.4</span>
+    <span class="section-title">Analyze indicators of malicious activity</span>
+    <span class="section-toggle" id="t-s24">▼</span>
+  </div>
+  <div class="section-body" id="b-s24">
+    <div class="block b-concepto">
+      <h4>📖 Qué es — Malware</h4>
+      <ul>
+        <li><strong>Ransomware:</strong> Cifra archivos y pide rescate. Indicadores: archivos con extensión extraña, nota de rescate, CPU alta.</li>
+        <li><strong>Trojan:</strong> Se hace pasar por software legítimo. No se replica solo. Requiere que el usuario lo ejecute.</li>
+        <li><strong>Worm:</strong> Se auto-replica a través de la red sin interacción del usuario. Explota vulnerabilidades de red.</li>
+        <li><strong>Spyware/Keylogger:</strong> Registra actividad del usuario (pulsaciones, capturas de pantalla). Se envía al atacante.</li>
+        <li><strong>Rootkit:</strong> Oculta su presencia en el sistema (modifica el OS). Muy difícil de detectar. A menudo requiere reinstalación.</li>
+        <li><strong>Logic bomb:</strong> Código malicioso que se activa bajo una condición específica (fecha, evento, acción del usuario).</li>
+        <li><strong>Bloatware:</strong> Software no deseado preinstalado. Puede incluir vulnerabilidades o recopilar datos.</li>
+        <li><strong>Malicious code:</strong> Scripts, macros, shellcode incrustado en documentos Office o PDFs.</li>
+      </ul>
+    </div>
+    <div class="block b-concepto" style="margin-top:10px">
+      <h4>📖 Qué es — Ataques de Red y Aplicación</h4>
+      <ul>
+        <li><strong>DDoS:</strong> Deniega el servicio con tráfico masivo. Amplified = usa servidores de terceros para multiplicar el volumen (DNS, NTP). Reflected = el tráfico parece venir de fuentes legítimas.</li>
+        <li><strong>On-path (MITM):</strong> El atacante se interpone entre dos partes comunicándose. Puede leer, modificar o inyectar tráfico.</li>
+        <li><strong>Credential replay:</strong> Reutiliza credenciales capturadas sin descifrarlas (pass-the-hash, pass-the-ticket).</li>
+        <li><strong>DNS attacks:</strong> Poisoning (corrompe caché DNS), hijacking (redirige resoluciones).</li>
+        <li><strong>Password spraying:</strong> Una sola contraseña común contra MUCHAS cuentas. Evita lockout. Difícil de detectar.</li>
+        <li><strong>Brute force:</strong> Todas las combinaciones posibles. Genera muchos intentos fallidos → lockout rápido.</li>
+        <li><strong>Directory traversal:</strong> <code>../../../etc/passwd</code> — accede a directorios fuera del root de la app web.</li>
+        <li><strong>Privilege escalation:</strong> Escalar de usuario normal a admin/root explotando una vulnerabilidad.</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Indicadores clave — IOCs</h4>
+      <ul>
+        <li><strong>Account lockout:</strong> Múltiples intentos fallidos → posible brute force o spraying.</li>
+        <li><strong>Concurrent session usage:</strong> El mismo usuario tiene sesiones activas desde ubicaciones diferentes simultáneamente.</li>
+        <li><strong>Impossible travel:</strong> Login desde Madrid a las 10:00 y desde Tokyo a las 10:15. Físicamente imposible → cuenta comprometida o VPN.</li>
+        <li><strong>Resource consumption:</strong> CPU/RAM/disco al máximo sin carga justificada → cryptominer, DDoS desde dentro, malware.</li>
+        <li><strong>Out-of-cycle logging:</strong> Logs generados a las 3am cuando nadie trabaja → actividad sospechosa automatizada.</li>
+        <li><strong>Missing logs:</strong> Logs que deberían existir y no están → atacante cubrió sus huellas o log injection.</li>
+        <li><strong>Blocked content:</strong> El sistema está intentando acceder a dominios bloqueados → posible C2 beaconing.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        El SIEM muestra 500 intentos de login fallidos en 10 minutos contra 200 cuentas diferentes, siempre con la misma contraseña "Summer2024!". ¿Qué ataque es?
+        <br><br>→ <span class="tag tag-green">Password Spraying</span>. Una contraseña, muchas cuentas. El objetivo es evitar el lockout por cuenta.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un servidor de archivos muestra actividad de cifrado masiva a las 2am. Los archivos cambian de extensión a .locked. ¿Qué IOC es y qué acción inmediata?
+        <br><br>→ <span class="tag tag-green">Ransomware activo</span>. Acción inmediata: aislar el sistema de la red (contención) antes de que se propague.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un DNS query masivo hacia un dominio externo con subdomínios que contienen texto codificado en base64. ¿Qué técnica detectas?
+        <br><br>→ <span class="tag tag-green">DNS tunneling</span> — exfiltración de datos codificados en consultas DNS.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>Spraying ≠ Brute force:</strong> Spraying = pocas contraseñas, muchas cuentas. Brute force = muchas contraseñas, una cuenta.</li>
+        <li><strong>Impossible travel:</strong> No asumas compromiso automáticamente — el usuario puede estar usando VPN. El contexto importa.</li>
+        <li><strong>DDoS Amplified:</strong> El atacante no necesita tanto ancho de banda — envía pequeñas peticiones que generan respuestas masivas (factor de amplificación DNS = hasta 50x).</li>
+        <li><strong>Logic bomb puede dormir meses o años</strong> antes de activarse. A menudo lo planta un insider antes de ser despedido.</li>
+        <li><strong>Rootkit vs Backdoor:</strong> Rootkit oculta la presencia. Backdoor es el acceso persistente. Pueden coexistir.</li>
+        <li><strong>On-path = MITM:</strong> CompTIA usa "on-path" en el SY0-701. Mismo concepto que man-in-the-middle.</li>
+        <li><strong>Missing logs = evidencia destruida:</strong> En forense, la ausencia de logs es un indicador por sí mismo.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s24')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 2.5 -->
+<div class="section-card d2" id="s25">
+  <div class="section-header" onclick="toggle('s25')">
+    <span class="section-badge">2.5</span>
+    <span class="section-title">Mitigation techniques to secure the enterprise</span>
+    <span class="section-toggle" id="t-s25">▼</span>
+  </div>
+  <div class="section-body" id="b-s25">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Segmentation:</strong> Dividir la red en zonas separadas (VLANs, subredes). El tráfico entre zonas requiere pasar por un firewall/router.</li>
+        <li><strong>Isolation:</strong> Desconectar completamente un sistema de otros. Más extremo que segmentación (ej. air-gap, cuarentena de un equipo infectado).</li>
+        <li><strong>Access control (ACL):</strong> Reglas que definen qué tráfico se permite por IP, puerto, protocolo. Inbound y outbound.</li>
+        <li><strong>Application allow list:</strong> Solo las aplicaciones pre-aprobadas pueden ejecutarse. Más seguro pero más restrictivo que block list.</li>
+        <li><strong>Least privilege:</strong> Cada usuario/sistema tiene solo el mínimo acceso necesario para su función.</li>
+        <li><strong>Patching:</strong> Aplicar actualizaciones de seguridad del vendor para corregir vulnerabilidades conocidas.</li>
+        <li><strong>Encryption:</strong> Cifrar datos en reposo y en tránsito para que no sean legibles si son interceptados.</li>
+        <li><strong>Monitoring:</strong> Vigilancia continua de sistemas, logs y tráfico para detectar anomalías.</li>
+        <li><strong>Hardening:</strong> Reducir la superficie de ataque: deshabilitar servicios/puertos innecesarios, cambiar contraseñas por defecto, eliminar software no usado.</li>
+        <li><strong>Decommissioning:</strong> Retirar sistemas que ya no pueden asegurarse (legacy, end-of-life). A veces es mejor que parchear.</li>
+        <li><strong>Configuration enforcement:</strong> Asegurar que los sistemas mantienen la configuración aprobada (ej. SCAP, CIS Benchmarks).</li>
+        <li><strong>Host-based firewall / HIPS:</strong> Controles de seguridad en el propio endpoint (no solo en el perímetro).</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real — ¿Cuándo aplica qué?</h4>
+      <ul>
+        <li><strong>Segmentation:</strong> Separas la red de OT/ICS de la red corporativa con una VLAN y firewall entre ellas.</li>
+        <li><strong>Isolation:</strong> Detectas un equipo infectado con ransomware → lo desconectas de la red inmediatamente (contención).</li>
+        <li><strong>Allow list en servidores críticos:</strong> Solo se permite ejecutar las apps del inventario aprobado. Cualquier proceso desconocido es bloqueado.</li>
+        <li><strong>Least privilege:</strong> Un desarrollador no tiene acceso a la base de datos de producción. Solo el DBA lo tiene.</li>
+        <li><strong>Hardening:</strong> Al desplegar un servidor nuevo: deshabilitas Telnet, cambias contraseñas por defecto, aplicas CIS benchmark, eliminas servicios no necesarios.</li>
+        <li><strong>Decommissioning:</strong> Un servidor Windows 2003 sin soporte que no puede actualizarse → es más seguro retirarlo que mantenerlo (si no hay alternativa, al menos aislarlo).</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Tu empresa tiene sistemas ICS que no pueden parcharse. ¿Cuál es la mejor mitigación?
+        <br><br>→ <span class="tag tag-green">Segmentation</span> + <span class="tag tag-green">Monitoring</span> + compensating controls. Los aislas en una VLAN separada con acceso muy restringido y monitorización intensiva.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un empleado instala un programa de juegos en su laptop corporativa. La empresa quiere prevenir esto en el futuro. ¿Qué implementas?
+        <br><br>→ <span class="tag tag-green">Application allow list</span> — solo las apps aprobadas pueden ejecutarse, cualquier otra es bloqueada automáticamente.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Se detecta que un attacker ha hecho lateral movement desde una workstation a un servidor de RRHH en la misma red plana. ¿Qué control habría prevenido el movimiento lateral?
+        <br><br>→ <span class="tag tag-green">Segmentation</span> (VLANs separadas para workstations y servidores con ACLs entre ellas).
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>Segmentation ≠ Isolation:</strong> Segmentation permite tráfico controlado entre zonas. Isolation corta toda comunicación.</li>
+        <li><strong>Allow list es MÁS seguro que block list,</strong> pero más difícil de mantener. Block list (blacklist) permite todo excepto lo bloqueado.</li>
+        <li><strong>Patching ≠ Hardening:</strong> Patching corrige vulnerabilidades conocidas. Hardening reduce la superficie de ataque configurando el sistema correctamente.</li>
+        <li><strong>Least privilege ≠ need-to-know:</strong> Least privilege = mínimo acceso funcional. Need-to-know = acceso a información clasificada solo si es necesario para la misión.</li>
+        <li><strong>Decommissioning puede ser mejor que parchear</strong> cuando el sistema es tan antiguo que el riesgo de mantenerlo supera el valor que aporta.</li>
+        <li><strong>"Removal of unnecessary software"</strong> es parte del hardening, no solo del patching.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s25')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DOMAIN 3 -->
+<!-- ============================================================ -->
+
+<!-- 3.1 -->
+<div class="section-card d3" id="s31">
+  <div class="section-header" onclick="toggle('s31')">
+    <span class="section-badge">3.1</span>
+    <span class="section-title">Security implications of different architecture models</span>
+    <span class="section-toggle" id="t-s31">▼</span>
+  </div>
+  <div class="section-body" id="b-s31">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Cloud — Responsibility Matrix:</strong> IaaS (tú gestionas OS, apps, datos) · PaaS (tú gestionas apps y datos) · SaaS (el proveedor gestiona todo, tú solo los datos). El proveedor SIEMPRE gestiona el hardware físico.</li>
+        <li><strong>IaC (Infrastructure as Code):</strong> Infraestructura definida en scripts (Terraform, Ansible). Riesgo: si el código tiene vulnerabilidades o credenciales hardcoded, se despliegan en todos los entornos.</li>
+        <li><strong>Serverless:</strong> No gestionas servidores. El proveedor gestiona el runtime. Superficie de ataque diferente: funciones efímeras, permisos IAM excesivos.</li>
+        <li><strong>Microservices:</strong> Cada servicio independiente, API entre ellos. Mayor superficie de ataque (más endpoints de API) pero menor impacto de un breach individual.</li>
+        <li><strong>Network infrastructure:</strong>
+          <ul>
+            <li>Air-gapped: físicamente desconectado de redes externas (no solo lógicamente)</li>
+            <li>Logical segmentation: VLANs, subredes — separación lógica, no física</li>
+            <li>SDN (Software-Defined Networking): control plane separado del data plane, gestionado por software</li>
+          </ul>
+        </li>
+        <li><strong>IoT:</strong> Difícil de parchear, firmware frecuentemente obsoleto, contraseñas por defecto, sin capacidad de instalar agentes de seguridad.</li>
+        <li><strong>ICS/SCADA:</strong> Sistemas OT industriales. No pueden tener downtime para parchear. Modelo Purdue separa niveles IT/OT. Air-gap cuando sea posible.</li>
+        <li><strong>RTOS:</strong> Sistema operativo de tiempo real. La latencia es crítica — no puede interrumpirse para actualizaciones de seguridad.</li>
+        <li><strong>Fail-open:</strong> Si el control de seguridad falla, permite el tráfico (disponibilidad prioridad). Fail-closed: si falla, bloquea todo (seguridad prioridad).</li>
+        <li><strong>Consideraciones de arquitectura:</strong> Availability, Resilience, Cost, Responsiveness, Scalability, Ease of deployment, Risk transference, Patch availability.</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real</h4>
+      <ul>
+        <li><strong>Shared responsibility en cloud:</strong> Si tu app en AWS tiene una brecha porque no parchaste el OS (EC2), es culpa tuya, no de Amazon. Amazon gestiona el hypervisor y el hardware.</li>
+        <li><strong>IaC risk:</strong> Un Terraform file con credenciales de AWS hardcoded en GitHub → el repo es público → atacante despliega recursos en tu cuenta.</li>
+        <li><strong>Air-gap bypass (Stuxnet):</strong> El gusano se propagó mediante USBs infectados a plantas nucleares completamente aisladas. Air-gap no es garantía absoluta.</li>
+        <li><strong>Fail-open en hospital:</strong> El control de acceso a UCI falla → se abre la puerta (fail-open). En un banco, el cajero falla → se bloquea (fail-closed). El contexto define cuál usar.</li>
+        <li><strong>IoT en empresa:</strong> Cámaras IP con firmware de 2015, contraseñas por defecto — usadas para crear botnets DDoS (Mirai). Segmenta IoT en VLAN separada sin acceso a red corporativa.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Una empresa migra a AWS (IaaS). El proveedor tiene un fallo en el hypervisor. ¿De quién es la responsabilidad?
+        <br><br>→ <span class="tag tag-green">AWS (proveedor)</span>. En IaaS, el cliente no gestiona el hypervisor ni la capa de virtualización.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Una planta industrial tiene PLCs que controlan maquinaria. No pueden reiniciarse y llevan 3 años sin parche. ¿Cuál es la mejor estrategia de seguridad?
+        <br><br>→ <span class="tag tag-green">Segmentation + compensating controls</span>: VLAN separada, sin acceso a internet, monitorización de tráfico OT, acceso solo desde jump server.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un sistema de control de acceso falla. La política de la empresa es que la seguridad no puede impedir la evacuación. ¿Qué modo de fallo configuras?
+        <br><br>→ <span class="tag tag-green">Fail-open</span> — en una emergencia, las puertas deben poder abrirse.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>En IaaS, el cliente gestiona el OS hacia arriba.</strong> En PaaS, solo las apps y datos. En SaaS, solo los datos (y la configuración de usuarios).</li>
+        <li><strong>Air-gap NO es invulnerable:</strong> USB infectados, ondas de radio, emisiones electromagnéticas — hay vectores físicos. Air-gap reduce drásticamente el riesgo pero no lo elimina.</li>
+        <li><strong>Fail-open ≠ inseguro siempre:</strong> Depende del contexto. En seguridad física (evacuaciones), fail-open puede ser el requisito legal.</li>
+        <li><strong>SDN separa control y datos:</strong> El controlador SDN es un punto crítico — si se compromete, compromete toda la red.</li>
+        <li><strong>Microservices ≠ más seguro por defecto:</strong> Más APIs = más superficie de ataque. Necesitas autenticación/autorización en cada servicio.</li>
+        <li><strong>Third-party vendors en cloud:</strong> Heredas sus vulnerabilidades. Si usan una librería con CVE, tu aplicación también está en riesgo.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s31')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 3.2 -->
+<div class="section-card d3" id="s32">
+  <div class="section-header" onclick="toggle('s32')">
+    <span class="section-badge">3.2</span>
+    <span class="section-title">Apply security principles to secure enterprise infrastructure</span>
+    <span class="section-toggle" id="t-s32">▼</span>
+  </div>
+  <div class="section-body" id="b-s32">
+    <div class="block b-concepto">
+      <h4>📖 Dispositivos y Zonas de Red</h4>
+      <ul>
+        <li><strong>Security zones:</strong> External (internet) → DMZ → Internal. El tráfico entre zonas pasa por firewall.</li>
+        <li><strong>DMZ:</strong> Zona desmilitarizada entre dos firewalls. Los servidores públicos (web, email, DNS) van aquí. Si un servidor DMZ es comprometido, el atacante aún tiene otro firewall antes de llegar a la red interna.</li>
+        <li><strong>Jump server (bastion host):</strong> Único punto de acceso administrativo a una zona segura. Reduce la superficie de ataque — solo expones un servidor al exterior para administración.</li>
+        <li><strong>Proxy server:</strong> Forward proxy: clientes internos → internet (filtra y anonimiza). Reverse proxy: internet → servidores internos (protege y distribuye carga).</li>
+        <li><strong>Load balancer:</strong> Distribuye tráfico entre múltiples servidores. Mejora disponibilidad y rendimiento.</li>
+        <li><strong>Port security 802.1X:</strong> Autenticación de dispositivos antes de permitirles acceso a la red. Requiere supplicant, authenticator y authentication server (RADIUS).</li>
+      </ul>
+    </div>
+    <div class="block b-concepto" style="margin-top:10px">
+      <h4>📖 Tipos de Firewall</h4>
+      <ul>
+        <li><strong>Packet filter (stateless):</strong> Solo inspecciona headers (IP/puerto). No sabe si el paquete es parte de una sesión establecida.</li>
+        <li><strong>Stateful firewall:</strong> Rastrea el estado de las conexiones. Sabe si un paquete es respuesta a una solicitud legítima. Más seguro que stateless.</li>
+        <li><strong>NGFW (Next-Gen Firewall):</strong> Layer 7, deep packet inspection, application awareness. Puede identificar apps (Facebook, BitTorrent) aunque usen puertos estándar.</li>
+        <li><strong>WAF (Web Application Firewall):</strong> Específico para tráfico HTTP/HTTPS. Protege contra SQLi, XSS, CSRF. Capa 7.</li>
+        <li><strong>UTM (Unified Threat Management):</strong> Todo en uno: firewall + IDS/IPS + antivirus + VPN + filtrado web. Conveniente pero es un single point of failure.</li>
+      </ul>
+    </div>
+    <div class="block b-concepto" style="margin-top:10px">
+      <h4>📖 Comunicaciones Seguras</h4>
+      <ul>
+        <li><strong>VPN:</strong> Túnel cifrado entre cliente y red corporativa. Site-to-site (entre oficinas) o client-to-site (usuario remoto).</li>
+        <li><strong>TLS:</strong> Cifrado a nivel de transporte (HTTPS, SMTPS, FTPS, IMAPS). Usa asimétrico para handshake, simétrico para la sesión.</li>
+        <li><strong>IPSec:</strong> Cifrado a nivel de red (Layer 3). AH (Authentication Header): integridad y autenticación, sin cifrado. ESP (Encapsulating Security Payload): integridad + confidencialidad.</li>
+        <li><strong>SD-WAN:</strong> Gestión centralizada de WAN usando múltiples ISPs. Más flexible que MPLS tradicional.</li>
+        <li><strong>SASE:</strong> SD-WAN + seguridad cloud (Zero Trust, CASB, FWaaS). La seguridad viaja con el usuario, no está atada al perímetro.</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Caso de Red VLAN — Flujo de Tráfico</h4>
+      <div class="scenario-box">
+        <strong>Diagrama típico de examen</strong>
+        <br>PC (192.168.10.5, VLAN 10) intenta conectarse a Servidor RRHH (192.168.20.10, VLAN 20)
+        <br><br>
+        1. El PC envía tráfico → switch lo detecta en VLAN 10<br>
+        2. El tráfico debe pasar por el router/firewall de capa 3 (inter-VLAN routing)<br>
+        3. El firewall consulta sus ACLs: ¿VLAN 10 → VLAN 20 puerto 445 (SMB) está permitido?<br>
+        4. Si hay regla DENY → tráfico bloqueado. Si PERMIT → pasa.<br>
+        5. Si hay IPS inline: inspecciona el contenido. Si detecta WannaCry → bloquea y alerta.<br>
+        <br>
+        → <span class="tag tag-green">Tráfico entre VLANs siempre pasa por un dispositivo L3</span> (router o firewall). Sin esa regla, las VLANs están aisladas entre sí.
+      </div>
+      <div class="scenario-box">
+        <strong>¿Está infectado? ¿Cuál es el origen/destino?</strong>
+        <br><br>
+        Log de firewall: <code>DENY TCP 192.168.10.5:49231 → 192.168.30.1:22 [SSH]</code><br><br>
+        → Origen: PC en VLAN 10 (192.168.10.5). Destino: probablemente un servidor en VLAN 30 (red de servidores). Puerto 22 (SSH).<br>
+        → La regla DENY bloqueó el intento. Pero ¿por qué una workstation intenta SSH a un servidor? → <span class="tag tag-red">Sospechoso — posible lateral movement</span>
+      </div>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Necesitas proteger tu app web (Node.js) contra inyecciones SQL y XSS. El firewall perimetral no es suficiente. ¿Qué añades?
+        <br><br>→ <span class="tag tag-green">WAF</span> — entiende el protocolo HTTP y puede filtrar payloads maliciosos a nivel de aplicación.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Quieres que el IDS no impacte el rendimiento de la red y que solo detecte, no bloquee. ¿Cómo lo despliegas?
+        <br><br>→ Modo <span class="tag tag-green">tap/monitor (passive)</span> — copia del tráfico al IDS mediante SPAN port. Si fuera inline, sería IPS.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Empleados remotos necesitan acceder a recursos internos. La empresa quiere Zero Trust — autenticación por cada recurso, no VPN tradicional. ¿Qué implementas?
+        <br><br>→ <span class="tag tag-green">ZTNA</span> (Zero Trust Network Access) / <span class="tag tag-green">SASE</span>. Acceso granular por aplicación, no acceso completo a la red.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>IDS detecta, NO bloquea. IPS bloquea.</strong> Si el enunciado dice "inline" → es IPS. Si dice "tap/monitor/passive" → es IDS.</li>
+        <li><strong>WAF ≠ NGFW:</strong> WAF es específico para HTTP/HTTPS (Layer 7 web). NGFW puede inspeccionar cualquier protocolo en Layer 7.</li>
+        <li><strong>UTM = single point of failure:</strong> Todo en un aparato. Si falla, pierdes firewall, IPS, antivirus y VPN a la vez.</li>
+        <li><strong>Stateful firewall</strong> sabe que un paquete UDP entrante es respuesta a una consulta saliente. Un firewall stateless no lo sabe y puede bloquearlo o permitirlo incorrectamente.</li>
+        <li><strong>IPSec AH ≠ ESP:</strong> AH da integridad y autenticación pero NO confidencialidad (no cifra). ESP da todo incluyendo cifrado.</li>
+        <li><strong>DMZ es entre DOS firewalls,</strong> no solo una zona separada con un firewall. La configuración dual-firewall es más segura.</li>
+        <li><strong>802.1X roles:</strong> Supplicant (cliente) + Authenticator (switch/AP) + Authentication Server (RADIUS). El switch no autentica por sí solo.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s32')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 3.3 -->
+<div class="section-card d3" id="s33">
+  <div class="section-header" onclick="toggle('s33')">
+    <span class="section-badge">3.3</span>
+    <span class="section-title">Concepts and strategies to protect data</span>
+    <span class="section-toggle" id="t-s33">▼</span>
+  </div>
+  <div class="section-body" id="b-s33">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Data states:</strong> At rest (almacenado en disco/BD) · In transit (moviéndose por red) · In use (siendo procesado en CPU/RAM). El más difícil de proteger es <em>in use</em>.</li>
+        <li><strong>Data types:</strong> Regulated (PHI, PII, PCI) · Trade secret · Intellectual property · Legal information · Financial information · Human-readable vs machine-readable.</li>
+        <li><strong>Data classifications:</strong> Public → Sensitive → Confidential → Critical/Restricted. Define quién puede acceder y qué controles aplican.</li>
+        <li><strong>Data sovereignty:</strong> Los datos deben almacenarse físicamente en ciertos países por ley (ej. GDPR exige que datos de residentes UE no salgan de la UE sin SCCs).</li>
+        <li><strong>Geolocation:</strong> Restricciones de acceso basadas en la ubicación geográfica del usuario.</li>
+        <li><strong>Methods to secure data:</strong>
+          <ul>
+            <li>Encryption: datos legibles solo con clave. Data at rest: AES-256. Data in transit: TLS.</li>
+            <li>Hashing: verificar integridad (no confidencialidad). SHA-256.</li>
+            <li>Masking: oculta parcialmente datos (****4242). El dato original existe en el sistema.</li>
+            <li>Tokenization: reemplaza el dato con un token sin valor matemático. El dato real está en un vault separado. Estándar en PCI-DSS.</li>
+            <li>Obfuscation: hace datos ilegibles sin eliminarlos. Más amplio que masking.</li>
+            <li>Segmentation: diferentes tipos de datos en sistemas/zonas separadas.</li>
+            <li>Permission restrictions: ACLs, RBAC sobre ficheros y bases de datos.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real</h4>
+      <ul>
+        <li><strong>PCI-DSS + Tokenización:</strong> El número de tarjeta 4111-1111-1111-1111 se reemplaza por token <code>tok_8f3a9c2d</code>. El merchant almacena el token. El número real solo existe en el vault del proveedor de pagos.</li>
+        <li><strong>Data at rest:</strong> Base de datos cifrada con AES-256. Si el atacante roba el archivo de BD, no puede leerlo sin la clave.</li>
+        <li><strong>Data in transit:</strong> HTTPS = HTTP sobre TLS. Protege de intercepción en tránsito. Sin TLS (HTTP puro), cualquier nodo intermedio puede leer el tráfico.</li>
+        <li><strong>Data in use:</strong> La memoria RAM contiene datos descifrados mientras se procesan. Ataque de cold boot: enfriar la RAM y extraerla físicamente para leer su contenido.</li>
+        <li><strong>Data sovereignty en cloud:</strong> Una empresa española no puede usar AWS us-east-1 para datos de clientes europeos sin SCCs. Debe usar AWS eu-west-1 (Irlanda) o eu-central-1 (Frankfurt).</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un e-commerce quiere que sus desarrolladores puedan trabajar con datos de prueba similares a producción sin exponer números de tarjeta reales. ¿Qué técnica usan?
+        <br><br>→ <span class="tag tag-green">Data masking</span> o <span class="tag tag-green">Tokenización</span>. Masking si solo necesitan ver el formato, tokenización si necesitan un dato funcional (que el vault puede resolver).
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        La empresa opera en UE y USA. Un empleado en USA necesita acceder a datos de clientes europeos almacenados en un servidor en Irlanda. ¿Qué consideración aplica?
+        <br><br>→ <span class="tag tag-green">Data sovereignty</span> — los datos pueden seguir en Irlanda; el acceso desde USA es el flujo de transferencia que debe estar regulado por SCCs bajo GDPR.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>Data in use es el más difícil de proteger.</strong> Los datos deben estar descifrados en memoria para ser procesados.</li>
+        <li><strong>Tokenización ≠ cifrado:</strong> El token NO tiene relación matemática con el dato. No puedes "descifrar" un token — solo el vault puede resolverlo. El cifrado SÍ es matemáticamente reversible con la clave.</li>
+        <li><strong>Masking ≠ tokenización:</strong> Masking oculta parte del dato original (****4242). El dato completo existe en el sistema. Tokenización reemplaza el dato completo.</li>
+        <li><strong>Trade secret ≠ patent:</strong> Patent se registra públicamente y tiene duración limitada. Trade secret nunca se registra (Coca-Cola formula) y no expira — pero si se divulga, se pierde la protección.</li>
+        <li><strong>Data classification define los controles.</strong> Si un dato es "Confidential", automáticamente se aplican cifrado, control de acceso restringido y logging.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s33')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DOMAIN 4 -->
+<!-- ============================================================ -->
+
+<!-- 4.1 -->
+<div class="section-card d4" id="s41">
+  <div class="section-header" onclick="toggle('s41')">
+    <span class="section-badge">4.1</span>
+    <span class="section-title">Apply common security techniques to computing resources</span>
+    <span class="section-toggle" id="t-s41">▼</span>
+  </div>
+  <div class="section-body" id="b-s41">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Secure baselines:</strong> Configuración mínima de seguridad aprobada para un tipo de sistema. Establish (definir) → Deploy (aplicar) → Maintain (monitorizar desviaciones y corregir).</li>
+        <li><strong>Hardening targets:</strong>
+          <ul>
+            <li>Mobile: MDM, cifrado, PIN mínimo, remote wipe</li>
+            <li>Workstations: antivirus, firewall personal, BitLocker, screen lock</li>
+            <li>Switches: deshabilitar puertos no usados, 802.1X, port security (MAC filtering)</li>
+            <li>Routers: SSH (no Telnet), ACLs, deshabilitar servicios innecesarios</li>
+            <li>Cloud: CSPM, least privilege IAM, MFA en cuentas de administrador</li>
+            <li>Servidores: CIS Benchmarks, deshabilitar servicios, firewall local</li>
+            <li>ICS/SCADA: air-gap, no exponer a internet, cambiar credenciales por defecto</li>
+            <li>IoT/Embedded/RTOS: cambiar contraseñas por defecto, actualizar firmware, segmentar en VLAN separada</li>
+          </ul>
+        </li>
+        <li><strong>Wireless:</strong> WPA3 &gt; WPA2 &gt; WPA &gt; WEP (roto). RADIUS para empresarial (802.1X + EAP). Site surveys + heat maps para cobertura óptima.</li>
+        <li><strong>Mobile deployment models:</strong>
+          <ul>
+            <li>BYOD: el usuario trae su dispositivo. Más riesgo, menos control.</li>
+            <li>COPE: empresa da dispositivo que el usuario puede usar personalmente. Más control.</li>
+            <li>CYOD: el usuario elige de una lista de modelos aprobados. Balance entre control y satisfacción del usuario.</li>
+          </ul>
+        </li>
+        <li><strong>Application security:</strong> Input validation (previene SQLi/XSS) · Secure cookies (HttpOnly, Secure, SameSite) · Static analysis (SAST) · Dynamic analysis (DAST) · Code signing</li>
+        <li><strong>Sandboxing:</strong> Ejecutar código sospechoso en entorno aislado para analizar comportamiento sin riesgo para el sistema real.</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real</h4>
+      <ul>
+        <li><strong>BYOD risk:</strong> El MDM puede hacer remote wipe del dispositivo completo (datos personales incluidos). El empleado debe conocerlo y aceptarlo.</li>
+        <li><strong>Code signing:</strong> Windows solo ejecuta drivers firmados por Microsoft. Si el driver no está firmado, requiere desactivar el Secure Boot — señal de alerta.</li>
+        <li><strong>SAST vs DAST:</strong> SAST analiza el código fuente sin ejecutarlo (detecta vulnerabilidades en desarrollo). DAST ejecuta la app y ataca desde fuera (simula un pentester real).</li>
+        <li><strong>Secure cookie HttpOnly:</strong> JavaScript no puede acceder a la cookie → XSS no puede robar la cookie de sesión. Secure: solo se envía sobre HTTPS. SameSite: previene CSRF.</li>
+        <li><strong>CIS Benchmarks:</strong> Guías detalladas de hardening para Windows, Linux, AWS, etc. Nivel 1 (perfil básico) y Nivel 2 (perfil de alta seguridad, puede impactar usabilidad).</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un analista de malware recibe un ejecutable sospechoso. Necesita ver qué hace sin infectar su sistema. ¿Qué usa?
+        <br><br>→ <span class="tag tag-green">Sandboxing</span> — ejecuta el binario en un entorno aislado y observa su comportamiento (conexiones de red, archivos que crea, registry changes).
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        La empresa quiere que los empleados puedan usar su iPhone personal para email corporativo, pero el departamento legal quiere poder borrar los datos corporativos si el teléfono se pierde. ¿Qué modelo + herramienta?
+        <br><br>→ <span class="tag tag-green">BYOD + MDM</span>. Con MDM moderno (contenedor) se puede hacer selective wipe (solo datos corporativos) sin borrar el dispositivo completo.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>WEP está completamente roto</strong> (se crackea en minutos). WPA también tiene vulnerabilidades. Solo WPA2 y WPA3 son aceptables hoy.</li>
+        <li><strong>RADIUS es el servidor de autenticación,</strong> no el protocolo de cifrado. El cifrado en WiFi lo gestiona WPA2/WPA3.</li>
+        <li><strong>Code signing ≠ código seguro:</strong> Solo prueba que el código viene del autor declarado y no ha sido modificado. El autor puede haber firmado código malicioso.</li>
+        <li><strong>Sandboxing no previene todo:</strong> Malware avanzado detecta que está en sandbox y no ejecuta su payload (sandbox evasion).</li>
+        <li><strong>BYOD MDM wipe:</strong> Si el contrato no lo especifica, puede haber implicaciones legales al borrar datos personales. Siempre acuerdo previo.</li>
+        <li><strong>Hardening ≠ patching:</strong> Hardening = configuración correcta. Patching = actualizar el software. Ambos son necesarios y complementarios.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s41')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 4.2 -->
+<div class="section-card d4" id="s42">
+  <div class="section-header" onclick="toggle('s42')">
+    <span class="section-badge">4.2</span>
+    <span class="section-title">Hardware, software, and data asset management</span>
+    <span class="section-toggle" id="t-s42">▼</span>
+  </div>
+  <div class="section-body" id="b-s42">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Acquisition/procurement:</strong> Evaluar la seguridad del vendor antes de comprar hardware o software. Verificar que no tenga backdoors, firmware legítimo, cadena de suministro confiable.</li>
+        <li><strong>Assignment/accounting:</strong> Ownership (quién es responsable del activo) · Classification (qué nivel de sensibilidad tiene los datos que gestiona).</li>
+        <li><strong>Monitoring/asset tracking:</strong> Inventory (qué activos tienes) · Enumeration (qué características y vulnerabilidades tienen).</li>
+        <li><strong>Disposal/decommissioning:</strong>
+          <ul>
+            <li>Sanitization: limpiar datos para permitir reutilización del dispositivo (overwrite, degaussing en HDDs)</li>
+            <li>Destruction: eliminación física irreversible del dispositivo (shredding, incineration)</li>
+            <li>Certification: documento que prueba que la destrucción/sanitización se realizó correctamente</li>
+            <li>Data retention: política de cuánto tiempo conservar datos antes de destruirlos</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real</h4>
+      <ul>
+        <li><strong>Shadow IT:</strong> Empleado instala Dropbox sin aprobación IT. El activo no está en el inventario → no se monitoriza → riesgo de fuga de datos. La gestión de activos previene esto.</li>
+        <li><strong>Degaussing:</strong> Imán potente que borra HDDs magnéticos. NO funciona en SSDs (almacenamiento flash, sin partes magnéticas). Para SSDs: overwrite múltiple o destrucción física.</li>
+        <li><strong>Sanitization vs Destruction:</strong> Un hospital vende PCs viejos. Si no sanitizan los discos, los registros médicos pueden ser recuperados (violación HIPAA). Con sanitización certificada, el PC se puede vender. Con destruction, se elimina el hardware también.</li>
+        <li><strong>Data retention legal:</strong> Los logs de firewall deben guardarse 1 año (PCI-DSS), emails corporativos 7 años (SOX). La política de retention define cuándo se pueden destruir.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Una empresa dona 50 laptops viejas a una ONG. Las laptops tienen SSDs. ¿Cómo aseguran que los datos corporativos no sean recuperables?
+        <br><br>→ Para SSDs: <span class="tag tag-green">Cryptographic erasure</span> (si el disco estaba cifrado, destruye la clave) o <span class="tag tag-green">Secure overwrite</span> con herramienta certificada. Degaussing NO es efectivo en SSDs.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        El equipo de seguridad descubre que varios empleados usan aplicaciones SaaS de terceros no aprobadas para compartir documentos. ¿Qué problema de asset management refleja?
+        <br><br>→ <span class="tag tag-green">Shadow IT</span> — activos/servicios no inventariados que quedan fuera del control de seguridad de la organización.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>Degaussing no funciona en SSDs.</strong> Solo en medios magnéticos (HDD, cintas). Para SSDs: overwrite seguro o destrucción física.</li>
+        <li><strong>Sanitization permite reutilizar el dispositivo. Destruction no.</strong> Elige según si el dispositivo tiene valor o si el riesgo de datos es tan alto que justifica destruirlo.</li>
+        <li><strong>Data retention ≠ data protection:</strong> Retention define CUÁNTO TIEMPO guardar. La protección define CÓMO protegerlo mientras se guarda.</li>
+        <li><strong>Certification de destrucción</strong> es el documento que prueba que se hizo correctamente (importante para auditorías y cumplimiento legal).</li>
+        <li><strong>Sin inventario no hay seguridad:</strong> No puedes proteger lo que no sabes que tienes. El asset inventory es la base de cualquier programa de seguridad.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s42')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 4.3 -->
+<div class="section-card d4" id="s43">
+  <div class="section-header" onclick="toggle('s43')">
+    <span class="section-badge">4.3</span>
+    <span class="section-title">Vulnerability management activities</span>
+    <span class="section-toggle" id="t-s43">▼</span>
+  </div>
+  <div class="section-body" id="b-s43">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Vulnerability scan:</strong> Herramienta automática que identifica vulnerabilidades conocidas (CVEs). Rápido, amplio, pero no explota las vulns.
+          <ul>
+            <li>Credentialed (autenticado): accede al sistema con credenciales → más profundo, ve configuraciones internas, parches aplicados</li>
+            <li>Non-credentialed: solo ve lo expuesto externamente → menos profundo, más falsos positivos</li>
+            <li>Agent-based: agente instalado en el host vs Agentless: escanea por red</li>
+          </ul>
+        </li>
+        <li><strong>Penetration testing:</strong> Ataque simulado por humanos para explotar vulnerabilidades reales. Más profundo que un scan. Requiere scope y rules of engagement.</li>
+        <li><strong>OSINT:</strong> Recopilación de información de fuentes públicas (web, redes sociales, DNS, certificados). Usado en reconocimiento pasivo.</li>
+        <li><strong>Threat intelligence:</strong> STIX (formato estándar para threat intel) + TAXII (protocolo para compartir STIX). Dark web, threat feeds, ISACs.</li>
+        <li><strong>CVSS:</strong> Common Vulnerability Scoring System (0-10). Base score + Temporal score + Environmental score. Ayuda a priorizar parches.</li>
+        <li><strong>CVE:</strong> Common Vulnerability Enumeration — identificador único: <code>CVE-2021-44228</code> (Log4Shell).</li>
+        <li><strong>Vulnerability response:</strong> Patch · Insurance (transferir riesgo) · Segmentation · Compensating controls · Exception/Exemption (aceptar riesgo formalmente)</li>
+        <li><strong>Validation of remediation:</strong> Rescan · Audit · Verification — confirmar que la vuln fue realmente corregida.</li>
+        <li><strong>Bug bounty:</strong> Programa de recompensa para investigators externos que reportan vulns responsablemente.</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real</h4>
+      <ul>
+        <li><strong>CVSS ≠ prioridad real:</strong> Una vuln con CVSS 9.8 en un servidor sin acceso a internet puede ser menos urgente que una CVSS 6.5 en un servidor público con datos financieros. El environmental score ajusta esto.</li>
+        <li><strong>Responsible disclosure:</strong> El researcher reporta la vuln al vendor privadamente → vendor tiene tiempo para desarrollar y distribuir el parche → luego se publica públicamente. Alternativa: full disclosure (publica de inmediato).</li>
+        <li><strong>False positive:</strong> El scanner reporta que Apache 2.4.49 es vulnerable, pero ya está parchado y el scanner no lo detecta. Waste of time investigar.</li>
+        <li><strong>False negative:</strong> El scanner NO detecta que Apache 2.4.49 está vulnerable. El sistema queda expuesto sin que nadie lo sepa. Mucho más peligroso.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        El scanner reporta 200 vulnerabilidades. El CISO quiere saber cuáles parchear primero. ¿Qué criterios usas?
+        <br><br>→ <span class="tag tag-green">CVSS + contexto</span>: CVSS base score + exposure (¿está en internet?) + asset criticality + si hay exploit público disponible + environmental score. No solo el número más alto.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Tienes un servidor legacy que no se puede parchear. La vuln tiene CVSS 8.5. No puedes decommissionarlo todavía. ¿Qué haces?
+        <br><br>→ <span class="tag tag-green">Compensating controls</span>: segmentarlo en VLAN separada, añadir IPS delante, limitar acceso con ACLs, monitorización intensiva + documentar la <span class="tag tag-green">exception/exemption</span> formalmente.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>Vuln scan ≠ pentest:</strong> Scan = automático, identifica. Pentest = manual, explota. El pentest puede encontrar cosas que el scan no ve (lógica de negocio, encadenamiento de vulns).</li>
+        <li><strong>False negative es más peligroso que false positive.</strong> Un FN te deja expuesto sin saberlo. Un FP solo te hace perder tiempo investigando.</li>
+        <li><strong>CVSS 10 no siempre = parchear primero:</strong> El contexto (exposure, criticidad del activo) determina la prioridad real.</li>
+        <li><strong>CVE ≠ CVSS:</strong> CVE es el identificador (nombre). CVSS es la puntuación de severidad (número). Un CVE tiene un CVSS score asociado.</li>
+        <li><strong>Credentialed scan</strong> da más información pero también más riesgo si las credenciales son robadas. Deben ser cuentas dedicadas con mínimo privilegio.</li>
+        <li><strong>Bug bounty</strong> no sustituye a un pentest interno. Es complementario — más ojos, diferentes perspectivas.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s43')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 4.4 -->
+<div class="section-card d4" id="s44">
+  <div class="section-header" onclick="toggle('s44')">
+    <span class="section-badge">4.4</span>
+    <span class="section-title">Security alerting and monitoring concepts and tools</span>
+    <span class="section-toggle" id="t-s44">▼</span>
+  </div>
+  <div class="section-body" id="b-s44">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>SIEM:</strong> Security Information and Event Management. Centraliza logs de múltiples fuentes, correlaciona eventos para detectar patrones, genera alertas. <em>No bloquea — solo detecta y alerta.</em></li>
+        <li><strong>SOAR:</strong> Security Orchestration, Automation and Response. Añade automatización sobre el SIEM — puede tomar acciones automáticas (aislar un equipo, bloquear una IP).</li>
+        <li><strong>Log aggregation:</strong> Centralizar logs de firewalls, servidores, apps, endpoints en un único sistema de análisis.</li>
+        <li><strong>Alert tuning:</strong> Ajustar umbrales y reglas para reducir falsos positivos sin perder detecciones reales. Evita alert fatigue.</li>
+        <li><strong>NetFlow:</strong> Metadatos de flujos de red (IPs origen/destino, puertos, bytes, duración). NO captura el contenido de los paquetes. Útil para detectar C2 beaconing, exfiltración, lateral movement.</li>
+        <li><strong>SNMP traps:</strong> Alertas proactivas de dispositivos de red (router caído, interface down, umbral de CPU superado).</li>
+        <li><strong>DLP:</strong> Data Loss Prevention. Endpoint DLP (controla USB, print, clipboard) · Network DLP (inspecciona tráfico saliente) · Storage DLP (controla dónde están los datos).</li>
+        <li><strong>Antivirus:</strong> Detecta malware por firmas. Efectivo contra malware conocido, menos contra zero-days o malware polimórfico.</li>
+        <li><strong>Vulnerability scanners:</strong> Identifican vulns conocidas en sistemas de la red. Resultado: lista de CVEs por sistema.</li>
+        <li><strong>Packet captures (PCAP):</strong> Captura completa del tráfico (incluye contenido). Wireshark lo analiza. Más información que NetFlow pero mucho más volumen de datos.</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real — Leer logs de firewall</h4>
+      <div class="scenario-box">
+        <strong>Log de firewall típico en el examen:</strong>
+        <br><br>
+        <code>2026-03-30 03:47:22 DENY TCP 10.0.1.45:52341 → 10.0.3.100:445 [SMB]</code><br><br>
+        → Origen: 10.0.1.45 (red de usuarios, VLAN 1). Destino: 10.0.3.100 puerto 445 (SMB/archivos, VLAN 3).<br>
+        → DENY: el firewall bloqueó la conexión. Pero la workstation LO INTENTÓ → sospechoso.<br>
+        → A las 3:47am → out-of-cycle. Nadie trabaja.<br>
+        → Diagnóstico: <span class="tag tag-red">Posible WannaCry/ransomware intentando propagarse vía SMB</span>. Aislar 10.0.1.45 inmediatamente.
+      </div>
+      <ul>
+        <li><strong>C2 beaconing en NetFlow:</strong> Un host interno hace conexiones regulares cada 60 segundos a la misma IP externa → patrón de beacon. SIEM lo detecta por regularidad y destino inusual.</li>
+        <li><strong>Alert fatigue:</strong> Si el SIEM genera 10.000 alertas/día, los analistas empiezan a ignorarlas. Alert tuning reduce el ruido.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Quieres detectar exfiltración de datos a través de la red sin capturar el contenido de los paquetes (por privacidad). ¿Qué herramienta usas?
+        <br><br>→ <span class="tag tag-green">NetFlow</span> — da metadatos (volumen de datos, destinos) sin el contenido. Puedes detectar transferencias masivas a IPs externas inusuales.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        El SOC recibe 500 alertas del SIEM al día. Los analistas no pueden gestionar el volumen. ¿Qué implementas?
+        <br><br>→ <span class="tag tag-green">Alert tuning</span> (reducir falsos positivos) + <span class="tag tag-green">SOAR</span> (automatizar la respuesta a alertas de baja complejidad, liberando al analista para las importantes).
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un empleado intenta copiar documentos confidenciales a un USB. ¿Qué herramienta lo detecta y/o bloquea?
+        <br><br>→ <span class="tag tag-green">Endpoint DLP</span> — controla el uso de puertos USB, puede bloquear la copia o generar una alerta.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>SIEM NO bloquea.</strong> Solo detecta y alerta. Para respuesta automática necesitas SOAR.</li>
+        <li><strong>NetFlow ≠ PCAP:</strong> NetFlow = metadatos (quién habla con quién, cuántos bytes). PCAP = contenido completo del paquete. PCAP requiere mucho más almacenamiento.</li>
+        <li><strong>DLP puede estar en modo monitor o modo block.</strong> En modo monitor solo alerta. En modo block, previene la acción.</li>
+        <li><strong>Antivirus firma-based</strong> no detecta zero-days ni malware polimórfico. EDR (4.5) es más efectivo para amenazas avanzadas.</li>
+        <li><strong>Syslog usa puerto 514 UDP</strong> por defecto. Para Syslog seguro: TLS sobre TCP 6514.</li>
+        <li><strong>Alert fatigue</strong> es un riesgo real: demasiadas alertas → analistas ignoran → breach no detectado. Tuning y SOAR son la solución.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s44')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 4.5 -->
+<div class="section-card d4" id="s45">
+  <div class="section-header" onclick="toggle('s45')">
+    <span class="section-badge">4.5</span>
+    <span class="section-title">Modify enterprise capabilities to enhance security</span>
+    <span class="section-toggle" id="t-s45">▼</span>
+  </div>
+  <div class="section-body" id="b-s45">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Firewall rules:</strong> Default deny (bloquea todo, solo permite lo explícitamente autorizado). Screened subnets (DMZ). Reglas ordenadas: la primera que coincide se aplica.</li>
+        <li><strong>IDS/IPS:</strong>
+          <ul>
+            <li>Signature-based: detecta patrones conocidos (rápido, pero falla con zero-days)</li>
+            <li>Anomaly-based: detecta desviaciones del baseline (detecta zero-days, más falsos positivos)</li>
+            <li>Behavioral: analiza comportamiento a lo largo del tiempo</li>
+          </ul>
+        </li>
+        <li><strong>Web filter:</strong> Agent-based (agente en endpoint) · Centralized proxy (todo el tráfico pasa por proxy). URL scanning, content categorization, block rules, reputation.</li>
+        <li><strong>Email security:</strong>
+          <ul>
+            <li>SPF: registro DNS TXT que lista qué IPs pueden enviar email del dominio. "¿Este servidor está autorizado a enviar en mi nombre?"</li>
+            <li>DKIM: el servidor de origen firma el email con su clave privada. El receptor verifica con la clave pública en DNS. Garantiza que el email no fue modificado.</li>
+            <li>DMARC: política que indica qué hacer si SPF o DKIM fallan → none (monitorizar), quarantine (spam), reject (bloquear). Requiere SPF y/o DKIM.</li>
+          </ul>
+        </li>
+        <li><strong>DNS filtering:</strong> Bloquea resoluciones a dominios maliciosos a nivel DNS. Efectivo y transparente para el usuario.</li>
+        <li><strong>File Integrity Monitoring (FIM):</strong> Detecta cambios no autorizados en archivos críticos (configs, binarios del sistema). Alerta si /etc/passwd o un DLL de sistema es modificado.</li>
+        <li><strong>NAC (Network Access Control):</strong> Controla qué dispositivos pueden conectarse. Posture assessment: ¿tiene el endpoint antivirus actualizado, parches, cifrado? Si no cumple → quarantine VLAN.</li>
+        <li><strong>EDR:</strong> Endpoint Detection and Response. Monitorización continua del endpoint, detección de amenazas avanzadas, capacidad de aislamiento remoto del endpoint.</li>
+        <li><strong>XDR:</strong> Extended Detection and Response. Correlaciona endpoints + red + cloud + email. Visión unificada de la amenaza.</li>
+        <li><strong>UBA/UEBA:</strong> User (and Entity) Behavior Analytics. Crea baseline del comportamiento normal de cada usuario/entidad. Detecta anomalías que las reglas fijas no ven (insider threats).</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real — SPF + DKIM + DMARC juntos</h4>
+      <div class="scenario-box">
+        <strong>Cómo funcionan SPF, DKIM y DMARC juntos:</strong><br><br>
+        1. Tu empresa es <code>empresa.com</code>. Configuras SPF: solo los IPs de Google Workspace pueden enviar.<br>
+        2. DKIM: Google firma cada email saliente con la clave privada de tu dominio.<br>
+        3. DMARC: <code>p=reject</code> — si llega un email de <code>@empresa.com</code> que NO pasa SPF ni DKIM, recházalo.<br><br>
+        Resultado: Un atacante que intente spoofear <code>ceo@empresa.com</code> desde su propio servidor será rechazado. <span class="tag tag-green">BEC attacks bloqueados.</span>
+      </div>
+      <ul>
+        <li><strong>NAC posture failure:</strong> Laptop conecta a WiFi corporativa → NAC comprueba: sin antivirus actualizado → la laptop va a VLAN cuarentena (acceso solo a internet, no a recursos internos) hasta que instale el antivirus.</li>
+        <li><strong>UEBA detecta insider:</strong> Un empleado siempre descarga 10MB/día de archivos. Hoy descargó 50GB en 2 horas. UEBA alerta aunque no haya una regla explícita para eso.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Tu empresa recibe emails de phishing que spoofean el dominio empresa.com. ¿Qué implementas para reducir esto?
+        <br><br>→ <span class="tag tag-green">SPF + DKIM + DMARC (p=reject)</span>. Los tres juntos son necesarios. Solo SPF no es suficiente.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un endpoint es sospechoso de estar comprometido. Necesitas aislarlo de la red inmediatamente sin acceso físico. ¿Qué usas?
+        <br><br>→ <span class="tag tag-green">EDR</span> — tiene capacidad de network isolation remoto del endpoint desde la consola de gestión.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un atacante modifica un archivo de configuración crítico en un servidor Linux para mantener persistencia. ¿Qué herramienta lo detecta?
+        <br><br>→ <span class="tag tag-green">FIM (File Integrity Monitoring)</span> — compara hashes de archivos críticos contra una baseline conocida y alerta ante cualquier cambio.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>SPF solo no es suficiente</strong> para evitar spoofing. DMARC necesita SPF y/o DKIM para funcionar. Sin DMARC, SPF y DKIM no tienen efecto en el receptor.</li>
+        <li><strong>DMARC p=none</strong> solo monitoriza (te manda reportes). No bloquea nada. Para protección real: p=quarantine o p=reject.</li>
+        <li><strong>EDR reemplaza (y supera) al antivirus tradicional</strong> para amenazas avanzadas. Antivirus = signatures. EDR = comportamiento + respuesta.</li>
+        <li><strong>NAC posture ≠ autenticación:</strong> La autenticación (802.1X) verifica quién eres. La posture assessment verifica si tu dispositivo cumple las políticas de seguridad. Son complementarios.</li>
+        <li><strong>UBA detecta lo que SIEM con reglas fijas no ve:</strong> Un insider que hace cosas "permitidas" pero anómalas. SIEM no tiene regla, UBA sí detecta la desviación del baseline.</li>
+        <li><strong>IDS/IPS anomaly-based</strong> tiene más falsos positivos que signature-based al principio (mientras aprende el baseline).</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s45')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 4.6 -->
+<div class="section-card d4" id="s46">
+  <div class="section-header" onclick="toggle('s46')">
+    <span class="section-badge">4.6</span>
+    <span class="section-title">Implement and maintain identity and access management</span>
+    <span class="section-toggle" id="t-s46">▼</span>
+  </div>
+  <div class="section-body" id="b-s46">
+    <div class="block b-concepto">
+      <h4>📖 Qué es — Identidad y Federación</h4>
+      <ul>
+        <li><strong>Provisioning/deprovisioning:</strong> Joiners (nuevo empleado → crear cuentas) · Movers (cambio de rol → actualizar permisos) · Leavers (baja → revocar accesos INMEDIATAMENTE).</li>
+        <li><strong>Federation:</strong> Identidad compartida entre organizaciones. Tu cuenta de empresa te autentica en sistemas de socios sin crear cuentas nuevas.</li>
+        <li><strong>SSO (Single Sign-On):</strong> Un login para múltiples aplicaciones.
+          <ul>
+            <li>LDAP: protocolo de directorio (Active Directory usa LDAP). Para SSO en apps internas.</li>
+            <li>OAuth 2.0: protocolo de AUTORIZACIÓN delegada, NO autenticación. "Esta app puede acceder a mis fotos de Google."</li>
+            <li>SAML: XML-based. Para SSO web entre organizaciones (IdP → SP). Común en entornos enterprise.</li>
+            <li>OIDC (OpenID Connect): capa de AUTENTICACIÓN sobre OAuth 2.0. OAuth + identidad = OIDC.</li>
+          </ul>
+        </li>
+        <li><strong>Attestation:</strong> Proceso de verificar que los accesos concedidos son aún necesarios y apropiados. Revisión periódica.</li>
+      </ul>
+    </div>
+    <div class="block b-concepto" style="margin-top:10px">
+      <h4>📖 Qué es — Modelos de Control de Acceso</h4>
+      <ul>
+        <li><strong>MAC (Mandatory Access Control):</strong> Labels de seguridad (Top Secret, Secret, Confidential). El SO toma las decisiones. El usuario NO puede compartir datos con alguien de menor clearance. Usado en gobierno/militar.</li>
+        <li><strong>DAC (Discretionary Access Control):</strong> El propietario del recurso controla el acceso. El usuario SÍ puede compartir sus propios archivos. Más flexible, menos seguro. Linux/Windows permisos de archivo.</li>
+        <li><strong>RBAC (Role-Based Access Control):</strong> Permisos asignados por rol (Administrador, Auditor, Usuario). El más común en entornos empresariales.</li>
+        <li><strong>ABAC (Attribute-Based Access Control):</strong> Acceso basado en atributos del usuario, recurso y contexto (departamento, hora del día, ubicación). Más granular que RBAC.</li>
+        <li><strong>Rule-based:</strong> Reglas predefinidas que aplican a todos (ej: acceso solo en horario laboral de 8-18h, independientemente del rol).</li>
+        <li><strong>Least privilege:</strong> Mínimo acceso necesario. Time-of-day restrictions: acceso solo en horas específicas.</li>
+      </ul>
+    </div>
+    <div class="block b-concepto" style="margin-top:10px">
+      <h4>📖 Qué es — MFA y PAM</h4>
+      <ul>
+        <li><strong>MFA factors:</strong> Something you know (contraseña, PIN) · Something you have (TOTP app, hardware token, smart card) · Something you are (biometría: huella, iris) · Somewhere you are (geolocation)</li>
+        <li><strong>TOTP:</strong> Time-based One-Time Password. Cambia cada 30 segundos. Requiere sincronización de tiempo. Apps: Authenticator.</li>
+        <li><strong>HOTP:</strong> HMAC-based OTP. Cambia con cada uso (contador), no con el tiempo.</li>
+        <li><strong>FIDO2/WebAuthn:</strong> Autenticación sin contraseña con par de claves pública/privada. Resistente a phishing (la clave está vinculada al dominio exacto).</li>
+        <li><strong>PAM (Privileged Access Management):</strong>
+          <ul>
+            <li>JIT permissions: acceso privilegiado solo cuando se necesita, durante tiempo limitado → luego se revoca automáticamente</li>
+            <li>Password vaulting: contraseñas de admin guardadas y rotadas automáticamente por el vault</li>
+            <li>Ephemeral credentials: credenciales que expiran automáticamente</li>
+          </ul>
+        </li>
+        <li><strong>Password best practices:</strong> Length &gt; complexity · Passphrase approach · Password managers · Passwordless cuando sea posible.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un usuario usa Google para hacer login en una app de terceros ("Login with Google"). ¿Qué protocolos intervienen?
+        <br><br>→ <span class="tag tag-green">OAuth 2.0</span> (autoriza a la app acceder a datos de Google) + <span class="tag tag-green">OIDC</span> (la app verifica la identidad del usuario via el ID token de Google).
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un admin de sistemas necesita acceso root a un servidor de producción para resolver un incidente. ¿Cómo implementas acceso privilegiado seguro?
+        <br><br>→ <span class="tag tag-green">PAM con JIT</span>: el admin solicita acceso root → se aprueba por 2 horas → el vault genera credenciales efímeras → tras las 2 horas se revocan automáticamente. Todo queda registrado.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        El gobierno clasifica un documento como "Top Secret". Un analista con clearance "Secret" intenta acceder. ¿Qué modelo y qué ocurre?
+        <br><br>→ <span class="tag tag-green">MAC</span> — acceso denegado. En MAC, el sistema aplica las labels automáticamente. El analista no puede saltarse la restricción aunque sea el propietario del documento.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>OAuth ≠ autenticación. OIDC añade autenticación a OAuth.</strong> "Login with Google" usa OIDC, no OAuth puro.</li>
+        <li><strong>SAML es XML, más antiguo, para SSO enterprise.</strong> OIDC es más moderno, RESTful (JSON/JWT), más común en apps web y móviles.</li>
+        <li><strong>MFA requiere factores DIFERENTES:</strong> Contraseña + PIN = dos "things you know" = NO es MFA. Contraseña + TOTP = MFA (know + have).</li>
+        <li><strong>MAC es el más restrictivo.</strong> El propietario NO puede conceder acceso a alguien de menor nivel. DAC el propietario SÍ puede.</li>
+        <li><strong>Deprovisioning inmediato al abandonar la empresa.</strong> Las cuentas de ex-empleados activas son uno de los vectores de ataque más comunes (insider threat post-empleo).</li>
+        <li><strong>FIDO2 es resistente a phishing</strong> porque la clave privada está vinculada al dominio exacto. Un site falso (evil.com pretendiendo ser banco.com) no puede usar la clave.</li>
+        <li><strong>PAM JIT:</strong> El acceso se concede en el momento que se necesita y se revoca automáticamente. Reduce drásticamente la ventana de exposición de cuentas privilegiadas.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s46')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DOMAIN 5 -->
+<!-- ============================================================ -->
+
+<!-- 5.1 -->
+<div class="section-card d5" id="s51">
+  <div class="section-header" onclick="toggle('s51')">
+    <span class="section-badge">5.1</span>
+    <span class="section-title">Elements of effective security governance</span>
+    <span class="section-toggle" id="t-s51">▼</span>
+  </div>
+  <div class="section-body" id="b-s51">
+    <div class="block b-concepto">
+      <h4>📖 Qué es — Jerarquía de Documentos</h4>
+      <ul>
+        <li><strong>Policy:</strong> Declaración de alto nivel. OBLIGATORIA. Define el "qué" y el "por qué". Firmada por la dirección. Ej: "Todos los datos de clientes deben cifrarse."</li>
+        <li><strong>Standard:</strong> Especificaciones técnicas que implementan la policy. OBLIGATORIO. Define "cómo" de forma técnica. Ej: "El cifrado de datos en reposo debe usar AES-256."</li>
+        <li><strong>Procedure:</strong> Pasos concretos y operativos para ejecutar el estándar. OBLIGATORIO. Ej: "Para cifrar un servidor: 1. Activa BitLocker, 2. Guarda la clave en el vault, 3. Documenta en CMDB."</li>
+        <li><strong>Guideline:</strong> Recomendación. NO obligatoria. Buenas prácticas. Ej: "Se recomienda usar un gestor de contraseñas."</li>
+      </ul>
+    </div>
+    <div class="block b-concepto" style="margin-top:10px">
+      <h4>📖 Qué es — Políticas Clave</h4>
+      <ul>
+        <li><strong>AUP (Acceptable Use Policy):</strong> Qué pueden y NO pueden hacer los usuarios con los sistemas de la empresa.</li>
+        <li><strong>Business Continuity:</strong> Cómo la empresa sigue operando ante un desastre (incluye procesos, personas, no solo IT).</li>
+        <li><strong>Disaster Recovery:</strong> Cómo recuperar los sistemas IT después de un desastre. Parte del BCP, más técnico.</li>
+        <li><strong>Incident Response:</strong> Cómo responder a incidentes de seguridad. Roles, escalado, comunicación.</li>
+        <li><strong>SDLC policy:</strong> Cómo integrar seguridad en el ciclo de vida del desarrollo de software.</li>
+        <li><strong>Change Management policy:</strong> Proceso formal para cambios en sistemas.</li>
+      </ul>
+    </div>
+    <div class="block b-concepto" style="margin-top:10px">
+      <h4>📖 Qué es — Roles y Responsabilidades</h4>
+      <ul>
+        <li><strong>Data owner:</strong> Responsable de los datos (negocio). Decide clasificación, quién tiene acceso y para qué. Ej: El director de RRHH es owner de los datos de empleados.</li>
+        <li><strong>Data controller (GDPR):</strong> Determina propósito y medios del procesamiento de datos personales. Responsable ante reguladores.</li>
+        <li><strong>Data processor (GDPR):</strong> Procesa datos en nombre del controller. Ej: Un proveedor cloud que almacena datos del cliente.</li>
+        <li><strong>Data custodian/steward:</strong> Gestiona técnicamente los datos (backup, acceso técnico, seguridad). Ej: el equipo de IT.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        La empresa tiene un documento que dice "Se recomienda usar contraseñas de al menos 14 caracteres." ¿Es una policy, standard, procedure o guideline?
+        <br><br>→ <span class="tag tag-green">Guideline</span> — "se recomienda" indica que NO es obligatorio. Si fuera obligatorio y técnico, sería un Standard.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        El director de Marketing es responsable de los datos de clientes y decide qué equipo puede accederlos. El equipo de IT gestiona físicamente esos datos (backups, cifrado). ¿Qué rol tiene cada uno?
+        <br><br>→ Director de Marketing = <span class="tag tag-green">Data Owner</span>. Equipo de IT = <span class="tag tag-green">Data Custodian</span>.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>Guideline NO es obligatoria.</strong> Policy, Standard y Procedure sí. "Se recomienda" = guideline. "Debe" o "es obligatorio" = policy/standard.</li>
+        <li><strong>BCP incluye al DRP.</strong> El DRP es la parte IT del BCP. El BCP es más amplio (incluye personas, procesos, comunicaciones, no solo sistemas).</li>
+        <li><strong>Data Owner ≠ Data Custodian:</strong> Owner decide QUÉ y PARA QUÉ. Custodian implementa y gestiona técnicamente. El dueño del negocio es el owner, IT es custodio.</li>
+        <li><strong>Controller vs Processor (GDPR):</strong> Tu empresa es controller (decide propósito). AWS/Google Cloud son processors (procesan datos por ti). Si hay brecha en AWS, TÚ eres responsable ante los afectados (el controller responde).</li>
+        <li><strong>AUP debe incluir consecuencias</strong> del incumplimiento para ser ejecutable. Sin consecuencias definidas, es difícil de hacer cumplir.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s51')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 5.2 -->
+<div class="section-card d5" id="s52">
+  <div class="section-header" onclick="toggle('s52')">
+    <span class="section-badge">5.2</span>
+    <span class="section-title">Risk management process</span>
+    <span class="section-toggle" id="t-s52">▼</span>
+  </div>
+  <div class="section-body" id="b-s52">
+    <div class="block b-concepto">
+      <h4>📖 Qué es — Análisis Cuantitativo</h4>
+      <ul>
+        <li><strong>AV (Asset Value):</strong> Valor monetario del activo.</li>
+        <li><strong>EF (Exposure Factor):</strong> % del activo que se perdería en el incidente (0-100%).</li>
+        <li><strong>SLE = AV × EF</strong> (Single Loss Expectancy: cuánto pierdes por un incidente).</li>
+        <li><strong>ARO (Annualized Rate of Occurrence):</strong> Cuántas veces ocurre el incidente por año (0.1 = una vez cada 10 años).</li>
+        <li><strong>ALE = SLE × ARO</strong> (Annualized Loss Expectancy: pérdida anual esperada).</li>
+        <li><strong>Cualitativo:</strong> Usa matrices Alto/Medio/Bajo. Subjetivo pero rápido. Útil cuando no tienes datos históricos.</li>
+      </ul>
+      <div class="scenario-box" style="margin-top:10px">
+        <strong>Ejemplo de cálculo:</strong><br>
+        Servidor vale AV = 200.000€. Un incendio destruiría el 50% (EF = 0.5). Ocurre una vez cada 10 años (ARO = 0.1).<br>
+        SLE = 200.000 × 0.5 = <span class="tag tag-blue">100.000€</span><br>
+        ALE = 100.000 × 0.1 = <span class="tag tag-blue">10.000€/año</span><br>
+        → Si un sistema de sprinklers cuesta 8.000€/año, <span class="tag tag-green">ROI positivo → implementar el control.</span>
+      </div>
+    </div>
+    <div class="block b-concepto" style="margin-top:10px">
+      <h4>📖 Qué es — BIA y Métricas</h4>
+      <ul>
+        <li><strong>RTO (Recovery Time Objective):</strong> Tiempo máximo para restaurar el servicio después de un fallo. "El sistema debe estar operativo en menos de 4 horas."</li>
+        <li><strong>RPO (Recovery Point Objective):</strong> Cuántos datos puedes permitirte perder (expresado en tiempo). "Máximo 1 hora de datos perdidos."</li>
+        <li><strong>MTTR (Mean Time to Repair):</strong> Tiempo medio que tarda reparar el sistema una vez que falla.</li>
+        <li><strong>MTBF (Mean Time Between Failures):</strong> Tiempo medio entre fallos. Cuanto mayor, más fiable el sistema.</li>
+        <li><strong>MTTF (Mean Time to Failure):</strong> Para sistemas no reparables — tiempo medio hasta el primer fallo. Después del fallo, se reemplaza.</li>
+      </ul>
+    </div>
+    <div class="block b-concepto" style="margin-top:10px">
+      <h4>📖 Estrategias de Gestión del Riesgo</h4>
+      <ul>
+        <li><strong>Transfer:</strong> Pasar el riesgo a otro (seguro cibernético, outsourcing). El riesgo financiero se transfiere, la responsabilidad reputacional no.</li>
+        <li><strong>Accept:</strong> Asumir el riesgo tal como está (con documentación formal y aprobación del management). También: Accept with exemption/exception.</li>
+        <li><strong>Avoid:</strong> Eliminar la actividad que genera el riesgo. Ej: no aceptar pagos con tarjeta → no hay riesgo PCI-DSS.</li>
+        <li><strong>Mitigate:</strong> Reducir la probabilidad o el impacto del riesgo mediante controles. El más común.</li>
+        <li><strong>Risk appetite:</strong> Cuánto riesgo está dispuesta a tomar la organización para lograr sus objetivos (estratégico).</li>
+        <li><strong>Risk tolerance:</strong> La desviación aceptable del risk appetite en operaciones cotidianas (táctico).</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        La empresa tiene backups cada 4 horas. Un fallo a las 13:47 destruye todos los datos desde las 12:00. ¿Cuántos datos se pierden y qué métrica mide esto?
+        <br><br>→ Se pierden los datos de casi 2 horas. La métrica es <span class="tag tag-green">RPO</span>. Si el RPO definido era 1 hora, hay un incumplimiento.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un sistema de e-commerce tiene SLA de disponibilidad del 99.9%. ¿Cuánto downtime máximo por año permite?
+        <br><br>→ 99.9% uptime = 0.1% downtime. 365 × 24 × 0.001 = <span class="tag tag-blue">8.76 horas/año</span> de downtime permitido.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>ALE = SLE × ARO</strong> (multiplicar, no dividir ni sumar). Memorizar la fórmula.</li>
+        <li><strong>RTO &lt; MTTR:</strong> Si el MTTR real supera el RTO objetivo, no cumples el SLA. RTO es el objetivo, MTTR es la realidad.</li>
+        <li><strong>RPO se mide en tiempo (hacia atrás),</strong> no en cantidad de datos. "RPO de 1 hora" = puedo perder máximo 1 hora de transacciones.</li>
+        <li><strong>Risk acceptance requiere documentación formal.</strong> No es "ignorar el riesgo" — es tomar una decisión consciente, informada y documentada.</li>
+        <li><strong>Risk appetite (estratégico) ≠ Risk tolerance (operacional).</strong> Una empresa puede tener appetite alto pero tolerancia baja en sistemas críticos.</li>
+        <li><strong>Transfer no elimina la responsabilidad reputacional.</strong> Si hay una brecha, el seguro paga las multas, pero la reputación es tuya.</li>
+        <li><strong>MTBF aplica a sistemas reparables. MTTF a no reparables.</strong> Un disco SSD tiene MTTF (cuando falla, lo reemplazas). Un sistema de servidores HA tiene MTBF.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s52')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 5.3 -->
+<div class="section-card d5" id="s53">
+  <div class="section-header" onclick="toggle('s53')">
+    <span class="section-badge">5.3</span>
+    <span class="section-title">Third-party risk assessment and management</span>
+    <span class="section-toggle" id="t-s53">▼</span>
+  </div>
+  <div class="section-body" id="b-s53">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Vendor assessment:</strong>
+          <ul>
+            <li>Penetration testing del vendor: ¿tiene sus sistemas seguros?</li>
+            <li>Right-to-audit clause: cláusula en el contrato que te permite auditar al vendor cuando lo necesites</li>
+            <li>Evidence of internal audits: pedir informes de auditoría interna (SOC 2 report)</li>
+            <li>Independent assessments: contratar una tercera empresa para auditar al vendor</li>
+            <li>Supply chain analysis: evaluar la seguridad de los proveedores DEL proveedor</li>
+          </ul>
+        </li>
+        <li><strong>Vendor selection:</strong> Due diligence (investigación completa antes de contratar) · Conflict of interest (el vendor no puede auditar su propia seguridad).</li>
+        <li><strong>Agreement types:</strong>
+          <ul>
+            <li>SLA (Service Level Agreement): niveles de servicio garantizados (uptime %, response time, etc.)</li>
+            <li>MOA (Memorandum of Agreement): acuerdo formal entre partes para cooperar</li>
+            <li>MOU (Memorandum of Understanding): intención de cooperar, menos formal que MOA, generalmente no legalmente vinculante</li>
+            <li>MSA (Master Service Agreement): framework general para múltiples proyectos o servicios</li>
+            <li>NDA (Non-Disclosure Agreement): confidencialidad de información compartida</li>
+            <li>BPA (Business Partners Agreement): términos de asociación comercial a largo plazo</li>
+            <li>SOW/WO (Statement of Work / Work Order): especificaciones detalladas de un proyecto concreto</li>
+          </ul>
+        </li>
+        <li><strong>Vendor monitoring:</strong> Revisión continua del cumplimiento del vendor una vez contratado.</li>
+        <li><strong>Questionnaires:</strong> Cuestionarios de seguridad enviados al vendor para evaluar su postura.</li>
+        <li><strong>Rules of engagement:</strong> Qué puede y no puede hacer el vendor en tu entorno (ej: a qué sistemas tiene acceso).</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real</h4>
+      <ul>
+        <li><strong>SolarWinds (2020):</strong> Ejemplo real de supply chain attack. Los atacantes comprometieron el software de SolarWinds y distribuyeron malware en una actualización legítima a miles de clientes, incluidas agencias del gobierno de USA. El right-to-audit y el supply chain analysis deberían haber detectado anomalías antes.</li>
+        <li><strong>SOC 2 Type II report:</strong> Informe de auditoría independiente de los controles de seguridad de un vendor durante un período de 6-12 meses. Mucho más valioso que SOC 2 Type I (que es un snapshot puntual).</li>
+        <li><strong>TPRM (Third Party Risk Management):</strong> Programa continuo para gestionar el riesgo de todos los terceros. Incluye clasificación del vendor por nivel de riesgo, due diligence proporcional y monitorización continua.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un proveedor cloud procesa datos médicos de tus pacientes. ¿Qué tipo de acuerdo debes tener con ellos bajo HIPAA?
+        <br><br>→ <span class="tag tag-green">BAA (Business Associate Agreement)</span> — bajo HIPAA, todos los "Business Associates" que manejan PHI deben firmar un BAA. Es similar a un BPA pero específico para datos de salud.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Quieres poder auditar las prácticas de seguridad de tu proveedor de nube en cualquier momento. ¿Qué debes asegurar al firmar el contrato?
+        <br><br>→ <span class="tag tag-green">Right-to-audit clause</span> en el contrato. No se puede añadir después — debe estar desde el principio.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>SLA define niveles de SERVICIO, no de seguridad.</strong> Un SLA de 99.9% uptime no dice nada sobre cómo protegen tus datos.</li>
+        <li><strong>MOU es menos formal que MOA.</strong> MOU = intención. MOA = compromiso. MOA suele ser legalmente vinculante, MOU no necesariamente.</li>
+        <li><strong>Right-to-audit DEBE estar en el contrato inicial.</strong> No puedes exigirlo después si no está acordado previamente.</li>
+        <li><strong>Due diligence continua:</strong> No es solo al contratar. El vendor puede cambiar (adquisición, cambio de gestión, incidente) — debes monitorizar.</li>
+        <li><strong>Supply chain risk:</strong> No solo evalúas al vendor directo, sino también a sus subcontratistas y proveedores.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s53')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 5.4 -->
+<div class="section-card d5" id="s54">
+  <div class="section-header" onclick="toggle('s54')">
+    <span class="section-badge">5.4</span>
+    <span class="section-title">Elements of effective security compliance</span>
+    <span class="section-toggle" id="t-s54">▼</span>
+  </div>
+  <div class="section-body" id="b-s54">
+    <div class="block b-concepto">
+      <h4>📖 Qué es — Regulaciones Clave</h4>
+      <ul>
+        <li><strong>GDPR:</strong> Protección de datos de residentes de la UE. Aplica a CUALQUIER empresa que procese datos de residentes UE, independientemente de dónde esté la empresa.
+          <ul>
+            <li>Data subject: la persona cuyos datos se procesan</li>
+            <li>Controller: decide propósito y medios del procesamiento. Responsable ante reguladores.</li>
+            <li>Processor: procesa en nombre del controller. Ej: AWS, Salesforce.</li>
+            <li>Right to be forgotten (Art. 17): el sujeto puede pedir que se borren sus datos</li>
+            <li>Breach notification: 72 horas desde que la empresa lo detecta para notificar a la autoridad supervisora</li>
+            <li>DPO (Data Protection Officer): obligatorio en ciertos casos (procesamiento a gran escala, datos sensibles)</li>
+            <li>SCCs: Standard Contractual Clauses para transferir datos fuera de la UE</li>
+          </ul>
+        </li>
+        <li><strong>HIPAA:</strong> Protección de PHI (Protected Health Information) en USA. Aplica a covered entities (hospitales, aseguradoras) y business associates (cualquier proveedor que maneja PHI). Breach notification: 60 días.</li>
+        <li><strong>PCI-DSS:</strong> Estándar de la industria de tarjetas de pago. NO es una ley, es un estándar contractual. 12 requisitos principales. Levels 1-4 según volumen de transacciones. Level 1 (&gt;6M transacciones/año): auditoría por QSA (Qualified Security Assessor).</li>
+        <li><strong>SOX (Sarbanes-Oxley):</strong> Para empresas cotizadas en USA. Section 404: controles internos sobre reporting financiero. IT debe garantizar integridad de los datos financieros.</li>
+      </ul>
+    </div>
+    <div class="block b-concepto" style="margin-top:10px">
+      <h4>📖 Consecuencias del Non-Compliance</h4>
+      <ul>
+        <li><strong>Fines:</strong> GDPR hasta 4% del revenue global anual o 20M€ (lo que sea mayor). PCI-DSS: hasta 100.000$/mes por incumplimiento.</li>
+        <li><strong>Sanctions:</strong> Sanciones regulatorias — prohibición de procesar datos, restricciones operativas.</li>
+        <li><strong>Reputational damage:</strong> Pérdida de confianza de clientes → impacto en ventas.</li>
+        <li><strong>Loss of license:</strong> Perder la licencia para operar (ej: una entidad financiera pierde la licencia bancaria).</li>
+        <li><strong>Contractual impacts:</strong> Los clientes pueden rescindir contratos por breach of SLA de compliance.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Una empresa de ecommerce en California almacena datos de clientes de la UE en servidores de USA. ¿Qué regulación aplica y qué necesitan?
+        <br><br>→ <span class="tag tag-green">GDPR</span> aplica porque procesan datos de residentes UE. Necesitan SCCs o algún mecanismo de transferencia válido bajo GDPR. La ubicación de la empresa no importa.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un hospital detecta que datos de 600 pacientes fueron accedidos sin autorización. ¿Cuánto tiempo tienen para notificarlo bajo HIPAA?
+        <br><br>→ <span class="tag tag-green">60 días</span> para notificar a los afectados y al HHS (Department of Health and Human Services). Si afecta a más de 500 personas de un estado, también a los medios de comunicación.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Una empresa descubre una brecha de datos de clientes europeos el lunes a las 10am. ¿Cuándo debe notificarlo a la autoridad supervisora?
+        <br><br>→ <span class="tag tag-green">72 horas</span> desde la detección = antes del jueves a las 10am. Bajo GDPR. Si no es posible dar toda la info en 72h, se notifica lo que se sabe y se complementa después.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>GDPR aplica aunque la empresa NO esté en Europa.</strong> Si procesas datos de residentes UE, GDPR te aplica.</li>
+        <li><strong>PCI-DSS NO es una ley.</strong> Es un estándar de la industria de tarjetas (Visa, Mastercard, etc.). No lo impone el gobierno sino las redes de pago.</li>
+        <li><strong>72 horas (GDPR) ≠ 60 días (HIPAA).</strong> Son plazos distintos para regulaciones distintas.</li>
+        <li><strong>Controller es responsable, no el processor.</strong> Si AWS pierde tus datos de clientes UE, TÚ (el controller) eres responsable ante los afectados y la autoridad supervisora. AWS (processor) es responsable ante ti contractualmente.</li>
+        <li><strong>Right to be forgotten ≠ derecho absoluto.</strong> No aplica cuando hay obligación legal de conservar los datos (ej: datos fiscales que la ley exige guardar 7 años).</li>
+        <li><strong>SOC 2 Type II &gt; SOC 2 Type I:</strong> Type I es un snapshot. Type II cubre un período de tiempo (6-12 meses) y es mucho más valioso para demostrar controles consistentes.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s54')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+<!-- 5.6 -->
+<div class="section-card d5" id="s56">
+  <div class="section-header" onclick="toggle('s56')">
+    <span class="section-badge">5.6</span>
+    <span class="section-title">Implement security awareness practices</span>
+    <span class="section-toggle" id="t-s56">▼</span>
+  </div>
+  <div class="section-body" id="b-s56">
+    <div class="block b-concepto">
+      <h4>📖 Qué es</h4>
+      <ul>
+        <li><strong>Phishing program:</strong>
+          <ul>
+            <li>Campaigns: simulaciones de phishing periódicas para medir click rate y reportin rate</li>
+            <li>Recognizing attempts: URLs falsas, urgencia artificial, remitente sospechoso, attachments inesperados</li>
+            <li>Responding: no hacer clic, no descargar, reportar al SOC o help desk usando el botón de reporte</li>
+          </ul>
+        </li>
+        <li><strong>Anomalous behavior recognition:</strong>
+          <ul>
+            <li>Risky: comportamiento que pone en riesgo la organización (aunque sea inconsciente)</li>
+            <li>Unexpected: inusual para ese usuario (descargar 50GB cuando siempre descarga 10MB)</li>
+            <li>Unintentional: error sin mala intención — el empleado que cae en phishing no quería causar daño</li>
+          </ul>
+        </li>
+        <li><strong>User guidance and training:</strong>
+          <ul>
+            <li>Policy/handbooks: documentación de políticas de uso</li>
+            <li>Situational awareness: reconocer situaciones de riesgo en el día a día</li>
+            <li>Insider threat awareness: identificar señales de alerta en compañeros</li>
+            <li>Password management: passphrase, gestores de contraseñas, no reutilizar</li>
+            <li>Removable media: no conectar USBs desconocidos (baiting)</li>
+            <li>Social engineering: pretexting, vishing (phone), quid pro quo, tailgating</li>
+            <li>Operational security (OPSEC): no revelar información sensible en redes sociales o conversaciones</li>
+            <li>Hybrid/remote work: riesgos de WiFi público, shoulder surfing, dispositivos compartidos</li>
+          </ul>
+        </li>
+        <li><strong>Reporting and monitoring:</strong> Initial (onboarding) + Recurring (anual mínimo). Medir click rates en phishing simulations para evaluar mejora.</li>
+        <li><strong>Development → Execution → Reporting:</strong> Ciclo del programa de awareness.</li>
+      </ul>
+    </div>
+    <div class="block b-uso">
+      <h4>🎯 Uso Real</h4>
+      <ul>
+        <li><strong>Phishing simulation:</strong> IT envía un email falso con un link "Actualiza tu contraseña de Office 365". El 23% hace clic. Esos usuarios reciben formación adicional inmediata. El objetivo es reducir ese % en cada simulación.</li>
+        <li><strong>Vishing:</strong> Un atacante llama al help desk haciéndose pasar por un ejecutivo y pide resetear una contraseña urgentemente. Social engineering telefónico.</li>
+        <li><strong>Tailgating:</strong> Alguien sigue a un empleado a través de una puerta con acceso restringido sin autenticarse. El empleado la mantiene abierta por cortesía.</li>
+        <li><strong>USB baiting:</strong> USBs infectados dejados en el parking. El empleado curioso lo conecta en la laptop corporativa → malware instalado.</li>
+        <li><strong>OPSEC en redes sociales:</strong> Un empleado publica en LinkedIn "Lunes reunión con proveedor X para auditoría del sistema Y." Información de reconocimiento para un atacante.</li>
+      </ul>
+    </div>
+    <div class="block b-casos">
+      <h4>🧪 Casos Prácticos</h4>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Tras una phishing simulation, el 40% de los empleados de contabilidad hicieron clic. ¿Cuál es el siguiente paso más apropiado?
+        <br><br>→ <span class="tag tag-green">Formación específica y adicional</span> para el equipo de contabilidad, enfocada en reconocer phishing financiero (BEC). No punición — el objetivo es educar.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        Un empleado recibe una llamada de "IT soporte" pidiéndole su contraseña para "verificar su cuenta". ¿Qué tipo de ataque es y qué debería hacer?
+        <br><br>→ <span class="tag tag-green">Vishing</span> (voice phishing). El empleado debe colgar, NO dar la contraseña, y reportar al SOC/help desk real. IT legítimo nunca pide contraseñas.
+      </div>
+      <div class="scenario-box">
+        <strong>Escenario</strong>
+        La empresa quiere reducir el riesgo de que empleados revelen información confidencial inadvertidamente en redes sociales. ¿Qué componente del programa de awareness aborda esto?
+        <br><br>→ <span class="tag tag-green">OPSEC (Operational Security)</span> training — concienciar sobre qué información es sensible y los riesgos de compartirla públicamente.
+      </div>
+    </div>
+    <div class="block b-trampa">
+      <h4>⚠️ Trampas del Examen</h4>
+      <ul>
+        <li><strong>Security awareness ≠ security training:</strong> Awareness = concienciación general de todos los empleados sobre riesgos. Training = habilidades técnicas específicas para roles de seguridad.</li>
+        <li><strong>Vishing = voice phishing (teléfono).</strong> Smishing = SMS phishing. Phishing = email. Son vectores distintos del mismo tipo de ataque social.</li>
+        <li><strong>Las phishing simulations NO deben ser punitivas.</strong> El objetivo es educar, no castigar. Las consecuencias duras desalienten el reporte de incidentes reales.</li>
+        <li><strong>Unintentional insider threat:</strong> El empleado que cae en phishing no tiene malas intenciones pero sigue siendo un insider threat. La awareness reduce este riesgo.</li>
+        <li><strong>Recurring training es obligatorio,</strong> no solo el inicial de onboarding. Las amenazas evolucionan — el training debe actualizarse y repetirse (mínimo anual).</li>
+        <li><strong>Tailgating ≠ piggybacking:</strong> Tailgating = seguir a alguien sin que lo sepa. Piggybacking = seguir a alguien con su conocimiento pero sin autenticación propia. CompTIA puede usar ambos términos.</li>
+      </ul>
+    </div>
+    <button class="done-btn" onclick="markDone('s56')">✓ Marcar como repasado</button>
+  </div>
+</div>
+
+</main>
+
+<script>
+function toggle(id) {
+  const body = document.getElementById('b-' + id);
+  const icon = document.getElementById('t-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  icon.textContent = isOpen ? '▼' : '▲';
+}
+function goto(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const body = document.getElementById('b-' + id);
+  body.classList.add('open');
+  document.getElementById('t-' + id).textContent = '▲';
+  el.scrollIntoView({ behavior: 'smooth' });
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  event.target.classList.add('active');
+}
+function markDone(id) {
+  const btn = document.querySelector('#' + id + ' .done-btn');
+  btn.classList.toggle('marked');
+  const marked = btn.classList.contains('marked');
+  btn.textContent = marked ? '✓ Repasado' : '✓ Marcar como repasado';
+  const links = document.querySelectorAll('.nav-link');
+  links.forEach(l => {
+    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes(id)) {
+      l.classList.toggle('done', marked);
+    }
+  });
+  updateProgress();
+}
+function updateProgress() {
+  const total = document.querySelectorAll('.done-btn').length;
+  const done = document.querySelectorAll('.done-btn.marked').length;
+  document.getElementById('progress-text').textContent = done + ' / ' + total + ' secciones';
+  document.getElementById('progress-fill').style.width = (done / total * 100) + '%';
+}
+const searchBox = document.getElementById('search-box');
+searchBox.addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.section-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(q) ? '' : 'none';
+  });
+});
+// Open first section by default
+toggle('s12');
+</script>
+</body>
+</html>

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security+ SY0-701 — Simulacro #34</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root{
+--bg:#0f1117;--bg2:#1a1d27;--bg3:#242836;--bg4:#2e3344;
+--tx:#e4e6ee;--tx2:#9ca0b0;--tx3:#686d82;
+--bd:#2e3344;--bd2:#3d4259;
+--accent:#6c8aff;--accent2:#4a6aef;--accent-bg:rgba(108,138,255,0.08);
+--green:#34d399;--green-bg:rgba(52,211,153,0.1);--green-bd:rgba(52,211,153,0.3);
+--red:#f87171;--red-bg:rgba(248,113,113,0.1);--red-bd:rgba(248,113,113,0.3);
+--amber:#fbbf24;
+--font:'IBM Plex Sans',system-ui,sans-serif;
+--mono:'IBM Plex Mono',monospace;
+--radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--tx);line-height:1.6;min-height:100vh}
+.wrap{max-width:820px;margin:0 auto;padding:16px}
+.header{text-align:center;padding:24px 0 16px;border-bottom:1px solid var(--bd)}
+.header h1{font-size:22px;font-weight:700;letter-spacing:-0.5px}
+.header .sub{font-size:13px;color:var(--tx2);margin-top:4px}
+.timer-bar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--bd);padding:10px 0}
+.timer-inner{max-width:820px;margin:0 auto;padding:0 16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.timer{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--accent);min-width:80px}
+.timer.warning{color:var(--amber)}.timer.critical{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.progress-text{font-size:13px;color:var(--tx2)}
+.progress-bar{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.3s}
+.start-screen{text-align:center;padding:60px 20px}
+.start-screen h2{font-size:28px;font-weight:700;margin-bottom:12px}
+.start-screen p{color:var(--tx2);font-size:14px;margin-bottom:8px;max-width:500px;margin-left:auto;margin-right:auto}
+.start-screen .specs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:28px 0;max-width:480px;margin-left:auto;margin-right:auto}
+.spec{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--radius);padding:16px 12px}
+.spec-num{font-size:28px;font-weight:700;color:var(--accent)}
+.spec-label{font-size:12px;color:var(--tx2);margin-top:4px}
+.btn-start{background:var(--accent);color:#fff;border:none;padding:14px 48px;font-size:16px;font-weight:600;border-radius:var(--radius);cursor:pointer;font-family:var(--font);margin-top:20px;transition:all 0.2s}
+.btn-start:hover{background:var(--accent2);transform:translateY(-1px)}
+/* Cards */
+.q-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--radius);padding:20px;margin:12px 0}
+.q-num{font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.q-domain{font-size:10px;color:var(--tx3);background:var(--bg3);padding:2px 8px;border-radius:4px;margin-left:8px}
+.q-type-badge{font-size:10px;color:var(--amber);background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);padding:2px 8px;border-radius:4px;margin-left:6px}
+.q-text{font-size:15px;font-weight:500;margin-bottom:16px;line-height:1.7}
+.q-scenario{font-size:13px;color:var(--tx2);background:var(--bg3);border-left:3px solid var(--accent);padding:12px 14px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:14px;line-height:1.7}
+.q-instruction{font-size:12px;color:var(--amber);font-weight:600;margin-bottom:12px;padding:8px 12px;background:rgba(251,191,36,0.08);border-radius:6px;border:1px solid rgba(251,191,36,0.2)}
+/* Opciones single */
+.opt{display:block;padding:12px 14px;margin:6px 0;border:1px solid var(--bd);border-radius:8px;cursor:pointer;font-size:14px;transition:all 0.15s;background:var(--bg3)}
+.opt:hover:not(.disabled){background:var(--bg4);border-color:var(--bd2)}
+.opt.selected{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.opt.correct{background:var(--green-bg)!important;border-color:var(--green-bd)!important;color:var(--green)!important}
+.opt.wrong{background:var(--red-bg)!important;border-color:var(--red-bd)!important;color:var(--red)!important}
+.opt.disabled{pointer-events:none}
+.opt-letter{font-family:var(--mono);font-weight:600;margin-right:10px;font-size:12px;min-width:20px;display:inline-block}
+/* Multi-select */
+.opt-multi .opt-letter{font-size:16px}
+.opt-multi.selected .opt-letter{color:var(--accent)}
+.opt-multi.correct .opt-letter{color:var(--green)!important}
+.opt-multi.wrong .opt-letter{color:var(--red)!important}
+.multi-counter{font-size:12px;color:var(--tx2);margin-top:4px;margin-bottom:12px}
+.multi-counter span{color:var(--accent);font-weight:600}
+/* Ordering */
+.order-slots{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;padding:12px;background:var(--bg);border:1px dashed var(--bd2);border-radius:8px}
+.order-slots-label{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.order-slot{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;background:var(--bg3);border:1px solid var(--bd);min-height:44px;font-size:14px;transition:all 0.15s}
+.order-slot.empty{color:var(--tx3);font-style:italic;border-style:dashed}
+.order-slot.slot-correct{background:var(--green-bg)!important;border-color:var(--green-bd)!important;color:var(--green)!important}
+.order-slot.slot-wrong{background:var(--red-bg)!important;border-color:var(--red-bd)!important;color:var(--red)!important}
+.slot-num{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);min-width:20px}
+.slot-remove{margin-left:auto;font-size:16px;cursor:pointer;color:var(--tx3);padding:0 4px}
+.slot-remove:hover{color:var(--red)}
+.opt-order{display:flex;align-items:center;gap:10px;padding:12px 14px;margin:6px 0;border:1px solid var(--bd);border-radius:8px;cursor:pointer;font-size:14px;transition:all 0.15s;background:var(--bg3)}
+.opt-order:hover:not(.disabled):not(.placed){background:var(--bg4);border-color:var(--bd2)}
+.opt-order.placed{opacity:0.4;pointer-events:none;border-style:dashed}
+.opt-order.disabled{pointer-events:none}
+.opt-order.correct{background:var(--green-bg)!important;border-color:var(--green-bd)!important;color:var(--green)!important;opacity:1}
+.opt-order.wrong{background:var(--red-bg)!important;border-color:var(--red-bd)!important;color:var(--red)!important;opacity:1}
+/* Nav */
+.explanation{display:none;background:var(--bg3);border-radius:8px;padding:14px;margin-top:12px;font-size:13px;color:var(--tx2);line-height:1.7;border-left:3px solid var(--green)}
+.explanation.show{display:block}.explanation b{color:var(--green)}
+.q-nav{display:flex;justify-content:space-between;align-items:center;margin:20px 0}
+.btn{padding:10px 24px;border:1px solid var(--bd);border-radius:8px;background:var(--bg2);color:var(--tx);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all 0.15s}
+.btn:hover{background:var(--bg3);border-color:var(--bd2)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2)}
+.btn-finish{background:#dc2626;border-color:#dc2626;color:#fff}
+.btn-finish:hover{background:#b91c1c}
+.btn:disabled{opacity:0.3;pointer-events:none}
+.q-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:16px 0}
+.q-dot{width:100%;aspect-ratio:1;border-radius:6px;border:1px solid var(--bd);background:var(--bg3);cursor:pointer;font-size:11px;font-family:var(--mono);display:flex;align-items:center;justify-content:center;color:var(--tx3);transition:all 0.15s}
+.q-dot:hover{border-color:var(--accent)}
+.q-dot.current{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.q-dot.answered{background:var(--accent);border-color:var(--accent);color:#fff}
+.q-dot.correct-dot{background:var(--green);border-color:var(--green);color:#fff}
+.q-dot.wrong-dot{background:var(--red);border-color:var(--red);color:#fff}
+/* Results */
+.results{text-align:center;padding:32px 0}
+.results h2{font-size:28px;font-weight:700;margin-bottom:8px}
+.results .score-big{font-size:72px;font-weight:700;margin:16px 0}
+.results .score-big.pass{color:var(--green)}.results .score-big.fail{color:var(--red)}
+.results .verdict{font-size:18px;font-weight:600;margin-bottom:24px}
+.domain-scores{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:20px 0}
+@media(max-width:600px){.domain-scores{grid-template-columns:repeat(2,1fr)}.q-grid{grid-template-columns:repeat(9,1fr)}}
+.d-score{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--radius);padding:14px 10px;text-align:center}
+.d-score-label{font-size:11px;color:var(--tx2);font-weight:500}
+.d-score-pct{font-size:24px;font-weight:700;margin-top:4px}
+.d-score-detail{font-size:11px;color:var(--tx3);margin-top:2px}
+.hidden{display:none}
+/* Matching */
+.match-table{width:100%;border-collapse:separate;border-spacing:0 8px;margin-top:4px}
+.match-row td{padding:8px 10px;vertical-align:middle}
+.match-left{font-size:14px;font-weight:500;color:var(--tx);background:var(--bg3);border:1px solid var(--bd);border-radius:8px 0 0 8px;padding:12px 14px!important;white-space:nowrap}
+.match-arrow{color:var(--tx3);font-size:18px;text-align:center;padding:0 6px!important;background:var(--bg3);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.match-sel{width:100%;padding:10px 12px;border:1px solid var(--bd);border-radius:0 8px 8px 0;background:var(--bg3);color:var(--tx);font-size:14px;font-family:var(--font);cursor:pointer;transition:all 0.15s;-webkit-appearance:none;appearance:none}
+.match-sel:focus{outline:none;border-color:var(--accent);background:var(--accent-bg)}
+.match-sel option{background:#242836;color:#e4e6ee}
+.match-sel.sel-correct{border-color:var(--green-bd)!important;background:var(--green-bg)!important;color:var(--green)!important}
+.match-sel.sel-wrong{border-color:var(--red-bd)!important;background:var(--red-bg)!important;color:var(--red)!important}
+.match-badge{font-size:11px;margin-left:8px;font-weight:600}
+/* True/False */
+.tf-row{display:flex;gap:12px;margin-top:8px}
+.tf-opt{flex:1;padding:18px;border:2px solid var(--bd);border-radius:10px;cursor:pointer;font-size:16px;font-weight:600;text-align:center;background:var(--bg3);transition:all 0.2s}
+.tf-opt:hover:not(.disabled){border-color:var(--accent);background:var(--accent-bg)}
+.tf-opt.selected{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.tf-opt.correct{border-color:var(--green-bd)!important;background:var(--green-bg)!important;color:var(--green)!important}
+.tf-opt.wrong{border-color:var(--red-bd)!important;background:var(--red-bg)!important;color:var(--red)!important}
+.tf-opt.disabled{pointer-events:none}
+</style>
+</head>
+<body>
+<div class="timer-bar hidden" id="timerBar">
+<div class="timer-inner">
+<div class="timer" id="timer">90:00</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+<div class="progress-text" id="progressText">0 / 90</div>
+</div>
+</div>
+<div class="wrap">
+<div class="header">
+<h1>🔐 Security+ SY0-701 — Simulacro #34</h1>
+<p class="sub">Examen de práctica con escenarios realistas</p>
+</div>
+<div id="startScreen" class="start-screen">
+<h2>¿Preparado?</h2>
+<p>90 preguntas distribuidas por los 5 dominios con el mismo peso que el examen CompTIA real.</p>
+<div class="specs">
+<div class="spec"><div class="spec-num">90</div><div class="spec-label">Preguntas</div></div>
+<div class="spec"><div class="spec-num">90</div><div class="spec-label">Minutos</div></div>
+<div class="spec"><div class="spec-num">750</div><div class="spec-label">Para aprobar</div></div>
+</div>
+<p style="font-size:12px;color:var(--tx3)">D1 General 12% · D2 Amenazas 22% · D3 Arquitectura 18% · D4 Operaciones 28% · D5 Programa 20%</p>
+<button class="btn-start" onclick="startExam()">Empezar examen</button>
+<br><button class="btn-start" onclick="reviewOnly()" style="background:var(--green);margin-top:10px;font-size:14px;padding:10px 36px">📖 Solo ver correcciones</button>
+</div>
+<div id="examArea" class="hidden">
+<div class="q-grid" id="qGrid"></div>
+<div id="questionContainer"></div>
+<div class="q-nav">
+<button class="btn" id="btnPrev" onclick="navQ(-1)" disabled>← Anterior</button>
+<span id="navInfo" style="font-size:12px;color:var(--tx3)"></span>
+<button class="btn btn-primary" id="btnNext" onclick="navQ(1)">Siguiente →</button>
+</div>
+<div style="text-align:center;margin:20px 0">
+<button class="btn btn-finish" onclick="finishExam()">Finalizar examen</button>
+</div>
+</div>
+<div id="resultsArea" class="hidden results"></div>
+<div id="downloadArea" class="hidden" style="text-align:center;margin:20px 0">
+<button class="btn btn-primary" onclick="generateMD()" style="background:#34d399;border-color:#34d399">📥 Descargar solo errores (.md)</button>
+</div>
+</div>
+<script>
+const Q=[
+// ===== D1: General Security Concepts (~11) =====
+{d:1, q:"¿Cuál de los siguientes NO es un factor válido en la autenticación multifactor (MFA)?", o:["Contraseña", "Token OTP", "Huella dactilar", "Código postal"], c:3, e:"✓ Código postal es información que puede ser fácilmente adivinada o robada, no es un factor de autenticación estándar. | A: Contraseña es algo que sabes, factor válido. | B: Token OTP es algo que tienes, factor válido. | C: Huella dactilar es algo que eres, factor válido."},
+{d:1, q:"¿Cuál de los siguientes algoritmos es un ejemplo de cifrado simétrico?", o:["RSA", "ECC", "AES", "DSA"], c:2, e:"✓ AES es simétrico, ampliamente usado. | A: RSA es asimétrico. | B: ECC es asimétrico. | D: DSA es un algoritmo de firma digital asimétrica."},
+{d:1, type:"matching", q:"Relaciona cada ejemplo con su tipo de control de seguridad.", o:["Firewall que bloquea puertos", "IDS que genera alertas", "Backup que restaura datos", "WAF instalado mientras se parchea una vulnerabilidad"], pairs:[["Firewall que bloquea puertos", "Preventivo"], ["IDS que genera alertas", "Detectivo"], ["Backup que restaura datos", "Correctivo"], ["WAF instalado mientras se parchea una vulnerabilidad", "Compensatorio"]], c:null, e:"Firewall bloquea = preventivo. IDS alerta = detectivo. Backup restaura = correctivo. WAF temporal = compensatorio."},
+{d:1, q:"¿Cuál de los siguientes es un ejemplo de un control de seguridad físico que previene el tailgating?", o:["CCTV", "Mantrap", "Bollards", "Faraday cage"], c:1, e:"✓ Mantrap (vestíbulo de dos puertas) impide que alguien siga a otro sin autorización. | A: CCTV es detective, no previene tailgating. | C: Bollards previenen ataques con vehículos. | D: Faraday cage bloquea señales electromagnéticas."},
+{d:1, q:"En el contexto de la gestión de identidades, ¿qué significa el acrónimo SSO?", o:["Secure Socket Object", "Single Sign-On", "Security System Operation", "Session Sign-Off"], c:1, e:"✓ Single Sign-On permite al usuario autenticarse una vez y acceder a múltiples aplicaciones. | A: No es correcto. | C: No es correcto. | D: No es correcto."},
+{d:1, q:"¿Qué tipo de cifrado utiliza una sola clave compartida para cifrar y descifrar datos?", o:["Asimétrico", "Simétrico", "Híbrido", "Hash"], c:1, e:"✓ Simétrico usa una sola clave compartida. | A: Asimétrico usa par de claves. | C: Híbrido combina ambos. | D: Hash es irreversible."},
+{d:1, q:"¿Cuál de los siguientes es un ejemplo de control de acceso basado en roles (RBAC)?", o:["Un usuario solo puede acceder a archivos que él creó", "Los administradores de ventas pueden modificar pedidos, pero no ver nóminas", "Acceso permitido solo si la ubicación es la oficina y la hora es laboral", "Un administrador asigna permisos individualmente a cada usuario"], c:1, e:"✓ RBAC asigna permisos según el rol del usuario (ventas, administrador). | A: Eso es DAC (Discretionary Access Control). | C: Eso es ABAC (Attribute-Based Access Control). | D: Eso es DAC o ACLs individuales."},
+{d:1, q:"¿Cuál de los siguientes es un ejemplo de autenticación de dos factores (2FA) válida?", o:["Contraseña + PIN", "Huella dactilar + token OTP", "Contraseña + fecha de nacimiento", "Token OTP + código de recuperación"], c:1, e:"✓ Huella (algo que eres) + token (algo que tienes) son factores diferentes. | A: Ambos son algo que sabes, no son factores distintos. | C: Ambos son algo que sabes. | D: Ambos son algo que tienes (el token y el código de recuperación)."},
+{d:1, q:"¿Qué tipo de clave se utiliza en la criptografía asimétrica para cifrar datos que solo el destinatario puede descifrar?", o:["Clave privada del emisor", "Clave pública del receptor", "Clave simétrica compartida", "Clave privada del receptor"], c:1, e:"✓ Para cifrar un mensaje que solo el receptor pueda leer, se usa la clave pública del receptor. | A: La clave privada del emisor se usa para firmar, no para cifrar a otros. | C: Simétrica usa una sola clave compartida. | D: La clave privada del receptor es para descifrar, no cifrar."},
+{d:1, q:"¿Qué técnica de autenticación utiliza un servidor para verificar la identidad de un cliente mediante un desafío y respuesta basado en hash sin transmitir la contraseña?", o:["Autenticación básica HTTP", "NTLM challenge-response", "Kerberos con tickets", "OAuth 2.0"], c:1, e:"✓ NTLM usa challenge-response con hash sin transmitir la contraseña en claro. | A: Autenticación básica envía contraseña en texto plano (Base64). | C: Kerberos usa tickets cifrados, no challenge-response directo. | D: OAuth es para autorización delegada."},
+{d:1, q:"¿Cuál de los siguientes es un ejemplo de control de seguridad administrativo?", o:["Firewall perimetral", "Política de contraseñas", "Cifrado de disco completo", "Cámara de seguridad CCTV"], c:1, e:"✓ Política de contraseñas es administrativo (documento, reglas, formación). | A: Firewall es técnico. | C: Cifrado es técnico. | D: Cámara es físico."},
+
+// ===== D2: Threats, Vulnerabilities, Mitigations (~20) =====
+{d:2, q:"¿Qué tipo de ataque consiste en modificar el JavaScript del lado del cliente para acceder a datos sensibles sin interactuar con el servidor?", o:["Stored XSS", "Reflected XSS", "DOM-based XSS", "Cross-Site Request Forgery (CSRF)"], c:2, e:"✓ DOM-based XSS ocurre completamente en el navegador, manipulando el DOM sin enviar datos al servidor. | A: Stored XSS se almacena en el servidor y afecta a múltiples víctimas. | B: Reflected XSS se refleja en la respuesta del servidor sin almacenarse. | D: CSRF fuerza acciones no deseadas, no inyecta código JavaScript."},
+{d:2, type:"matching", q:"Empareja cada ataque con su descripción principal.", o:["ARP poisoning", "DNS poisoning", "LLMNR poisoning", "VLAN hopping"], pairs:[["ARP poisoning", "Ataque de capa 2 que asocia la MAC del atacante con la IP del gateway"], ["DNS poisoning", "Envenenamiento de caché de resolución de nombres"], ["LLMNR poisoning", "Ataque a la resolución de nombres en redes Windows cuando DNS falla"], ["VLAN hopping", "Salto entre VLANs mediante doble etiquetado 802.1Q"]], c:null, e:"ARP poisoning ataca la tabla ARP (capa 2). DNS poisoning envenena la caché de resolución de nombres. LLMNR poisoning abusa del protocolo de resolución de nombres de Windows. VLAN hopping explota la configuración de VLANs para saltar entre segmentos."},
+{d:2, type:"order", q:"Ordena las fases del ataque según la Cyber Kill Chain de Lockheed Martin.", o:["Weaponization", "Reconnaissance", "Delivery", "Exploitation", "Installation", "Command & Control", "Actions on Objectives"], c:[1, 0, 2, 3, 4, 5, 6], e:"La Cyber Kill Chain comienza con Reconocimiento, luego Weaponization (creación del exploit), Delivery (entrega), Exploitation (explotación), Installation (instalación de backdoor), Command & Control, y finalmente Actions on Objectives (exfiltración, etc.)."},
+{d:2, q:"¿Qué tipo de malware se propaga automáticamente a través de la red sin necesidad de interacción del usuario?", o:["Virus", "Trojan", "Worm", "Ransomware"], c:2, e:"✓ Worm se replica automáticamente por la red. | A: Virus requiere ejecución por parte del usuario. | B: Trojan se disfraza de software legítimo. | D: Ransomware cifra archivos, pero su propagación puede ser mediante worm o troyano."},
+{d:2, q:"¿Qué tipo de ataque de ingeniería social utiliza mensajes de texto SMS para engañar a la víctima?", o:["Vishing", "Smishing", "Phishing", "Whaling"], c:1, e:"✓ Smishing es por SMS. | A: Vishing es por voz (teléfono). | C: Phishing es por email. | D: Whaling es phishing dirigido a ejecutivos."},
+{d:2, q:"¿Qué tipo de vulnerabilidad permite a un atacante leer archivos del servidor usando secuencias como `../../etc/passwd` en la URL?", o:["SQL Injection", "Path Traversal", "XSS", "CSRF"], c:1, e:"✓ Path Traversal (Directory Traversal) usa '../' para navegar fuera del directorio web. | A: SQLi inyecta comandos SQL. | C: XSS inyecta scripts. | D: CSRF fuerza acciones no deseadas."},
+{d:2, q:"¿Qué ataque consiste en insertar código malicioso en un campo de comentarios de un blog que se ejecuta cada vez que otro usuario visita la página?", o:["Reflected XSS", "Stored XSS", "DOM-based XSS", "CSRF"], c:1, e:"✓ Stored XSS se guarda en la BD y afecta a todos los visitantes. | A: Reflected XSS no se almacena. | C: DOM-based XSS ocurre en el lado del cliente. | D: CSRF fuerza acciones."},
+{d:2, q:"¿Qué técnica de ataque utilizan los atacantes para ocultar código malicioso dentro de archivos de imagen aparentemente normales?", o:["Ofuscación", "Esteganografía", "Polimorfismo", "Empaquetado"], c:1, e:"✓ Esteganografía oculta datos en medios portadores (imagen, audio). | A: Ofuscación hace difícil leer el código. | C: Polimorfismo cambia la firma del malware. | D: Empaquetado comprime/oculta el ejecutable."},
+{d:2, q:"¿Qué tipo de vulnerabilidad permite a un atacante ejecutar comandos del sistema operativo a través de una aplicación web?", o:["SQL Injection", "Command Injection", "XSS", "Path Traversal"], c:1, e:"✓ Command Injection permite ejecutar comandos del sistema operativo en el servidor. | A: SQLi afecta bases de datos. | C: XSS inyecta scripts en el navegador. | D: Path Traversal accede a archivos."},
+{d:2, q:"¿Qué tipo de ataque DDoS utiliza servidores DNS abiertos para amplificar el tráfico hacia la víctima?", o:["SYN flood", "DNS amplification", "HTTP flood", "Ping of death"], c:1, e:"✓ DNS amplification usa spoofing y resolvers abiertos para enviar respuestas grandes a la víctima. | A: SYN flood agota conexiones TCP. | C: HTTP flood satura servidores web con peticiones. | D: Ping of death usa paquetes ICMP sobredimensionados."},
+{d:2, q:"¿Qué técnica de ataque permite a un atacante leer el tráfico de red de otros dispositivos en el mismo segmento Ethernet mediante la manipulación de la tabla ARP?", o:["ARP spoofing", "DNS poisoning", "MAC flooding", "VLAN hopping"], c:0, e:"✓ ARP spoofing permite redirigir el tráfico hacia el atacante (MITM) en la misma red local. | B: DNS poisoning afecta la resolución de nombres. | C: MAC flooding satura la tabla CAM del switch, pero no garantiza la captura. | D: VLAN hopping salta entre VLANs."},
+{d:2, q:"¿Qué ataque consiste en enviar un gran número de paquetes TCP SYN con direcciones IP falsificadas para agotar la tabla de conexiones del servidor?", o:["UDP flood", "SYN flood", "Ping flood", "HTTP flood"], c:1, e:"✓ SYN flood envía SYN sin completar el handshake, agotando la cola de conexiones. | A: UDP flood envía paquetes UDP. | C: Ping flood envía ICMP Echo Request. | D: HTTP flood satura con peticiones HTTP."},
+{d:2, q:"¿Qué tipo de ataque permite a un atacante redirigir el tráfico de una víctima a un sitio falso mediante la modificación de la caché de resolución de nombres?", o:["ARP poisoning en la red local", "DNS cache poisoning", "VLAN hopping entre segmentos", "MAC flooding en el switch"], c:1, e:"✓ DNS cache poisoning inyecta registros falsos en la caché del resolver. | A: ARP poisoning es capa 2. | C: VLAN hopping salta VLANs. | D: MAC flooding satura la tabla CAM."},
+{d:2, q:"¿Qué tipo de vulnerabilidad XSS se refleja directamente en la respuesta HTTP a través de un parámetro manipulado en la URL sin almacenarse?", o:["Stored XSS", "Reflected XSS", "DOM-based XSS", "CSRF"], c:1, e:"✓ Reflected XSS se refleja en la respuesta (ej: parámetro en URL) sin almacenarse. | A: Stored XSS se almacena en el servidor. | C: DOM-based XSS ocurre en el cliente sin servidor. | D: CSRF fuerza acciones autenticadas."},
+{d:2, q:"¿Qué tipo de ataque de ingeniería social consiste en engañar a un empleado para que revele su contraseña mediante una llamada telefónica fingiendo ser del departamento de IT?", o:["Phishing", "Vishing", "Smishing", "Baiting"], c:1, e:"✓ Vishing es por voz (teléfono), suplantando a IT o soporte técnico. | A: Phishing es por email. | C: Smishing es por SMS. | D: Baiting ofrece un señuelo físico como un USB."},
+{d:2, q:"¿Qué ataque consiste en interceptar y retransmitir una autenticación válida previamente capturada para ganar acceso no autorizado?", o:["Man-in-the-middle", "Replay attack", "Session hijacking", "Downgrade attack"], c:1, e:"✓ Replay retransmite un mensaje de autenticación capturado anteriormente. | A: MITM intercepta y modifica en tiempo real. | C: Session hijacking roba el ID de sesión activa. | D: Downgrade fuerza el uso de un protocolo más débil."},
+{d:2, q:"¿Qué tipo de vulnerabilidad web permite a un atacante leer archivos arbitrarios del sistema usando una URL manipulada con secuencias '../'?", o:["SQL Injection", "Path Traversal", "Command Injection", "XSS"], c:1, e:"✓ Path Traversal navega fuera del directorio web usando '../'. | A: SQLi afecta bases de datos. | C: Command Injection ejecuta comandos del sistema. | D: XSS inyecta scripts en el navegador."},
+{d:2, q:"¿Qué tipo de ataque de denegación de servicio utiliza una botnet para enviar tráfico masivo desde múltiples fuentes coordinadas?", o:["DoS", "DDoS", "DRDoS", "SYN flood"], c:1, e:"✓ DDoS proviene de múltiples fuentes coordinadas (botnet). | A: DoS proviene de una sola fuente. | C: DRDoS es DDoS por reflexión usando servidores intermediarios. | D: SYN flood es un tipo de DoS/DDoS específico."},
+{d:2, q:"¿Qué tipo de ataque web fuerza a un usuario autenticado a ejecutar acciones no deseadas aprovechando su sesión activa?", o:["XSS", "CSRF", "SQLi", "XXE"], c:1, e:"✓ CSRF fuerza peticiones no deseadas usando la sesión autenticada de la víctima. | A: XSS inyecta scripts maliciosos en el navegador. | C: SQLi inyecta comandos SQL. | D: XXE usa entidades XML externas."},
+{d:2, q:"¿Qué tipo de ataque permite a un atacante leer archivos locales del servidor o realizar SSRF mediante la inclusión de entidades externas en un documento XML?", o:["SQL Injection contra bases de datos", "XXE (XML External Entity)", "XSS reflejado en el navegador", "CSRF de acción forzada"], c:1, e:"✓ XXE (XML External Entity) incluye entidades externas en XML para leer archivos o realizar SSRF. | A: SQLi afecta bases de datos. | C: XSS inyecta scripts en el navegador. | D: CSRF fuerza acciones autenticadas."},
+
+// ===== D3: Security Architecture (~16) =====
+{d:3, q:"En una arquitectura de microservicios, ¿qué componente se encarga de autenticar, autorizar y limitar la tasa de peticiones antes de que lleguen a los servicios internos?", o:["Service Mesh", "API Gateway", "Load Balancer", "Reverse Proxy"], c:1, e:"✓ API Gateway actúa como punto único de entrada, aplicando autenticación, rate limiting, y enrutamiento. | A: Service Mesh gestiona la comunicación entre servicios (mTLS, observabilidad), pero no es el punto de entrada principal. | C: Load Balancer distribuye tráfico pero no suele aplicar autenticación. | D: Reverse Proxy oculta servidores internos pero no tiene todas las capacidades de un API Gateway."},
+{d:3, q:"En el modelo de responsabilidad compartida de AWS, ¿quién es responsable de aplicar parches al sistema operativo de una instancia EC2?", o:["AWS", "El cliente", "Ambos al 50%", "El proveedor del software de aplicación"], c:1, e:"✓ El cliente es responsable del SO, aplicaciones y datos en IaaS. | A: AWS gestiona el hipervisor y hardware. | C: No es al 50%; la responsabilidad es del cliente. | D: El proveedor de software no tiene acceso a la instancia."},
+{d:3, q:"¿Qué protocolo permite a un cliente autenticarse en una red WiFi mediante credenciales de usuario individuales (no una PSK compartida)?", o:["WPA2-Personal con PSK compartida", "WPA2-Enterprise con 802.1X", "WEP con clave estática de 40 bits", "WPA3-Personal con SAE"], c:1, e:"✓ WPA2-Enterprise con 802.1X permite autenticación individual contra RADIUS. | A: WPA2-Personal usa una PSK compartida por todos. | C: WEP es obsoleto e inseguro. | D: WPA3-Personal también usa una PSK compartida (aunque más segura)."},
+{d:3, q:"¿Qué tipo de firewall mantiene una tabla de conexiones y solo permite tráfico de respuesta de conexiones establecidas?", o:["Stateless firewall", "Stateful firewall", "Proxy firewall", "Next-Generation Firewall (NGFW)"], c:1, e:"✓ Stateful mantiene una tabla de conexiones y permite tráfico de retorno. | A: Stateless evalúa cada paquete individualmente. | C: Proxy firewall actúa como intermediario a nivel de aplicación. | D: NGFW añade inspección profunda de paquetes."},
+{d:3, type:"matching", q:"Empareja cada estándar de seguridad de correo electrónico con su función.", o:["SPF", "DKIM", "DMARC", "S/MIME"], pairs:[["SPF", "Lista de servidores autorizados"], ["DKIM", "Firma digital del mensaje"], ["DMARC", "Política para fallos de autenticación"], ["S/MIME", "Cifrado del contenido del email"]], c:null, e:"SPF lista servidores autorizados. DKIM firma el mensaje. DMARC define política (none/quarantine/reject). S/MIME cifra el contenido."},
+{d:3, type:"matching", q:"Relaciona cada descripción con su tipo de backup.", o:["Copia completa de todos los datos", "Solo datos cambiados desde el último backup completo", "Solo datos cambiados desde el último backup de cualquier tipo", "Copia que combina backups anteriores sin acceder a producción"], pairs:[["Copia completa de todos los datos", "Full backup"], ["Solo datos cambiados desde el último backup completo", "Diferencial"], ["Solo datos cambiados desde el último backup de cualquier tipo", "Incremental"], ["Copia que combina backups anteriores sin acceder a producción", "Synthetic full"]], c:null, e:"Full backup copia todo. Diferencial copia cambios desde el último completo. Incremental copia cambios desde el último backup (cualquier tipo). Synthetic full combina anteriores para crear un full sin afectar producción."},
+{d:3, q:"¿Qué protocolo se utiliza para gestionar dispositivos de red y enviar alertas (traps) sobre eventos?", o:["SNMP", "SMTP", "HTTP", "FTP"], c:0, e:"✓ SNMP (Simple Network Management Protocol) monitoriza y gestiona dispositivos de red, incluyendo traps. | B: SMTP es para correo. | C: HTTP es para web. | D: FTP es para transferencia de archivos."},
+{d:3, type:"order", q:"Ordena los pasos para configurar una VPN IPsec en modo túnel (site-to-site).", o:["Negociar IKE fase 1 (modo principal)", "Negociar IKE fase 2 (modo rápido)", "Establecer el canal seguro (SAs)", "Cifrar y encapsular los paquetes en el túnel"], c:[0, 1, 2, 3], e:"Primero IKE fase 1 (autenticación y canal seguro). Luego IKE fase 2 (negociación de SAs). Después se establecen las SAs. Finalmente se cifran los datos."},
+{d:3, q:"¿Qué función tiene el registro DMARC en la seguridad del correo electrónico?", o:["Listar los servidores de correo autorizados a enviar en nombre del dominio", "Firmar digitalmente cada mensaje para verificar su integridad y origen", "Definir qué hacer cuando SPF o DKIM fallan (none, quarantine, reject)", "Cifrar el contenido del email para garantizar confidencialidad extremo a extremo"], c:2, e:"✓ DMARC define la política de fallos. | A: Eso es SPF. | B: Eso es DKIM. | D: Eso es S/MIME o PGP."},
+{d:3, q:"¿Qué tipo de autenticación utiliza un certificado digital en el servidor y contraseña en el cliente, común en redes WiFi empresariales?", o:["EAP-TLS con certificados mutuos", "PEAP-MSCHAPv2", "EAP-MD5 sin protección de canal", "LEAP propietario de Cisco"], c:1, e:"✓ PEAP-MSCHAPv2 usa certificado solo en servidor y contraseñas en cliente. | A: EAP-TLS requiere certificados en cliente y servidor. | C: EAP-MD5 es inseguro. | D: LEAP es propietario de Cisco y vulnerable."},
+{d:3, type:"matching", q:"Relaciona cada tipo de firewall con su nivel de operación en el modelo OSI.", o:["Packet filter", "Stateful firewall", "Application firewall (WAF)", "Next-Generation Firewall"], pairs:[["Packet filter", "Capa 3/4"], ["Stateful firewall", "Capa 3/4 con estado"], ["Application firewall (WAF)", "Capa 7"], ["Next-Generation Firewall", "Capa 3-7"]], c:null, e:"Packet filter opera en capa 3/4 sin estado. Stateful añade estado (capa 3/4). WAF inspecciona capa 7 (HTTP). NGFW combina capacidades de capa 3 a 7."},
+{d:3, q:"¿Qué tipo de backup almacena solo los cambios realizados desde el último backup completo y requiere el último backup completo más el último diferencial para restaurar?", o:["Full backup", "Incremental", "Diferencial", "Synthetic"], c:2, e:"✓ Diferencial copia cambios desde el último completo. | A: Full backup copia todo. | B: Incremental copia cambios desde el último backup (cualquier tipo). | D: Synthetic combina backups anteriores."},
+{d:3, q:"¿Qué concepto se refiere a la práctica de dividir una red en segmentos más pequeños para limitar el movimiento lateral del atacante?", o:["Defense in depth", "Network segmentation", "Zero Trust", "Microsegmentation"], c:1, e:"✓ Network segmentation divide la red en subredes (VLANs) para limitar el movimiento lateral. | A: Defense in depth son múltiples capas de seguridad. | C: Zero Trust es un modelo de confianza cero. | D: Microsegmentation es más granular (a nivel de workload)."},
+{d:3, q:"¿Qué puerto utiliza el protocolo HTTPS por defecto?", o:["80", "443", "22", "3389"], c:1, e:"✓ 443 es HTTPS. | A: 80 es HTTP. | C: 22 es SSH. | D: 3389 es RDP."},
+{d:3, q:"¿Qué tipo de firewall examina el contenido completo de los paquetes y puede bloquear ataques como SQL injection a nivel de aplicación?", o:["Packet filter de capa 3/4", "Stateful firewall con tabla de estado", "Next-Generation Firewall (NGFW)", "Proxy firewall de nivel de aplicación"], c:2, e:"✓ NGFW inspecciona contenido de aplicación (capa 7) con DPI. | A: Packet filter solo mira cabeceras de red. | B: Stateful mantiene estado de conexiones, pero no inspecciona contenido de aplicación. | D: Proxy firewall puede inspeccionar pero NGFW es la respuesta más completa."},
+{d:3, q:"¿Qué protocolo de autenticación centralizada es comúnmente usado junto con 802.1X para redes WiFi empresariales?", o:["RADIUS", "TACACS+", "LDAP", "Kerberos"], c:0, e:"✓ RADIUS es el estándar para autenticación en 802.1X y VPN. | B: TACACS+ es más común en dispositivos de red Cisco (CLI). | C: LDAP es para consultas de directorio. | D: Kerberos es para autenticación en Active Directory."},
+
+// ===== D4: Security Operations (~25) =====
+{d:4, q:"¿Qué técnica de ataque permite a un atacante autenticarse en sistemas remotos usando un hash NTLM sin conocer la contraseña en texto claro?", o:["Kerberoasting", "Pass-the-Hash", "Golden Ticket", "Overpass-the-Hash"], c:1, e:"✓ Pass-the-Hash usa directamente el hash NTLM para autenticarse. | A: Kerberoasting obtiene tickets de servicio para crackear offline. | C: Golden Ticket forja un TGT usando el hash KRBTGT. | D: Overpass-the-Hash convierte el hash en un TGT de Kerberos."},
+{d:4, q:"¿Qué herramienta se utiliza para escanear vulnerabilidades de red de forma autenticada, detectando parches faltantes y software instalado?", o:["Nmap para descubrimiento de puertos abiertos", "Wireshark para captura de tráfico de red", "Nessus con credenciales", "Metasploit para explotación de vulnerabilidades"], c:2, e:"✓ Nessus con credenciales escanea vulnerabilidades a fondo. | A: Nmap descubre puertos, no vulnerabilidades profundas. | B: Wireshark captura paquetes. | D: Metasploit explota vulnerabilidades."},
+{d:4, type:"order", q:"Ordena los pasos del proceso de respuesta a incidentes según NIST SP 800-61.", o:["Recovery", "Containment", "Post-Incident Activity", "Detection and Analysis"], c:[3, 1, 0, 2], e:"El orden es: Detección y Análisis → Contención → Recuperación → Actividad Post-Incidente."},
+{d:4, q:"¿Qué tipo de malware se instala en el sector de arranque (MBR/UEFI) y persiste incluso después de reinstalar el sistema operativo?", o:["Rootkit de kernel", "Bootkit", "Ransomware", "Spyware"], c:1, e:"✓ Bootkit infecta MBR o UEFI, cargando antes que el OS y sobreviviendo a la reinstalación. | A: Rootkit de kernel se elimina al reinstalar el OS. | C: Ransomware cifra archivos. | D: Spyware espía actividad."},
+{d:4, q:"¿Qué comando de Linux se usa para cambiar los permisos de un archivo?", o:["chown", "chmod", "chgrp", "ls"], c:1, e:"✓ chmod cambia los permisos (lectura, escritura, ejecución). | A: chown cambia el propietario. | C: chgrp cambia el grupo. | D: ls lista archivos."},
+{d:4, q:"¿Qué es un \"canary token\" en el contexto de la tecnología de engaño (deception)?", o:["Un sistema señuelo completo que simula una infraestructura real", "Un recurso señuelo (archivo, URL o credencial) que genera alerta al ser accedido", "Un firewall de nueva generación con inspección profunda de paquetes", "Un algoritmo de cifrado asimétrico para proteger claves de sesión"], c:1, e:"✓ Un canary token es un recurso señuelo (URL, credencial, documento) cuyo acceso legítimo es nulo, generando alerta. | A: Eso es un honeypot o honeynet. | C: No es un firewall. | D: No es criptografía."},
+{d:4, q:"¿Qué tipo de malware se ejecuta en la memoria RAM sin escribir archivos en el disco, evadiendo así muchos antivirus tradicionales?", o:["Rootkit de kernel", "Fileless malware", "Bootkit de arranque", "Ransomware cifrador"], c:1, e:"✓ Fileless malware reside en memoria y no deja rastro en disco. | A: Rootkit se oculta en el kernel. | C: Bootkit infecta el sector de arranque. | D: Ransomware cifra archivos."},
+{d:4, q:"En un entorno de Active Directory, ¿qué ataque permite a un atacante con acceso a un dominio forjar un TGT (Ticket Granting Ticket) para cualquier usuario?", o:["Kerberoasting", "Pass-the-Hash", "Golden Ticket", "AS-REP Roasting"], c:2, e:"✓ Golden Ticket usa el hash KRBTGT para forjar TGTs. | A: Kerberoasting obtiene TGS para cuentas de servicio. | B: Pass-the-Hash usa hashes NTLM. | D: AS-REP Roasting ataca cuentas sin preautenticación."},
+{d:4, q:"¿Qué protocolo se usa para la resolución de nombres en redes Windows cuando DNS no está disponible, y es vulnerable a ataques de envenenamiento?", o:["ARP", "LLMNR", "DHCP", "ICMP"], c:1, e:"✓ LLMNR (Link-Local Multicast Name Resolution) es usado por Windows cuando falla DNS y es vulnerable a LLMNR poisoning. | A: ARP resuelve direcciones MAC. | C: DHCP asigna IPs. | D: ICMP es para mensajes de control."},
+{d:4, type:"order", q:"Ordena los pasos del proceso de gestión de vulnerabilidades.", o:["Remediación", "Escaneo", "Verificación", "Priorización", "Descubrimiento"], c:[4, 1, 3, 0, 2], e:"El proceso: Descubrimiento (identificar activos), Escaneo (detectar CVEs), Priorización (según criticidad), Remediación (aplicar parches), Verificación (confirmar que se corrigió)."},
+{d:4, q:"¿Qué tipo de análisis de seguridad se realiza sobre el código fuente sin ejecutar la aplicación?", o:["DAST", "SAST", "Penetration test", "Fuzzing"], c:1, e:"✓ SAST (Static Application Security Testing) analiza el código fuente estáticamente. | A: DAST prueba la aplicación en ejecución. | C: Pentest explota vulnerabilidades. | D: Fuzzing envía entradas malformadas a la aplicación en ejecución."},
+{d:4, q:"¿Qué tipo de prueba de seguridad se realiza sin conocimiento previo de la arquitectura interna del sistema (simulando un atacante externo)?", o:["White box", "Black box", "Grey box", "Red team"], c:1, e:"✓ Black box sin información interna. | A: White box con conocimiento total. | C: Grey box con información parcial. | D: Red team es un equipo ofensivo, no define el nivel de conocimiento."},
+{d:4, type:"matching", q:"Empareja cada técnica de análisis de malware con su descripción.", o:["Análisis estático", "Análisis dinámico", "Análisis de memoria", "Análisis de código reverso"], pairs:[["Análisis estático", "Examinar el binario sin ejecutarlo (strings, hashes, cabeceras)"], ["Análisis dinámico", "Ejecutar malware en un entorno aislado y observar su comportamiento"], ["Análisis de memoria", "Analizar volcados de RAM para encontrar artefactos maliciosos"], ["Análisis de código reverso", "Descompilar o desensamblar el binario para entender su lógica"]], c:null, e:"Estático: sin ejecutar. Dinámico: ejecutando en sandbox. Memoria: analiza RAM. Reverso: descompila el código."},
+{d:4, type:"order", q:"Ordena las tácticas principales del modelo MITRE ATT&CK en su secuencia habitual de ataque.", o:["Initial Access", "Execution", "Persistence", "Privilege Escalation", "Defense Evasion", "Credential Access", "Discovery", "Lateral Movement", "Collection", "Exfiltration"], c:[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], e:"El orden típico del ATT&CK: acceso inicial → ejecución → persistencia → escalada → evasión → acceso a credenciales → descubrimiento → movimiento lateral → recolección → exfiltración."},
+{d:4, q:"¿Qué es un \"honeynet\" y en qué se diferencia de un honeypot?", o:["Un único sistema señuelo aislado en la red", "Una red completa de honeypots que simula una infraestructura real", "Un archivo señuelo que genera alertas al ser accedido", "Una credencial falsa para detectar accesos no autorizados"], c:1, e:"✓ Honeynet es una red de honeypots interconectados. | A: Eso es un honeypot. | C: Eso es un honeyfile. | D: Eso es un canary token."},
+{d:4, q:"¿En qué capa del modelo OSI opera principalmente un ataque ARP poisoning?", o:["Capa 2 (Enlace de datos)", "Capa 3 (Red)", "Capa 4 (Transporte)", "Capa 7 (Aplicación)"], c:0, e:"ARP opera en la capa 2 (Enlace de datos), manipulando la tabla de resolución MAC-IP. SYN flood opera en capa 4 (TCP), DNS poisoning en capa 7 (Aplicación), y HTTP exploits en capa 7."},
+{d:4, q:"¿Qué tipo de control de acceso se basa en etiquetas de seguridad asignadas por el sistema y el usuario no puede modificarlas?", o:["DAC", "MAC", "RBAC", "ABAC"], c:1, e:"✓ MAC (Mandatory) el sistema asigna etiquetas (ej: SELinux). | A: DAC (Discretionary) el propietario decide. | C: RBAC basado en roles. | D: ABAC basado en atributos."},
+{d:4, q:"¿Qué término describe la práctica de ocultar datos dentro de otro archivo (imagen, audio) sin alterar su apariencia exterior?", o:["Cifrado simétrico", "Esteganografía", "Hashing criptográfico", "Ofuscación de código"], c:1, e:"✓ Esteganografía esconde datos en medios portadores sin alterar la apariencia. | A: Cifrado hace ilegible el contenido. | C: Hashing genera huella digital. | D: Ofuscación hace difícil entender el código fuente."},
+{d:4, type:"matching", q:"Empareja cada tipo de ataque de denegación de servicio con su descripción.", o:["SYN flood", "UDP flood", "HTTP Slowloris", "DNS amplification"], pairs:[["SYN flood", "Agota la tabla de conexiones TCP semiabiertas"], ["UDP flood", "Inunda un servicio con paquetes UDP sin establecer conexión"], ["HTTP Slowloris", "Mantiene conexiones HTTP abiertas enviando cabeceras parciales lentamente"], ["DNS amplification", "Usa resolvers DNS abiertos para amplificar tráfico hacia la víctima"]], c:null, e:"SYN flood → conexiones semiabiertas. UDP flood → paquetes UDP. Slowloris → conexiones HTTP lentas. DNS amplification → amplificación."},
+{d:4, q:"¿Qué herramienta se utiliza para capturar y analizar el tráfico de red en tiempo real mediante inspección de paquetes?", o:["Nmap", "Wireshark", "Metasploit", "John the Ripper"], c:1, e:"✓ Wireshark captura y analiza paquetes en tiempo real. | A: Nmap escanea puertos y servicios. | C: Metasploit explota vulnerabilidades. | D: John the Ripper crackea contraseñas."},
+{d:4, type:"order", q:"Ordena los pasos del proceso de respuesta a incidentes según el modelo SANS.", o:["Preparation", "Identification", "Containment", "Eradication", "Recovery", "Lessons Learned"], c:[0, 1, 2, 3, 4, 5], e:"El orden estándar de SANS: Preparación, Identificación, Contención, Erradicación, Recuperación, Lecciones aprendidas."},
+{d:4, q:"¿Qué tipo de ataque permite a un atacante autenticarse en sistemas remotos usando un ticket Kerberos robado sin necesidad del hash NTLM?", o:["Pass-the-Hash", "Pass-the-Ticket", "Overpass-the-Hash", "Golden Ticket"], c:1, e:"✓ Pass-the-Ticket usa tickets Kerberos robados (TGT o TGS). | A: Pass-the-Hash usa hash NTLM directamente. | C: Overpass-the-Hash convierte hash NTLM en TGT de Kerberos. | D: Golden Ticket forja un TGT nuevo usando el hash KRBTGT."},
+{d:4, q:"¿Qué técnica de análisis de malware consiste en ejecutar el código en un entorno aislado (sandbox) para observar su comportamiento?", o:["Análisis estático", "Análisis dinámico", "Análisis forense de memoria", "Ingeniería inversa"], c:1, e:"✓ Dinámico ejecuta el malware en sandbox y observa su comportamiento. | A: Estático analiza el binario sin ejecutarlo. | C: Forense de memoria analiza volcados de RAM. | D: Ingeniería inversa descompila el binario."},
+{d:4, q:"¿Qué tipo de firewall se utiliza específicamente para proteger aplicaciones web de ataques como SQLi y XSS inspeccionando el tráfico HTTP/HTTPS?", o:["NGFW", "WAF", "Stateful firewall", "Packet filter"], c:1, e:"✓ WAF (Web Application Firewall) protege específicamente aplicaciones web. | A: NGFW puede tener capacidades WAF, pero no está diseñado exclusivamente para aplicaciones web. | C: Stateful no inspecciona contenido HTTP. | D: Packet filter solo examina cabeceras."},
+{d:4, q:"¿Qué tecnología permite gestionar de forma centralizada las políticas de seguridad, aplicaciones y datos en dispositivos móviles corporativos?", o:["MDM (Mobile Device Management)", "MAM (Mobile Application Management)", "UEM (Unified Endpoint Management)", "EMM (Enterprise Mobility Management)"], c:0, e:"✓ MDM gestiona dispositivos completos (políticas, wipe remoto, configuración). | B: MAM gestiona solo aplicaciones, no el dispositivo completo. | C: UEM unifica endpoints (PC + móviles). | D: EMM es un término paraguas que incluye MDM y MAM."},
+
+// ===== D5: Security Program Management (~18) =====
+{d:5, q:"En el contexto de continuidad de negocio, ¿qué métrica define el tiempo máximo que una organización puede operar sin un sistema crítico antes de que el daño sea inaceptable?", o:["RTO (Recovery Time Objective)", "RPO (Recovery Point Objective)", "MTD (Maximum Tolerable Downtime)", "MTTR (Mean Time to Repair)"], c:2, e:"✓ MTD es el tiempo máximo de inactividad que el negocio puede soportar. | A: RTO es el objetivo de tiempo para restaurar el servicio. | B: RPO es la pérdida máxima de datos tolerable. | D: MTTR es el tiempo medio de reparación."},
+{d:5, q:"¿Cuál es el objetivo principal de un análisis de impacto al negocio (BIA)?", o:["Identificar vulnerabilidades técnicas en sistemas y aplicaciones", "Determinar procesos críticos y cuantificar el impacto de su interrupción", "Realizar pruebas de penetración contra la infraestructura", "Implementar controles técnicos y administrativos de seguridad"], c:1, e:"✓ BIA identifica procesos críticos y cuantifica el impacto para establecer RTO/RPO. | A: Eso es escaneo de vulnerabilidades. | C: Eso es pentest. | D: Eso es implementación de controles."},
+{d:5, type:"matching", q:"Empareja cada término de gestión de riesgos con su definición.", o:["Riesgo inherente", "Riesgo residual", "Apetito de riesgo", "Tolerancia al riesgo"], pairs:[["Riesgo inherente", "Riesgo natural sin controles"], ["Riesgo residual", "Riesgo que queda después de aplicar controles"], ["Apetito de riesgo", "Nivel de riesgo que la organización está dispuesta a aceptar"], ["Tolerancia al riesgo", "Desviación aceptable del apetito de riesgo"]], c:null, e:"Inherente es el riesgo original. Residual es el que queda tras controles. Apetito es cuánto riesgo quiere asumir. Tolerancia es la variación aceptable."},
+{d:5, q:"¿Qué norma internacional es certificable para un Sistema de Gestión de Seguridad de la Información (ISMS)?", o:["ISO 27001", "ISO 27002", "NIST CSF", "CIS Controls"], c:0, e:"✓ ISO 27001 es certificable. | B: ISO 27002 es una guía de controles, no certificable. | C: NIST CSF es un framework voluntario, no certificable. | D: CIS Controls son buenas prácticas, no certificables."},
+{d:5, q:"¿Qué tipo de vulnerabilidad permite a un atacante ejecutar comandos arbitrarios en un servidor web concatenando comandos del sistema en los parámetros de entrada?", o:["SQL Injection", "Command Injection", "Cross-Site Scripting (XSS)", "Path Traversal"], c:1, e:"✓ Command Injection ejecuta comandos del sistema operativo concatenados en parámetros no sanitizados. | A: SQLi afecta bases de datos. | C: XSS inyecta scripts en el navegador. | D: Path Traversal accede a archivos."},
+{d:5, q:"¿Qué estándar define los requisitos para un Sistema de Gestión de Seguridad de la Información (ISMS) y es la única versión certificable?", o:["ISO 27001", "ISO 27002", "ISO 27005", "ISO 31000"], c:0, e:"✓ ISO 27001 es certificable. | B: ISO 27002 es una guía de controles. | C: ISO 27005 es para gestión de riesgos. | D: ISO 31000 es para riesgos en general."},
+{d:5, q:"¿Qué tipo de cifrado es AES y para qué se usa principalmente?", o:["Asimétrico, para intercambio de claves", "Simétrico, para cifrado de datos en bloque", "Función hash, para verificar integridad", "Firma digital, para autenticar documentos"], c:1, e:"✓ AES es simétrico de bloque, usado para cifrar datos en reposo y en tránsito. | A: AES no es asimétrico. | C: No es un hash. | D: No es una firma, es un cifrado."},
+{d:5, q:"¿Qué tipo de control de seguridad es principalmente una cámara de vigilancia (CCTV)?", o:["Preventivo físico", "Detectivo físico", "Correctivo técnico", "Disuasorio administrativo"], c:1, e:"✓ CCTV detecta y registra eventos de seguridad. | A: No previene el acto directamente. | C: No corrige incidentes. | D: Puede disuadir, pero su función principal es detectar y evidenciar."},
+{d:5, type:"matching", q:"Relaciona cada técnica de ingeniería social con su vector de ataque principal.", o:["Phishing", "Vishing", "Smishing", "Quishing", "Baiting"], pairs:[["Phishing", "Email"], ["Vishing", "Llamada telefónica"], ["Smishing", "SMS"], ["Quishing", "Código QR"], ["Baiting", "Dispositivo físico (USB)"]], c:null, e:"Phishing por email, vishing por voz, smishing por SMS, quishing por QR, baiting por USB."},
+{d:5, q:"¿Qué protocolo de autenticación utiliza tickets emitidos por un Key Distribution Center (KDC) para acceder a servicios sin reenviar credenciales?", o:["NTLM", "Kerberos", "LDAP", "RADIUS"], c:1, e:"✓ Kerberos usa tickets (TGT y service tickets) emitidos por el KDC. | A: NTLM usa challenge-response directo. | C: LDAP es para consultas de directorio. | D: RADIUS es para autenticación centralizada."},
+{d:5, q:"¿Qué tipo de backup requiere el menor tiempo de restauración al ser el único archivo necesario?", o:["Full backup", "Incremental", "Diferencial", "Synthetic full"], c:0, e:"✓ Full backup restaura desde un solo archivo, es el más rápido. | B: Incremental requiere el último full + todos los incrementales en secuencia. | C: Diferencial requiere el último full + el último diferencial. | D: Synthetic full es similar a full pero creado artificialmente."},
+{d:5, type:"matching", q:"Empareja cada servicio de seguridad cloud (AWS) con su función principal.", o:["IAM policy", "Security Group", "Encryption at rest (EBS)", "CloudTrail"], pairs:[["IAM policy", "Control de acceso basado en roles y permisos"], ["Security Group", "Firewall virtual a nivel de instancia"], ["Encryption at rest (EBS)", "Cifrado de discos de instancias EC2"], ["CloudTrail", "Registro y auditoría de llamadas a la API"]], c:null, e:"IAM policy controla accesos. Security Group es firewall de instancia. Encryption at rest protege discos EBS. CloudTrail audita llamadas a la API."},
+{d:5, q:"¿Qué tipo de malware registra en secreto las pulsaciones de teclado del usuario para robar contraseñas?", o:["Spyware genérico", "Keylogger", "Ransomware", "Rootkit"], c:1, e:"✓ Keylogger registra específicamente las pulsaciones de teclado. | A: Spyware espía actividad general, no específicamente teclas. | C: Ransomware cifra archivos y pide rescate. | D: Rootkit se oculta en el sistema operativo."},
+{d:5, type:"order", q:"Ordena las capas del modelo OSI desde la más baja (física) a la más alta (aplicación).", o:["Transporte", "Aplicación", "Red", "Enlace de datos", "Física", "Sesión", "Presentación"], c:[4, 3, 2, 0, 5, 6, 1], e:"Orden: Física (1), Enlace de datos (2), Red (3), Transporte (4), Sesión (5), Presentación (6), Aplicación (7)."},
+{d:5, q:"¿Qué protocolo es el responsable de cifrar la comunicación entre un navegador y un servidor web en HTTPS?", o:["AES", "RSA", "TLS", "SHA-256"], c:2, e:"✓ TLS es el protocolo que gestiona todo el proceso de cifrado en HTTPS. | A: AES es simétrico, se usa dentro del cifrado TLS. | B: RSA es asimétrico, usado en el handshake TLS. | D: SHA-256 es hash, no cifra datos."},
+{d:5, q:"¿Qué tipo de control de seguridad es un bastion host reforzado que actúa como único punto de entrada a una red protegida?", o:["Control preventivo técnico", "Control detectivo técnico", "Control correctivo técnico", "Control compensatorio técnico"], c:0, e:"✓ Bastion host previene acceso no autorizado siendo el único punto de entrada reforzado. | B: No solo detecta, principalmente previene. | C: No restaura servicios tras un incidente. | D: No sustituye a otro control fallido."},
+{d:5, q:"¿Qué protocolo se utiliza para transferir archivos de forma segura usando el cifrado de SSH?", o:["FTP", "SFTP", "FTPS", "TFTP"], c:1, e:"✓ SFTP (SSH File Transfer Protocol) usa SSH para cifrar la transferencia. | A: FTP transmite en texto plano, sin cifrado. | C: FTPS usa SSL/TLS sobre FTP, no SSH. | D: TFTP es inseguro y sin autenticación."},
+{d:5, type:"matching", q:"Relaciona cada tipo de ataque con su principal técnica de mitigación.", o:["SQL Injection", "XSS", "CSRF", "Buffer Overflow"], pairs:[["SQL Injection", "Prepared statements"], ["XSS", "Escapado de salida (output encoding)"], ["CSRF", "Token anti-CSRF"], ["Buffer Overflow", "ASLR y DEP"]], c:null, e:"SQLi se mitiga con prepared statements. XSS con output encoding. CSRF con tokens anti-CSRF. Buffer overflow con ASLR/DEP."},
+
+];
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+
+// shuffleOpts: solo para single y multi (no ordering)
+function shuffleOpts(q){
+  if(q.type==='order'||q.type==='matching'||q.type==='true_false') return q;
+  const idx=[0,1,2,3];
+  for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+  // extend idx if more than 4 options (multi can have 5)
+  if(q.o.length>4){for(let k=4;k<q.o.length;k++)idx.push(k);shuffle(idx);}
+  const remapC = ci => idx.indexOf(ci);
+  const c = Array.isArray(q.c) ? q.c.map(remapC) : remapC(q.c);
+  return Object.assign({},q,{o:idx.map(i=>q.o[i]),c:c});
+}
+
+function isAnswered(i){
+  const a=answers[i],q=questions[i];
+  if(q.type==='multi'){const need=q.count||q.c.length;return Array.isArray(a)&&a.length>=need;}
+  if(q.type==='order'){return Array.isArray(a)&&a.length===q.c.length;}
+  if(q.type==='matching'){return Array.isArray(a)&&a.length===q.pairs.length&&a.every(v=>v!=='');}
+  return a>=0;
+}
+function answeredCount(){return questions.filter((_,i)=>isAnswered(i)).length;}
+
+function isCorrect(i){
+  const a=answers[i],q=questions[i];
+  if(q.type==='multi'){
+    if(!Array.isArray(a)||a.length!==q.c.length) return false;
+    return q.c.every(v=>a.includes(v))&&a.every(v=>q.c.includes(v));
+  }
+  if(q.type==='order'){
+    if(!Array.isArray(a)||a.length!==q.c.length) return false;
+    return a.every((v,j)=>v===q.c[j]);
+  }
+  if(q.type==='matching'){
+    if(!Array.isArray(a)||a.length!==q.pairs.length) return false;
+    return a.every((v,j)=>v===q.pairs[j][1]);  // v is text, pairs[j][1] is text
+  }
+  return a===q.c;
+}
+
+// ── Estado ────────────────────────────────────────────────────────────────────
+let questions=[], currentQ=0, answers=[], timerInterval, timeLeft=90*60, examFinished=false, forceFinish=false;
+
+function startExam(){
+  questions=shuffle([...Q]).map(shuffleOpts);
+  answers=questions.map(q=>(q.type==='multi'||q.type==='order')?[]:q.type==='matching'?new Array(q.pairs?q.pairs.length:0).fill(''):-1);
+  currentQ=0;timeLeft=90*60;examFinished=false;forceFinish=false;
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('examArea').classList.remove('hidden');
+  document.getElementById('timerBar').classList.remove('hidden');
+  buildGrid();showQuestion(0);startTimer();
+}
+
+// ── Grid ──────────────────────────────────────────────────────────────────────
+function buildGrid(){
+  const g=document.getElementById('qGrid');g.innerHTML='';
+  questions.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='q-dot'+(i===currentQ?' current':'');
+    d.textContent=i+1;d.onclick=()=>showQuestion(i);g.appendChild(d);
+  });
+}
+function updateGrid(){
+  document.querySelectorAll('.q-dot').forEach((d,i)=>{
+    d.className='q-dot';
+    if(i===currentQ)d.classList.add('current');
+    if(isAnswered(i))d.classList.add('answered');
+    if(examFinished){
+      if(isCorrect(i))d.classList.add('correct-dot');
+      else if(isAnswered(i))d.classList.add('wrong-dot');
+    }
+  });
+}
+
+// ── Render preguntas ──────────────────────────────────────────────────────────
+function showQuestion(idx){
+  currentQ=idx;
+  const q=questions[idx];
+  const domNames=['','D1 General','D2 Amenazas','D3 Arquitectura','D4 Operaciones','D5 Programa'];
+  const typeLabel={multi:'MULTI-SELECT',order:'ORDENAR',matching:'EMPAREJAR',true_false:'V/F'};
+  const typeBadge=q.type&&q.type!=='single'?`<span class="q-type-badge">${typeLabel[q.type]||q.type}</span>`:'';
+
+  let html=`<div class="q-card">
+    <div class="q-num">Pregunta ${idx+1} de ${questions.length}
+      <span class="q-domain">${domNames[q.d]}</span>${typeBadge}
+    </div>`;
+  if(q.s)html+=`<div class="q-scenario">${q.s}</div>`;
+  html+=`<div class="q-text">${q.q}</div>`;
+
+  if(!q.type||q.type==='single'){
+    html+=renderSingle(q,idx);
+  } else if(q.type==='multi'){
+    html+=renderMulti(q,idx);
+  } else if(q.type==='order'){
+    html+=renderOrder(q,idx);
+  } else if(q.type==='matching'){
+    html+=renderMatching(q,idx);
+  } else if(q.type==='true_false'){
+    html+=renderTrueFalse(q,idx);
+  }
+
+  if(examFinished&&q.e) html+=`<div class="explanation show"><b>Explicación:</b> ${q.e}</div>`;
+  html+=`</div>`;
+
+  document.getElementById('questionContainer').innerHTML=html;
+  document.getElementById('btnPrev').disabled=idx===0;
+  document.getElementById('btnNext').textContent=idx===questions.length-1?'Finalizar':'Siguiente →';
+  document.getElementById('navInfo').textContent=`${idx+1} / ${questions.length}`;
+  const ac=answeredCount();
+  document.getElementById('progressFill').style.width=((ac/questions.length)*100)+'%';
+  document.getElementById('progressText').textContent=ac+' / '+questions.length+' respondidas';
+  updateGrid();
+}
+
+// ── Render: Single ────────────────────────────────────────────────────────────
+function renderSingle(q,idx){
+  const letters='ABCD';
+  const ua=answers[idx];
+  let html='';
+  q.o.forEach((opt,oi)=>{
+    let cls='opt';
+    if(examFinished){cls+=' disabled';if(oi===q.c)cls+=' correct';else if(oi===ua)cls+=' wrong';}
+    else if(oi===ua)cls+=' selected';
+    html+=`<div class="${cls}" onclick="selectSingle(${idx},${oi})"><span class="opt-letter">${letters[oi]}</span>${opt}</div>`;
+  });
+  return html;
+}
+
+// ── Render: Multi-select ──────────────────────────────────────────────────────
+function renderMulti(q,idx){
+  const letters='ABCDE';
+  const need=q.count||q.c.length;
+  const ua=Array.isArray(answers[idx])?answers[idx]:[];
+  let html=`<div class="q-instruction">☑ Selecciona exactamente ${need} respuesta${need>1?'s':''} correctas</div>`;
+  if(!examFinished) html+=`<div class="multi-counter">Seleccionadas: <span id="mcCount${idx}">${ua.length}</span> / ${need}</div>`;
+  q.o.forEach((opt,oi)=>{
+    const checked=ua.includes(oi);
+    const isCorrectOpt=Array.isArray(q.c)&&q.c.includes(oi);
+    let cls='opt opt-multi';
+    if(examFinished){
+      cls+=' disabled';
+      if(isCorrectOpt)cls+=' correct';
+      else if(checked)cls+=' wrong';
+    } else {
+      if(checked)cls+=' selected';
+    }
+    const icon=examFinished?(isCorrectOpt?'✓':checked?'✗':'○'):(checked?'☑':'☐');
+    html+=`<div class="${cls}" onclick="selectMulti(${idx},${oi})"><span class="opt-letter">${icon}</span>${opt}</div>`;
+  });
+  return html;
+}
+
+// ── Render: Ordering ──────────────────────────────────────────────────────────
+function renderOrder(q,idx){
+  const ua=Array.isArray(answers[idx])?answers[idx]:[];
+  const slots=q.c.length; // nº de slots = nº de pasos correctos (puede haber distractores en q.o)
+  const hasDistractors=q.o.length>slots;
+  const hint=hasDistractors
+    ?`↕ Coloca los ${slots} elementos correctos en orden — hay distractores que NO pertenecen`
+    :`↕ Haz clic en los elementos en el orden correcto (de primero a último)`;
+  let html=`<div class="q-instruction">${hint}</div>`;
+
+  // Slots
+  html+=`<div class="order-slots"><div class="order-slots-label">Tu respuesta (${slots} posiciones):</div>`;
+  for(let pos=0;pos<slots;pos++){
+    if(pos<ua.length){
+      const itemIdx=ua[pos];
+      let slotCls='order-slot';
+      if(examFinished) slotCls+=itemIdx===q.c[pos]?' slot-correct':' slot-wrong';
+      const removeBtn=(!examFinished&&pos===ua.length-1)?`<span class="slot-remove" onclick="removeLastOrder(${idx})">✕</span>`:'';
+      html+=`<div class="${slotCls}"><span class="slot-num">${pos+1}</span>${q.o[itemIdx]}${removeBtn}</div>`;
+    } else {
+      html+=`<div class="order-slot empty"><span class="slot-num">${pos+1}</span>— clic para colocar —</div>`;
+    }
+  }
+  html+=`</div>`;
+
+  // Items disponibles (incluye distractores)
+  html+=`<div style="margin-top:8px">`;
+  q.o.forEach((opt,oi)=>{
+    const placed=ua.includes(oi);
+    const isCorrectItem=q.c.includes(oi);
+    let cls='opt-order';
+    if(examFinished){
+      cls+=' disabled';
+      if(!isCorrectItem){
+        cls+=placed?' wrong':''; // distractor colocado = error; no colocado = neutro
+      } else {
+        const pos=q.c.indexOf(oi);
+        cls+=ua[pos]===oi?' correct':' wrong';
+      }
+    } else if(placed){
+      cls+=' placed';
+    }
+    html+=`<div class="${cls}" onclick="selectOrder(${idx},${oi})"><span class="opt-letter">${placed?'✓':'·'}</span>${opt}</div>`;
+  });
+  html+=`</div>`;
+  return html;
+}
+
+
+// ── Render: True/False ────────────────────────────────────────────────────────
+function renderTrueFalse(q,idx){
+  const ua=answers[idx];
+  let html='<div class="tf-row">';
+  q.o.forEach((opt,oi)=>{
+    let cls='tf-opt';
+    if(examFinished){cls+=' disabled';if(oi===q.c)cls+=' correct';else if(oi===ua)cls+=' wrong';}
+    else if(oi===ua)cls+=' selected';
+    const icon=oi===0?'✅':'❌';
+    html+=`<div class="${cls}" onclick="selectSingle(${idx},${oi})">${icon} ${opt}</div>`;
+  });
+  html+='</div>';
+  return html;
+}
+
+// ── Render: Matching ──────────────────────────────────────────────────────────
+function renderMatching(q,idx){
+  const ua=Array.isArray(answers[idx])?answers[idx]:new Array(q.pairs.length).fill('');
+  // Right items: extract from pairs, then reverse so order differs from left column
+  const rightItems=[...q.pairs.map(p=>p[1])].reverse();
+  let html=`<div class="q-instruction">🔗 Empareja cada elemento con su correspondiente</div>`;
+  html+='<table class="match-table">';
+  q.pairs.forEach((pair,pi)=>{
+    const leftText=pair[0], correctRight=pair[1];
+    const selected=ua[pi]; // text value or ''
+    let selCls='match-sel';
+    let badge='';
+    if(examFinished){
+      const ok=selected===correctRight;
+      selCls+=ok?' sel-correct':' sel-wrong';
+      badge=ok
+        ?'<span class="match-badge" style="color:var(--green)">✓</span>'
+        :'<span class="match-badge" style="color:var(--red)">✗ → '+correctRight+'</span>';
+    }
+    const esc=s=>s.replace(/"/g,'&quot;');
+    html+=`<tr class="match-row">
+      <td class="match-left">${leftText}</td>
+      <td class="match-arrow">→</td>
+      <td style="width:55%">
+        <select class="${selCls}" onchange="selectMatching(${idx},${pi},this.value)" ${examFinished?'disabled':''}>
+          <option value=""${selected===''?' selected':''}>— selecciona —</option>
+          ${rightItems.map(opt=>`<option value="${esc(opt)}"${selected===opt?' selected':''}>${opt}</option>`).join('')}
+        </select>${badge}
+      </td>
+    </tr>`;
+  });
+  html+='</table>';
+  return html;
+}
+// ── Selección ─────────────────────────────────────────────────────────────────
+function selectSingle(qi,oi){if(examFinished)return;answers[qi]=oi;showQuestion(qi);}
+
+function selectMulti(qi,oi){
+  if(examFinished)return;
+  const q=questions[qi];
+  const need=q.count||q.c.length;
+  let ua=[...answers[qi]];
+  if(ua.includes(oi)){
+    ua=ua.filter(v=>v!==oi); // deselect
+  } else if(ua.length<need){
+    ua.push(oi);
+  }
+  answers[qi]=ua;
+  showQuestion(qi);
+}
+
+function selectOrder(qi,oi){
+  if(examFinished)return;
+  const q=questions[qi];
+  let ua=[...answers[qi]];
+  if(!ua.includes(oi)&&ua.length<q.c.length){
+    ua.push(oi);
+    answers[qi]=ua;
+    showQuestion(qi);
+  }
+}
+
+
+function selectMatching(qi,pi,val){
+  if(examFinished)return;
+  let ua=[...answers[qi]];
+  ua[pi]=val; // text value of selected right item
+  answers[qi]=ua;
+  updateGrid();
+  // Update progress bar
+  const ac=answeredCount();
+  document.getElementById('progressFill').style.width=((ac/questions.length)*100)+'%';
+  document.getElementById('progressText').textContent=ac+' / '+questions.length+' respondidas';
+}
+function removeLastOrder(qi){
+  if(examFinished)return;
+  let ua=[...answers[qi]];
+  if(ua.length>0){ua.pop();answers[qi]=ua;showQuestion(qi);}
+}
+
+function navQ(dir){
+  const next=currentQ+dir;
+  if(next>=0&&next<questions.length)showQuestion(next);
+  else if(next>=questions.length)finishExam();
+}
+
+// ── Timer ─────────────────────────────────────────────────────────────────────
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    if(timeLeft<=0){clearInterval(timerInterval);finishExam();return;}
+    const m=Math.floor(timeLeft/60),s=timeLeft%60;
+    const el=document.getElementById('timer');
+    el.textContent=m+':'+(s<10?'0':'')+s;
+    el.className='timer'+(timeLeft<300?' critical':timeLeft<600?' warning':'');
+  },1000);
+}
+
+// ── Finalizar ─────────────────────────────────────────────────────────────────
+function finishExam(){
+  if(examFinished)return;
+  const ac=answeredCount();
+  if(ac<questions.length&&!forceFinish){
+    const unanswered=questions.length-ac;
+    const fb=document.querySelector('.btn-finish');
+    fb.textContent=`⚠️ ${unanswered} sin responder — Click otra vez para confirmar`;
+    fb.style.background='#f59e0b';fb.style.borderColor='#f59e0b';
+    forceFinish=true;
+    setTimeout(()=>{forceFinish=false;fb.textContent='Finalizar examen';fb.style.background='#dc2626';fb.style.borderColor='#dc2626';},4000);
+    return;
+  }
+  clearInterval(timerInterval);examFinished=true;
+  const domScores={1:{t:0,c:0},2:{t:0,c:0},3:{t:0,c:0},4:{t:0,c:0},5:{t:0,c:0}};
+  let total=0,correct=0;
+  questions.forEach((q,i)=>{
+    total++;domScores[q.d].t++;
+    if(isCorrect(i)){correct++;domScores[q.d].c++;}
+  });
+  const pct=Math.round((correct/total)*100);
+  const score=Math.round(100+(pct/100)*800);
+  const pass=score>=750;
+  const domNames={1:'D1 General',2:'D2 Amenazas',3:'D3 Arquitectura',4:'D4 Operaciones',5:'D5 Programa'};
+  let html=`<h2>Resultado del examen</h2>
+    <div class="score-big ${pass?'pass':'fail'}">${score}</div>
+    <div class="verdict" style="color:${pass?'var(--green)':'var(--red)'}">${pass?'✅ APROBADO':'❌ NO APROBADO'} — ${correct}/${total} correctas (${pct}%)</div>
+    <p style="color:var(--tx2);font-size:13px;margin-bottom:20px">Puntuación para aprobar: 750 / 900</p>
+    <div class="domain-scores">`;
+  for(let d=1;d<=5;d++){
+    const ds=domScores[d];const dp=ds.t?Math.round((ds.c/ds.t)*100):0;
+    html+=`<div class="d-score"><div class="d-score-label">${domNames[d]}</div>
+      <div class="d-score-pct" style="color:${dp>=80?'var(--green)':dp>=60?'var(--amber)':'var(--red)'}">${dp}%</div>
+      <div class="d-score-detail">${ds.c}/${ds.t}</div></div>`;
+  }
+  html+=`</div><div style="margin:24px 0">
+    <button class="btn btn-primary" onclick="reviewExam()">📝 Revisar respuestas</button>
+    <button class="btn" onclick="location.reload()" style="margin-left:8px">🔄 Nuevo examen</button></div>`;
+  document.getElementById('examArea').classList.add('hidden');
+  document.getElementById('resultsArea').classList.remove('hidden');
+  document.getElementById('downloadArea').classList.remove('hidden');
+  document.getElementById('resultsArea').innerHTML=html;
+}
+
+function reviewExam(){
+  document.getElementById('resultsArea').classList.add('hidden');
+  document.getElementById('examArea').classList.remove('hidden');
+  document.querySelector('.btn-finish').style.display='none';
+  showQuestion(0);
+}
+
+// ── Descargar errores MD ──────────────────────────────────────────────────────
+function generateMD(){
+  if(!questions||!questions.length){alert('Completa el examen primero.');return;}
+  const dNames={1:'D1 General Security',2:'D2 Amenazas',3:'D3 Arquitectura',4:'D4 Operaciones',5:'D5 Programa'};
+  const letters='ABCDE';
+  const fecha=new Date().toLocaleDateString('es-ES');
+  const errores=[];
+  questions.forEach((q,i)=>{if(!isCorrect(i))errores.push({q,i});});
+  if(!errores.length){alert('Sin errores — ¡excelente!');return;}
+  const total=questions.length;
+  const score=Math.round((total-errores.length)/total*100);
+  const dErr={};errores.forEach(({q})=>{dErr[q.d]=(dErr[q.d]||0)+1;});
+  const titulo=document.title.replace('Security+ SY0-701 \u2014 ','');
+  let md='# \u274c Errores \u2014 '+titulo+'\n\n';
+  md+='**Fecha:** '+fecha+'  \n**Score:** '+score+'% ('+(total-errores.length)+'/'+total+' correctas)  \n**Errores:** '+errores.length+' de '+total+'\n\n';
+  md+='## Resumen por Dominio\n';
+  Object.entries(dErr).sort(([a],[b])=>Number(a)-Number(b)).forEach(([d,n])=>{
+    md+='- '+dNames[d]+': **'+n+'** error'+(n>1?'es':'')+' de '+questions.filter(q=>q.d==d).length+'\n';
+  });
+  md+='\n---\n\n';
+  errores.forEach(({q,i})=>{
+    const ua=answers[i];
+    md+='## \u274c P'+(i+1)+' \u00b7 D'+q.d+(q.type&&q.type!=='single'?' ['+q.type.toUpperCase()+']':'')+'\n\n';
+    if(q.s)md+='> '+q.s+'\n\n';
+    md+='**'+q.q+'**\n\n';
+    if(!q.type||q.type==='single'){
+      q.o.forEach((opt,j)=>{
+        let mark='  ';
+        if(j===q.c)mark='\u2713';else if(j===ua)mark='\u2717';
+        md+=mark+' **'+letters[j]+')** '+opt+'\n\n';
+      });
+      if(ua>=0)md+='> \u26a0\ufe0f Respondiste: **'+letters[ua]+')** '+q.o[ua]+'\n\n';
+      md+='> \u2705 Correcta: **'+letters[q.c]+')** '+q.o[q.c]+'\n\n';
+    } else if(q.type==='multi'){
+      const uaArr=Array.isArray(ua)?ua:[];
+      q.o.forEach((opt,j)=>{
+        const isC=q.c.includes(j),isU=uaArr.includes(j);
+        let mark=isC?(isU?'\u2713':'\u25a1'):isU?'\u2717':'  ';
+        md+=mark+' **'+letters[j]+')** '+opt+(isC?' \u2190 CORRECTA':'')+'\n\n';
+      });
+      md+='> \u26a0\ufe0f Marcaste: '+uaArr.map(j=>letters[j]).join(', ')+'\n\n';
+      md+='> \u2705 Correctas: '+q.c.map(j=>letters[j]).join(', ')+'\n\n';
+    } else if(q.type==='order'){
+      const uaArr=Array.isArray(ua)?ua:[];
+      md+='**Orden correcto:**\n\n';
+      q.c.forEach((ci,pos)=>{md+=(pos+1)+'. '+q.o[ci]+'\n\n';});
+      if(uaArr.length){
+        md+='**Tu orden:**\n\n';
+        uaArr.forEach((ci,pos)=>{
+          const ok=ci===q.c[pos];
+          md+=(pos+1)+'. '+q.o[ci]+(ok?' \u2714':' \u2718')+'\n\n';
+        });
+      }
+    } else if(q.type==='matching'){
+      const uaArr=Array.isArray(ua)?ua:[];
+      md+='**Emparejamiento correcto:**\n\n';
+      q.pairs.forEach((pair,pi)=>{
+        const ok=uaArr[pi]===pair[1];
+        md+=(ok?'✓':'✗')+' **'+pair[0]+'** → '+pair[1]+(ok?'':' *(tú: '+(uaArr[pi]||'sin responder')+')*')+'\n\n';
+      });
+    } else if(q.type==='true_false'){
+      const correct=q.o[q.c];const chosen=ua>=0?q.o[ua]:'sin responder';
+      md+='> ⚠️ Respondiste: **'+chosen+'**\n\n';
+      md+='> ✅ Correcta: **'+correct+'**\n\n';
+    }
+    if(q.e)md+='**\ud83d\udca1 Explicaci\u00f3n:**\n\n'+q.e.replace(/<br>/g,'\n').replace(/<[^>]+>/g,'')+'\n\n';
+    md+='---\n\n';
+  });
+  const blob=new Blob([md],{type:'text/markdown'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=titulo.replace(/[\s\u2014]+/g,'_')+'_Errores.md';a.click();URL.revokeObjectURL(url);
+}
+
+// ── Modo revisión ─────────────────────────────────────────────────────────────
+function reviewOnly(){
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('timerBar').classList.remove('hidden');
+  document.getElementById('examArea').classList.remove('hidden');
+  document.getElementById('downloadArea').classList.remove('hidden');
+  questions=[...Q];
+  answers=questions.map(q=>(q.type==='multi'||q.type==='order')?[]:q.type==='matching'?new Array(q.pairs?q.pairs.length:0).fill(''):-1);
+  examFinished=true;
+  const grid=document.getElementById('qGrid');
+  grid.innerHTML=questions.map((_,i)=>`<div class="q-dot wrong-dot" onclick="showQuestion(${i})">${i+1}</div>`).join('');
+  document.getElementById('timer').textContent='\ud83d\udcd6';
+  document.getElementById('progressText').textContent='Modo revisi\u00f3n';
+  document.getElementById('progressFill').style.width='100%';
+  document.querySelector('.btn-finish').style.display='none';
+  showQuestion(0);
+}
+</script>
+</body>
+</html>

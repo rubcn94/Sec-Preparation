@@ -1,0 +1,88 @@
+{
+  "project": {
+    "name": "Programa Simulacros Security+",
+    "type": "web-app",
+    "status": "production",
+    "version": "2.0",
+    "description": "Simulador de exámenes Security+ SY0-701 con 2,292 preguntas consolidadas"
+  },
+  "context": {
+    "purpose": "Herramienta de estudio para certificación CompTIA Security+ SY0-701",
+    "main_goal": "Proporcionar simulacros realistas con preguntas en español",
+    "target_audience": "Estudiantes preparando Security+ (especialmente Rubén)"
+  },
+  "tech_stack": {
+    "frontend": "HTML5 + CSS + Vanilla JavaScript",
+    "data_format": "JSON",
+    "deployment": "Portable (ZIP autónomo)",
+    "launcher": "Python + BAT (Windows)"
+  },
+  "structure": {
+    "entry_points": [
+      "INICIAR.bat",
+      "iniciar.py",
+      "SimulacroSecPlusmegabank.html"
+    ],
+    "data_files": {
+      "mega_bank.json": "Banco principal de 2,292 preguntas (ÚNICA FUENTE)",
+      "secplus_completo.json": "Glosario por dominios Security+",
+      "secplus_nemotecnia.json": "Términos con nemotecnias"
+    },
+    "backup": "archivos_fuente_backup/ (consolidados, no tocar)"
+  },
+  "conventions": {
+    "question_format": {
+      "d": "dificultad (1-5)",
+      "q": "pregunta (texto)",
+      "o": "opciones (array)",
+      "c": "respuesta correcta (índice o array)",
+      "e": "explicación",
+      "type": "single|multi|true_false",
+      "obj": "objetivo del examen (1.1, 2.3, etc.)",
+      "id": "identificador único (q0001-q2292)"
+    },
+    "naming": {
+      "archives": "Backup con timestamp, mantener estructura",
+      "ids": "Secuenciales q0001-qNNNN"
+    }
+  },
+  "tasks": {
+    "common": [
+      "Agregar nuevas preguntas a mega_bank.json",
+      "Verificar duplicados antes de añadir",
+      "Actualizar ZIP para distribución",
+      "Validar formato JSON de preguntas"
+    ],
+    "maintenance": [
+      "Mantener mega_bank.json como única fuente",
+      "No crear archivos JSON adicionales (consolidar siempre)",
+      "Backup antes de cambios masivos"
+    ]
+  },
+  "auto_actions": {
+    "on_start": [
+      "Verificar integridad de mega_bank.json",
+      "Contar preguntas actuales",
+      "Revisar si hay archivos .json nuevos para consolidar"
+    ],
+    "on_question_add": [
+      "Verificar formato correcto",
+      "Detectar duplicados",
+      "Asignar ID secuencial",
+      "Actualizar contador"
+    ],
+    "on_finish": [
+      "Actualizar programa_simulacros.zip si hubo cambios",
+      "Verificar que HTML funciona correctamente"
+    ]
+  },
+  "notes": {
+    "consolidation": "Sistema de detección de duplicados por hash de pregunta + opciones normalizadas",
+    "last_update": "2026-04-11 - Consolidación de 17 archivos → 2,292 preguntas",
+    "warnings": [
+      "NO crear archivos JSON adicionales - consolidar en mega_bank.json",
+      "NO tocar archivos_fuente_backup/",
+      "Verificar duplicados SIEMPRE antes de añadir preguntas"
+    ]
+  }
+}

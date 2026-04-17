@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Mayor — Security+ SY0-701</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --card: #1c2128;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --accent4: #d29922;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header { background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%); padding: 22px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; }
+  header h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: .5px; }
+  header span.badge { background: #21262d; border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; font-size: .75rem; color: var(--muted); }
+
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--surface); padding: 0 24px; overflow-x: auto; }
+  .tab-btn { padding: 14px 20px; border: none; background: none; color: var(--muted); font-size: .92rem; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all .2s; font-weight: 500; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .panel { display: none; padding: 32px; max-width: 1100px; margin: 0 auto; }
+  .panel.active { display: block; }
+
+  .phonetic-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
+  .ph-cell { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; text-align: center; }
+  .ph-cell .digit { font-size: 2rem; font-weight: 800; color: var(--accent); line-height: 1; }
+  .ph-cell .sounds { font-size: .85rem; color: var(--accent2); font-weight: 600; margin-top: 4px; }
+  .ph-cell .example { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+
+  .rule-box { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; margin: 14px 0; }
+  .rule-box h3 { font-size: .95rem; color: var(--accent4); margin-bottom: 8px; }
+  .rule-box p { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+  .rule-box em { color: var(--text); font-style: normal; }
+
+  .casillero-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-top: 20px; }
+  .cas-cell { background: var(--card); border: 1px solid var(--border); border-radius: 7px; padding: 8px 6px; text-align: center; cursor: default; transition: border-color .2s; }
+  .cas-cell:hover { border-color: var(--accent); }
+  .cas-cell .num { font-size: .75rem; color: var(--muted); font-weight: 600; }
+  .cas-cell .word { font-size: .82rem; color: var(--text); font-weight: 700; margin-top: 3px; }
+  .cas-cell .word2 { font-size: .72rem; color: var(--muted); }
+  .cas-highlight { border-color: var(--accent4) !important; background: #1e1a0e !important; }
+  .cas-highlight .num { color: var(--accent4); }
+
+  #quiz-wrap { max-width: 640px; margin: 0 auto; }
+  .quiz-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+  .quiz-bar select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: 7px; font-size: .88rem; }
+  .quiz-bar button { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 7px 14px; border-radius: 7px; cursor: pointer; font-size: .85rem; transition: all .2s; }
+  .quiz-bar button:hover { border-color: var(--accent); color: var(--accent); }
+  .progress-track { height: 5px; background: var(--border); border-radius: 99px; margin-bottom: 28px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; transition: width .4s; }
+  .stats-row { display: flex; gap: 14px; margin-bottom: 24px; }
+  .stat { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; }
+  .stat .val { font-size: 1.5rem; font-weight: 800; }
+  .stat .lbl { font-size: .73rem; color: var(--muted); margin-top: 2px; }
+  .stat.ok .val { color: var(--accent2); }
+  .stat.ko .val { color: var(--accent3); }
+  .stat.tot .val { color: var(--accent); }
+
+  .card-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 32px; text-align: center; min-height: 360px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+  .card-cat { font-size: .78rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  .card-q { font-size: 1.35rem; font-weight: 700; color: var(--text); line-height: 1.4; }
+  .card-hint { font-size: .88rem; color: var(--accent4); font-style: italic; }
+  .reveal-btn { margin-top: 10px; padding: 12px 30px; background: var(--accent); color: #000; border: none; border-radius: 9px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity .2s; }
+  .reveal-btn:hover { opacity: .85; }
+  .card-answer { display: none; flex-direction: column; gap: 12px; margin-top: 10px; }
+  .card-answer.show { display: flex; }
+  .ans-num { font-size: 2.8rem; font-weight: 900; color: var(--accent); line-height: 1; }
+  .ans-word { font-size: 1.5rem; font-weight: 800; color: var(--accent2); }
+  .ans-enc { font-size: .85rem; color: var(--muted); font-family: monospace; }
+  .ans-scene { background: #1a2010; border: 1px solid #3a5020; border-radius: 9px; padding: 14px 18px; font-size: .9rem; color: #c8e6a0; line-height: 1.6; margin-top: 4px; }
+  .judge-row { display: flex; gap: 14px; margin-top: 16px; }
+  .btn-ok { flex: 1; padding: 13px; background: #1a3a1a; border: 1.5px solid var(--accent2); color: var(--accent2); border-radius: 9px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background .2s; }
+  .btn-ok:hover { background: #254525; }
+  .btn-ko { flex: 1; padding: 13px; background: #3a1a1a; border: 1.5px solid var(--accent3); color: var(--accent3); border-radius: 9px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background .2s; }
+  .btn-ko:hover { background: #4a2020; }
+  .done-screen { display: none; text-align: center; padding: 40px 20px; }
+  .done-screen h2 { font-size: 2rem; margin-bottom: 10px; }
+  .done-score { font-size: 4rem; font-weight: 900; color: var(--accent); margin: 16px 0; }
+  .done-screen button { padding: 12px 28px; background: var(--accent); color: #000; border: none; border-radius: 9px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+
+  .section-title { font-size: 1.1rem; font-weight: 700; color: var(--accent); margin: 28px 0 14px; display: flex; align-items: center; gap: 8px; }
+  .mnemonic-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .mn-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .mn-card .mn-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .mn-card .mn-num { font-size: 1.6rem; font-weight: 900; color: var(--accent); min-width: 56px; }
+  .mn-card .mn-label { font-size: .95rem; font-weight: 700; color: var(--text); }
+  .mn-card .mn-sub { font-size: .78rem; color: var(--muted); margin-top: 1px; }
+  .mn-card .mn-word { font-size: 1.25rem; font-weight: 800; color: var(--accent2); margin: 6px 0; }
+  .mn-card .mn-enc { font-size: .8rem; color: var(--muted); font-family: monospace; margin-bottom: 10px; }
+  .mn-card .mn-scene { background: #0d1f0d; border: 1px solid #2a4020; border-radius: 7px; padding: 11px 14px; font-size: .85rem; color: #b8dca0; line-height: 1.55; }
+  .enc-letter { font-weight: 800; color: var(--accent4); }
+
+  .conf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(460px, 1fr)); gap: 16px; }
+  .conf-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .conf-card h3 { font-size: .95rem; font-weight: 700; color: var(--accent4); margin-bottom: 14px; }
+  .vs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .vs-item { background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 12px; }
+  .vs-item .vs-name { font-size: .88rem; font-weight: 800; color: var(--accent); margin-bottom: 4px; }
+  .vs-item .vs-def { font-size: .82rem; color: var(--muted); line-height: 1.5; }
+  .vs-item .vs-trick { font-size: .8rem; color: var(--accent4); margin-top: 6px; font-style: italic; }
+  .conf-tip { background: #1a1500; border: 1px solid #3a3000; border-radius: 7px; padding: 10px 14px; font-size: .83rem; color: #d4b44a; margin-top: 10px; line-height: 1.5; }
+
+  .domain-chain { display: flex; gap: 0; margin: 18px 0; flex-wrap: wrap; }
+  .dom-item { display: flex; flex-direction: column; align-items: center; }
+  .dom-bubble { background: var(--card); border: 1.5px solid var(--accent); border-radius: 9px; padding: 10px 16px; text-align: center; min-width: 90px; }
+  .dom-pct { font-size: 1.3rem; font-weight: 900; color: var(--accent); }
+  .dom-word { font-size: 1rem; font-weight: 800; color: var(--accent2); }
+  .dom-enc { font-size: .72rem; color: var(--muted); font-family: monospace; }
+  .dom-label { font-size: .75rem; color: var(--muted); margin-top: 5px; text-align: center; max-width: 90px; line-height: 1.3; }
+  .dom-arrow { display: flex; align-items: center; padding: 0 6px; color: var(--muted); font-size: 1.2rem; padding-bottom: 24px; }
+
+  .story-box { background: #0f1a28; border: 1px solid #1e3a58; border-radius: 10px; padding: 18px 22px; margin: 16px 0; font-size: .95rem; color: #a8c8e8; line-height: 1.7; }
+  .story-box .story-title { font-size: .78rem; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; font-weight: 700; }
+
+  h2.page-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+  p.page-sub { font-size: .9rem; color: var(--muted); margin-bottom: 20px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div style="font-size:1.6rem">&#129504;</div>
+  <h1>Sistema Mayor <span style="color:var(--muted); font-weight:400">&#183;</span> Security+ SY0-701</h1>
+  <span class="badge">Version Ruben &mdash; 0=S/Z 4=R 6=C/K 7=CH/G 8=F/J</span>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('cas',this)">&#128451; Casillero 00-99</button>
+  <button class="tab-btn" onclick="showTab('cripto',this)">&#128272; Cripto</button>
+  <button class="tab-btn" onclick="showTab('reg',this)">&#9878; Regulatorio</button>
+  <button class="tab-btn" onclick="showTab('conf',this)">&#129300; Confundibles</button>
+</div>
+
+<!-- TAB: CASILLERO -->
+<div id="tab-cas" class="panel active">
+  <h2 class="page-title">Casillero 00 &ndash; 99</h2>
+  <p class="page-sub">Cada numero tiene una palabra canonica fija. Las celdas en <span style="color:var(--accent4)">dorado</span> son las usadas directamente en Sec+.</p>
+  <div class="casillero-grid" id="casillero-grid"></div>
+</div>
+
+<!-- TAB: CRIPTO -->
+<div id="tab-cripto" class="panel">
+  <h2 class="page-title">Tamanos de claves criptograficas</h2>
+  <p class="page-sub">Los numeros que mas confunden en el examen. Memoriza la palabra, reconstruye el numero.</p>
+
+  <div class="section-title">Algoritmos simetricos (AES)</div>
+  <div class="mnemonic-cards">
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">128</div><div><div class="mn-label">AES-128</div><div class="mn-sub">Cifrado simetrico &middot; mas comun</div></div></div>
+      <div class="mn-word">TONFA</div>
+      <div class="mn-enc"><span class="enc-letter">T</span>(1) + <span class="enc-letter">N</span>(2) + <span class="enc-letter">F</span>(8) = 128 &middot; o,a = vocales libres</div>
+      <div class="mn-scene">Un policia golpea un servidor con su <strong>TONFA</strong> exactamente 128 veces mientras grita cifrado &mdash; el servidor explota en bytes de oro.</div>
+    </div>
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">192</div><div><div class="mn-label">AES-192</div><div class="mn-sub">Cifrado simetrico &middot; intermedio</div></div></div>
+      <div class="mn-word">TAPON</div>
+      <div class="mn-enc"><span class="enc-letter">T</span>(1) + <span class="enc-letter">P</span>(9) + <span class="enc-letter">N</span>(2) = 192 &middot; a,o = vocales libres</div>
+      <div class="mn-scene">Un enorme <strong>TAPON</strong> de corcho sella una botella con 192 secretos dentro &mdash; aprietas y sale vapor cifrado a presion.</div>
+    </div>
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">256</div><div><div class="mn-label">AES-256</div><div class="mn-sub">Cifrado simetrico &middot; maxima seguridad</div></div></div>
+      <div class="mn-word">ENLACE</div>
+      <div class="mn-enc"><span class="enc-letter">N</span>(2) + <span class="enc-letter">L</span>(5) + <span class="enc-letter">C</span>(6) = 256 &middot; e,a,e = vocales libres</div>
+      <div class="mn-scene">Un <strong>ENLACE</strong> de fibra dorada de 256 bits conecta dos satelites &mdash; cortarlo destruye la Tierra. N-L-C &rarr; 2-5-6 &rarr; 256.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Criptografia asincrona</div>
+  <div class="mnemonic-cards">
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">2048</div><div><div class="mn-label">RSA-2048</div><div class="mn-sub">Par de claves publica/privada</div></div></div>
+      <div class="mn-word">NASA RIFA</div>
+      <div class="mn-enc"><span class="enc-letter">N</span>(2)+<span class="enc-letter">S</span>(0)=20 | <span class="enc-letter">R</span>(4)+<span class="enc-letter">F</span>(8)=48 &rarr; 2048</div>
+      <div class="mn-scene">La <strong>NASA</strong> organiza una <strong>RIFA</strong> galactica: el premio es una clave RSA de 2048 bits grabada en titanio. Los astronautas hacen cola en gravedad cero.</div>
+    </div>
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">256</div><div><div class="mn-label">ECC-256</div><div class="mn-sub">Curva eliptica &middot; mas eficiente que RSA</div></div></div>
+      <div class="mn-word">ENLACE</div>
+      <div class="mn-enc"><span class="enc-letter">N</span>(2) + <span class="enc-letter">L</span>(5) + <span class="enc-letter">C</span>(6) = 256 &middot; misma word que AES-256</div>
+      <div class="mn-scene">El mismo <strong>ENLACE</strong> dorado pero doblado en espiral de curva eliptica &mdash; ocupa la mitad del espacio que RSA pero es igual de fuerte.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Funciones hash</div>
+  <div class="mnemonic-cards">
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">160</div><div><div class="mn-label">SHA-1</div><div class="mn-sub">DEPRECATED &mdash; no usar</div></div></div>
+      <div class="mn-word">TACOS</div>
+      <div class="mn-enc"><span class="enc-letter">T</span>(1) + <span class="enc-letter">C</span>(6) + <span class="enc-letter">S</span>(0) = 160 &middot; a,o = vocales libres</div>
+      <div class="mn-scene"><strong>TACOS</strong> caducados de 160 dias &mdash; los abres y huelen a colision hash. SHA-1 esta tan roto como estos tacos verdes y mohosos.</div>
+    </div>
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">256</div><div><div class="mn-label">SHA-256</div><div class="mn-sub">Hash estandar seguro</div></div></div>
+      <div class="mn-word">ENLACE</div>
+      <div class="mn-enc"><span class="enc-letter">N</span>(2) + <span class="enc-letter">L</span>(5) + <span class="enc-letter">C</span>(6) = 256</div>
+      <div class="mn-scene">SHA-256 usa el mismo <strong>ENLACE</strong> que AES-256. Recuerda: 256 es siempre ENLACE, sea quien sea el algoritmo. N-L-C = 2-5-6.</div>
+    </div>
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">512</div><div><div class="mn-label">SHA-512</div><div class="mn-sub">Hash de alta seguridad</div></div></div>
+      <div class="mn-word">LATON</div>
+      <div class="mn-enc"><span class="enc-letter">L</span>(5) + <span class="enc-letter">T</span>(1) + <span class="enc-letter">N</span>(2) = 512 &middot; a,o = vocales libres</div>
+      <div class="mn-scene">Una campana de <strong>LATON</strong> gigante suena con 512 vibraciones por segundo &mdash; cada vibracion es un bit del hash, reverberando por el universo.</div>
+    </div>
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">128</div><div><div class="mn-label">MD5</div><div class="mn-sub">BROKEN &mdash; solo integridad no critica</div></div></div>
+      <div class="mn-word">TONFA ROTA</div>
+      <div class="mn-enc"><span class="enc-letter">T</span>(1)+<span class="enc-letter">N</span>(2)+<span class="enc-letter">F</span>(8)=128 | rota = broken</div>
+      <div class="mn-scene">La <strong>TONFA ROTA</strong> de MD5 &mdash; el policia intenta golpear con ella, pero se parte por la mitad. 128 bits, completamente inutil para seguridad real.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Dominios del examen (12 &middot; 22 &middot; 18 &middot; 28 &middot; 20)</div>
+  <div class="domain-chain">
+    <div class="dom-item">
+      <div class="dom-bubble"><div class="dom-pct">12%</div><div class="dom-word">TINO</div><div class="dom-enc">T(1)+N(2)</div></div>
+      <div class="dom-label">D1 General Security Concepts</div>
+    </div>
+    <div class="dom-arrow">&rarr;</div>
+    <div class="dom-item">
+      <div class="dom-bubble"><div class="dom-pct">22%</div><div class="dom-word">NENA</div><div class="dom-enc">N(2)+N(2)</div></div>
+      <div class="dom-label">D2 Threats &amp; Vulnerabilities</div>
+    </div>
+    <div class="dom-arrow">&rarr;</div>
+    <div class="dom-item">
+      <div class="dom-bubble"><div class="dom-pct">18%</div><div class="dom-word">TEJA</div><div class="dom-enc">T(1)+J(8)</div></div>
+      <div class="dom-label">D3 Security Architecture</div>
+    </div>
+    <div class="dom-arrow">&rarr;</div>
+    <div class="dom-item">
+      <div class="dom-bubble"><div class="dom-pct">28%</div><div class="dom-word">NAJA</div><div class="dom-enc">N(2)+J(8)</div></div>
+      <div class="dom-label">D4 Security Operations</div>
+    </div>
+    <div class="dom-arrow">&rarr;</div>
+    <div class="dom-item">
+      <div class="dom-bubble"><div class="dom-pct">20%</div><div class="dom-word">NASA</div><div class="dom-enc">N(2)+S(0)</div></div>
+      <div class="dom-label">D5 Security Program Mgmt</div>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <div class="story-title">Escena encadenada &mdash; los 5 dominios</div>
+    Con <strong>TINO</strong> (12%), la <strong>NENA</strong> (22%) coloca una <strong>TEJA</strong> (18%) sobre la <strong>NAJA</strong> (28%) para que no llegue a la <strong>NASA</strong> (20%).
+    <br><br>
+    TINO el consultor de conceptos &middot; NENA conoce todas las amenazas &middot; TEJA = tejado = arquitectura &middot; NAJA cobra peligrosa = operaciones de alto riesgo &middot; NASA gestiona el programa completo.
+  </div>
+</div>
+
+<!-- TAB: REGULATORIO -->
+<div id="tab-reg" class="panel">
+  <h2 class="page-title">Plazos regulatorios</h2>
+  <p class="page-sub">Tiempos maximos de notificacion y conservacion de registros. Los mas preguntados en Sec+.</p>
+
+  <div class="mnemonic-cards">
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">72h</div><div><div class="mn-label">GDPR</div><div class="mn-sub">Notificacion de brecha &middot; UE</div></div></div>
+      <div class="mn-word">CHINO</div>
+      <div class="mn-enc"><span class="enc-letter">CH</span>(7) + <span class="enc-letter">N</span>(2) = 72 &middot; i,o = vocales libres</div>
+      <div class="mn-scene">Un <strong>CHINO</strong> trabajador con reloj de cuenta regresiva corre a la oficina del DPO &mdash; tiene exactamente 72 horas grabadas en su reloj laser. Si no llega, la empresa paga 20M&euro;.</div>
+    </div>
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">60d</div><div><div class="mn-label">HIPAA</div><div class="mn-sub">Notificacion de brecha &middot; EEUU salud</div></div></div>
+      <div class="mn-word">CASA</div>
+      <div class="mn-enc"><span class="enc-letter">C</span>(6) + <span class="enc-letter">S</span>(0) = 60 &middot; a,a = vocales libres</div>
+      <div class="mn-scene">Tu <strong>CASA</strong> de salud tiene 60 dias antes de que el HHS llame a la puerta. El medico abre y hay 60 agentes federales contando uno a uno cada dia que tardaste.</div>
+    </div>
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">15d</div><div><div class="mn-label">CISA KEV</div><div class="mn-sub">Known Exploited Vulnerabilities &middot; parchear</div></div></div>
+      <div class="mn-word">TELA</div>
+      <div class="mn-enc"><span class="enc-letter">T</span>(1) + <span class="enc-letter">L</span>(5) = 15 &middot; e,a = vocales libres</div>
+      <div class="mn-scene">CISA te da una <strong>TELA</strong> de arana de 15 dias para parchear la vulnerabilidad. Si pasan los 15 dias, la arana (el exploit) llega y envuelve tu sistema en capullos.</div>
+    </div>
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">7 anos</div><div><div class="mn-label">SOX</div><div class="mn-sub">Sarbanes-Oxley &middot; registros contables</div></div></div>
+      <div class="mn-word">SOGA</div>
+      <div class="mn-enc"><span class="enc-letter">S</span>(0) + <span class="enc-letter">G</span>(7) = 07 &rarr; 7 anos &middot; o,a = vocales libres</div>
+      <div class="mn-scene">Una <strong>SOGA</strong> de SOX ata los libros de contabilidad durante 7 anos. El CFO intenta escapar pero la soga lo arrastra de vuelta al archivo &mdash; 7 anos sin salir.</div>
+    </div>
+    <div class="mn-card">
+      <div class="mn-top"><div class="mn-num">1 ano</div><div><div class="mn-label">PCI-DSS</div><div class="mn-sub">Revision de politicas de seguridad</div></div></div>
+      <div class="mn-word">DATO</div>
+      <div class="mn-enc"><span class="enc-letter">D</span>(1)+<span class="enc-letter">T</span>(1) = 11 &rarr; anual &middot; imagen: revision anual</div>
+      <div class="mn-scene">Cada ano, el auditor de PCI llega con un <strong>DATO</strong> nuevo &mdash; revisa que las tarjetas de credito esten protegidas. Si no, corta la tarjeta en 16 pedazos delante del CEO.</div>
+    </div>
+  </div>
+
+  <div class="story-box">
+    <div class="story-title">Tabla resumen rapida</div>
+    <strong>GDPR</strong> &rarr; CHINO &rarr; 72 horas (brecha datos UE)<br>
+    <strong>HIPAA</strong> &rarr; CASA &rarr; 60 dias (brecha salud EEUU)<br>
+    <strong>KEV/CISA</strong> &rarr; TELA &rarr; 15 dias (parchear vulns criticas)<br>
+    <strong>SOX</strong> &rarr; SOGA &rarr; 7 anos (retencion registros contables)<br>
+    <strong>PCI-DSS</strong> &rarr; anual &rarr; revisar politicas de seguridad
+  </div>
+</div>
+
+<!-- TAB: CONFUNDIBLES -->
+<div id="tab-conf" class="panel">
+  <h2 class="page-title">Pares que se confunden</h2>
+  <p class="page-sub">Los conceptos que mas fallos generan en el examen. Aprende la diferencia clave de cada par.</p>
+
+  <div class="conf-grid">
+
+    <div class="conf-card">
+      <h3>IDS vs IPS</h3>
+      <div class="vs-row">
+        <div class="vs-item">
+          <div class="vs-name">IDS</div>
+          <div class="vs-def">Intrusion <strong>Detection</strong> System. Monitoriza y <strong>alerta</strong>. Modo pasivo &mdash; no bloquea, solo observa.</div>
+          <div class="vs-trick">IDS = "iD reSearch" &mdash; solo busca, no actua</div>
+        </div>
+        <div class="vs-item">
+          <div class="vs-name">IPS</div>
+          <div class="vs-def">Intrusion <strong>Prevention</strong> System. Monitoriza y <strong>bloquea</strong>. Modo inline &mdash; activo en el flujo de red.</div>
+          <div class="vs-trick">IPS = "iP Stop" &mdash; para el paquete</div>
+        </div>
+      </div>
+      <div class="conf-tip">Regla de oro: IDS es el guardia que avisa, IPS es el portero que bloquea la entrada.</div>
+    </div>
+
+    <div class="conf-card">
+      <h3>SIEM vs SOAR</h3>
+      <div class="vs-row">
+        <div class="vs-item">
+          <div class="vs-name">SIEM</div>
+          <div class="vs-def"><strong>Agrega y correlaciona</strong> logs. Genera alertas. Requiere accion humana para responder.</div>
+          <div class="vs-trick">SIEM = "See 'Em" &mdash; los ves en un panel</div>
+        </div>
+        <div class="vs-item">
+          <div class="vs-name">SOAR</div>
+          <div class="vs-def"><strong>Automatiza la respuesta</strong>. Usa playbooks para reaccionar sin intervencion humana.</div>
+          <div class="vs-trick">SOAR = vuela solo, actua solo</div>
+        </div>
+      </div>
+      <div class="conf-tip">SIEM recopila e informa &rarr; tu actuas. SOAR recopila y actua &rarr; solo si esta configurado.</div>
+    </div>
+
+    <div class="conf-card">
+      <h3>RTO vs RPO</h3>
+      <div class="vs-row">
+        <div class="vs-item">
+          <div class="vs-name">RTO</div>
+          <div class="vs-def"><strong>Recovery Time Objective</strong>. Tiempo maximo aceptable para restaurar un sistema tras un fallo.</div>
+          <div class="vs-trick">RTO = "Time to Operate again"</div>
+        </div>
+        <div class="vs-item">
+          <div class="vs-name">RPO</div>
+          <div class="vs-def"><strong>Recovery Point Objective</strong>. Maxima perdida de datos aceptable, medida desde el ultimo backup.</div>
+          <div class="vs-trick">RPO = "Point of last backup"</div>
+        </div>
+      </div>
+      <div class="conf-tip">RTO = cuanto tardamos en volver? &middot; RPO = cuantos datos podemos perder?</div>
+    </div>
+
+    <div class="conf-card">
+      <h3>Virus vs Worm vs Trojan</h3>
+      <div class="vs-row">
+        <div class="vs-item">
+          <div class="vs-name">Virus</div>
+          <div class="vs-def">Necesita <strong>host / accion humana</strong> para ejecutarse y propagarse. Se adjunta a archivos.</div>
+        </div>
+        <div class="vs-item">
+          <div class="vs-name">Worm</div>
+          <div class="vs-def">Se propaga <strong>solo por la red</strong>, sin interaccion humana. Explota vulnerabilidades automaticamente.</div>
+        </div>
+      </div>
+      <div class="vs-row" style="margin-top:8px">
+        <div class="vs-item" style="grid-column:1/-1">
+          <div class="vs-name">Trojan</div>
+          <div class="vs-def">Se disfraza de <strong>software legitimo</strong>. No se replica solo &mdash; el usuario lo instala voluntariamente.</div>
+          <div class="vs-trick">Troya: entraron camuflados &rarr; Trojan = camuflaje</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="conf-card">
+      <h3>Symmetric vs Asymmetric</h3>
+      <div class="vs-row">
+        <div class="vs-item">
+          <div class="vs-name">Symmetric</div>
+          <div class="vs-def"><strong>Una sola clave</strong> para cifrar y descifrar. Rapido. Ideal para grandes volumenes de datos. (AES, DES, 3DES)</div>
+          <div class="vs-trick">"sym" = mismo = misma clave</div>
+        </div>
+        <div class="vs-item">
+          <div class="vs-name">Asymmetric</div>
+          <div class="vs-def"><strong>Par de claves</strong> publica/privada. Lento. Ideal para intercambio de claves y firmas. (RSA, ECC, DSA)</div>
+          <div class="vs-trick">"asym" = diferente = 2 claves distintas</div>
+        </div>
+      </div>
+      <div class="conf-tip">En la practica: asymmetric intercambia la clave, symmetric cifra los datos. TLS usa ambos.</div>
+    </div>
+
+    <div class="conf-card">
+      <h3>AuthN vs AuthZ</h3>
+      <div class="vs-row">
+        <div class="vs-item">
+          <div class="vs-name">AuthN</div>
+          <div class="vs-def"><strong>Quien eres?</strong> Verifica identidad. (contrasena, biometria, MFA, certificados)</div>
+          <div class="vs-trick">AutheNtication &rarr; N = iNdentidad</div>
+        </div>
+        <div class="vs-item">
+          <div class="vs-name">AuthZ</div>
+          <div class="vs-def"><strong>Que puedes hacer?</strong> Determina permisos. (roles, ACLs, politicas)</div>
+          <div class="vs-trick">AuthoriZation &rarr; Z = permisos</div>
+        </div>
+      </div>
+      <div class="conf-tip">Siempre en orden: primero AuthN (identificar), luego AuthZ (autorizar).</div>
+    </div>
+
+    <div class="conf-card">
+      <h3>Threat &middot; Vulnerability &middot; Risk</h3>
+      <div class="vs-row">
+        <div class="vs-item">
+          <div class="vs-name">Threat</div>
+          <div class="vs-def">Actor o evento que <strong>puede causar dano</strong>. (hacker, malware, desastre natural)</div>
+        </div>
+        <div class="vs-item">
+          <div class="vs-name">Vulnerability</div>
+          <div class="vs-def"><strong>Debilidad</strong> en el sistema que puede ser explotada. (bug, misconfiguration, falta de parche)</div>
+        </div>
+      </div>
+      <div class="vs-row" style="margin-top:8px">
+        <div class="vs-item" style="grid-column:1/-1">
+          <div class="vs-name">Risk</div>
+          <div class="vs-def"><strong>Risk = Threat x Vulnerability x Impact</strong>. La probabilidad de que una amenaza explote una debilidad y el dano resultante.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="conf-card">
+      <h3>SLE &middot; ALE &middot; ARO (Formulas de riesgo)</h3>
+      <div class="vs-row">
+        <div class="vs-item">
+          <div class="vs-name">SLE</div>
+          <div class="vs-def"><strong>Single Loss Expectancy</strong><br>SLE = AV x EF<br>Perdida por un unico incidente.</div>
+        </div>
+        <div class="vs-item">
+          <div class="vs-name">ALE</div>
+          <div class="vs-def"><strong>Annual Loss Expectancy</strong><br>ALE = SLE x ARO<br>Perdida esperada en un ano.</div>
+        </div>
+      </div>
+      <div class="vs-row" style="margin-top:8px">
+        <div class="vs-item">
+          <div class="vs-name">AV</div>
+          <div class="vs-def"><strong>Asset Value</strong> &mdash; valor del activo en euros</div>
+        </div>
+        <div class="vs-item">
+          <div class="vs-name">EF / ARO</div>
+          <div class="vs-def"><strong>EF</strong> = Exposure Factor (% perdida)<br><strong>ARO</strong> = Annualized Rate of Occurrence</div>
+        </div>
+      </div>
+      <div class="conf-tip">Orden: AV x EF = SLE &rarr; SLE x ARO = ALE. De activo a anual.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// CASILLERO 00-99
+// Fonetica: 0=S/Z, 1=T/D, 2=N, 3=M, 4=R, 5=L, 6=C/K/Q, 7=CH/G, 8=F/J, 9=V/B/P
+// [num, word1, word2, word3]  -- todas palabras visuales/reconocibles
+var CASILLERO = [
+  // 0x: S/Z + ...
+  ['00','SUIZO','ZEUS','SEIS'],       ['01','SOTA','SETA','ZETA'],
+  ['02','SENO','SAUNA','ZONA'],       ['03','SIMA','SUMO','SOMA'],
+  ['04','SARA','SIERRA','SUERO'],     ['05','SILO','SALA','SUELA'],
+  ['06','SACO','ZUECO','SUECO'],      ['07','SOGA','SAGA','SAGE'],
+  ['08','SOFA','SUFI','SOFIA'],       ['09','SOPA','SAPO','SAVIA'],
+  // 1x: T/D + ...
+  ['10','TASA','TAZA','DOSIS'],       ['11','TETA','TUTU','DEDO'],
+  ['12','TINA','TUNA','DUNA'],        ['13','TOMA','DAMA','DOMO'],
+  ['14','TORO','TORRE','TIARA'],      ['15','TELA','TILO','DALIA'],
+  ['16','TOCA','TACO','DIQUE'],       ['17','TOCHO','DUCHA','DAGA'],
+  ['18','TEJA','DIJE','TIFO'],        ['19','TUBA','TIPO','TIBIA'],
+  // 2x: N + ...
+  ['20','NASA','NUEZ','NASO'],        ['21','NOTA','NIDO','NATA'],
+  ['22','NENA','NANA','NINA'],        ['23','NAME','NEMO','ANIME'],
+  ['24','NORIA','NERO','NURIA'],      ['25','NILO','NOEL','NEULA'],
+  ['26','NUCA','INCA','NIKE'],        ['27','NACHO','NICHO','NAGA'],
+  ['28','NAJA','NAIF','ANAFE'],       ['29','NOVIA','NABO','NUBE'],
+  // 3x: M + ...
+  ['30','MESA','MISA','MOZO'],        ['31','MATA','MOTO','MODA'],
+  ['32','MANO','MONO','MINA'],        ['33','MAMA','MIMO','MEME'],
+  ['34','MORA','MURO','MARIO'],       ['35','MULA','MIEL','MOLA'],
+  ['36','MACA','MECA','MOCO'],        ['37','MACHO','MAGO','MOCHO'],
+  ['38','MAFIA','MAJA','MUFA'],       ['39','MAPA','MOPA','AMEBA'],
+  // 4x: R + ...
+  ['40','ROSA','RAIZ','RAZA'],        ['41','RATA','RUTA','RUEDA'],
+  ['42','RANA','RENO','RUNA'],        ['43','ROMA','RAMO','ARMA'],
+  ['44','RARO','RORRO','ARARA'],      ['45','RIEL','ARIEL','ROLLO'],
+  ['46','ROCA','ARCO','ORCA'],        ['47','RACHA','ORUGA','RAGA'],
+  ['48','RIFA','ROJO','REJA'],        ['49','ROPA','ARPA','RABO'],
+  // 5x: L + ...
+  ['50','LAZO','LOSA','LOZA'],        ['51','LATA','ALUD','LOTO'],
+  ['52','LUNA','LINO','LONA'],        ['53','LIMA','LOMA','OLMO'],
+  ['54','LIRA','LORO','ALERO'],       ['55','LILA','LULO','LILO'],
+  ['56','LOCA','LACA','ALCE'],        ['57','LECHE','LUCHA','LOGO'],
+  ['58','ELFO','ALFA','OLAF'],        ['59','LOBO','LAVA','LLAVE'],
+  // 6x: C/K/Q + ...
+  ['60','CASA','QUESO','COSO'],       ['61','COTA','CITA','QUITO'],
+  ['62','CINE','CANA','CUNA'],        ['63','CAMA','GOMA','CAMEO'],
+  ['64','CARA','CURA','CARRO'],       ['65','COLA','CALA','CUELLO'],
+  ['66','COCO','CUCA','QUIQUE'],      ['67','CACHO','COCHE','COACH'],
+  ['68','CAFE','CAJA','COFIA'],       ['69','CAVA','CABO','COPA'],
+  // 7x: CH/G + ...
+  ['70','GASA','CHOZA','GUISO'],      ['71','GATO','CHATO','GUETO'],
+  ['72','CHINO','CHINA','IGUANA'],    ['73','GEMA','GAMO','CHEMA'],
+  ['74','CHURRO','GRUA','GIRO'],      ['75','CHILE','GALA','CHELO'],
+  ['76','CHECO','GECKO','CHUECA'],    ['77','CHUCHO','GAUCHO','GAGO'],
+  ['78','CHIFA','GAFE','CHEF'],       ['79','CHIVO','CHEPA','GUAPA'],
+  // 8x: F/J + ...
+  ['80','FOSO','FOSA','JAZZ'],        ['81','FOTO','FETO','JUDO'],
+  ['82','FONO','FAUNA','JUNO'],       ['83','FAMA','JEME','JAMA'],
+  ['84','FARO','JARRA','FERIA'],      ['85','FILA','FILO','JALEO'],
+  ['86','FOCA','JACA','FOQUE'],       ['87','FICHA','FUEGO','FECHA'],
+  ['88','JEFE','FIFI','FIFA'],        ['89','FOBIA','JIPA','JOPO'],
+  // 9x: V/B/P + ...
+  ['90','VASO','PISO','BESO'],        ['91','VOTO','BOTA','PATO'],
+  ['92','VINO','PINO','BONO'],        ['93','PUMA','POMO','BOMA'],
+  ['94','PORRA','BARRO','PERA'],      ['95','PALO','BOLA','PIEL'],
+  ['96','VACA','BOCA','PICO'],        ['97','BICHO','PECHO','PACHO'],
+  ['98','BUFO','BIFE','PIFIA'],       ['99','PAPA','BABA','PIPA']
+];
+
+var SEC_USED = {'15':1,'18':1,'20':1,'22':1,'28':1,'48':1,'60':1,'72':1,'07':1};
+
+function buildCasillero() {
+  var grid = document.getElementById('casillero-grid');
+  CASILLERO.forEach(function(row) {
+    var num = row[0], w1 = row[1], w2 = row[2], w3 = row[3];
+    var cell = document.createElement('div');
+    cell.className = 'cas-cell' + (SEC_USED[num] ? ' cas-highlight' : '');
+    cell.innerHTML = '<div class="num">' + num + '</div><div class="word">' + w1 + '</div><div class="word2">' + w2 + ' &middot; ' + w3 + '</div>';
+    grid.appendChild(cell);
+  });
+}
+
+// QUIZ DATA
+var ALL_CARDS = [
+  // CRIPTO
+  {cat:'cripto',emoji:'&#128272;',q:'Cuantos bits tiene la clave de AES-128?',hint:'Piensa en el policia antidisturbios',num:'128',word:'TONFA',enc:'T(1)+N(2)+F(8)=128',scene:'Un policia aplasta un servidor con su TONFA exactamente 128 veces: el servidor explota en bytes de oro. T-N-F = 1-2-8 = 128.'},
+  {cat:'cripto',emoji:'&#128272;',q:'Cuantos bits tiene la clave de AES-192?',hint:'Algo que sella botellas',num:'192',word:'TAPON',enc:'T(1)+P(9)+N(2)=192',scene:'Un TAPON de corcho sella 192 secretos en una botella de criptografia. Aprietas y sale vapor cifrado. T-P-N = 1-9-2 = 192.'},
+  {cat:'cripto',emoji:'&#128272;',q:'Cuantos bits tiene la clave de AES-256?',hint:'Conexion entre dos puntos',num:'256',word:'ENLACE',enc:'N(2)+L(5)+C(6)=256',scene:'Un ENLACE de fibra dorada de 256 bits conecta dos satelites. Cortarlo destruye la Tierra. N-L-C = 2-5-6 = 256.'},
+  {cat:'cripto',emoji:'&#128272;',q:'Cuantos bits tiene la clave minima recomendada de RSA?',hint:'Agencia espacial + sorteo',num:'2048',word:'NASA RIFA',enc:'N(2)+S(0)=20 | R(4)+F(8)=48 -> 2048',scene:'La NASA organiza una RIFA galactica: el premio es una clave RSA de 2048 bits en titanio. Los astronautas hacen cola en gravedad cero. NS-RF = 20-48 = 2048.'},
+  {cat:'cripto',emoji:'&#128272;',q:'Cuantos bits usa ECC-256?',hint:'Mismo numero que AES-256',num:'256',word:'ENLACE',enc:'N(2)+L(5)+C(6)=256',scene:'El mismo ENLACE dorado pero doblado en espiral de curva eliptica. Ocupa la mitad de espacio que RSA pero igual de fuerte. N-L-C = 256.'},
+  {cat:'cripto',emoji:'&#128272;',q:'Cuantos bits produce SHA-1? (y por que es peligroso)',hint:'Comida mexicana caducada',num:'160',word:'TACOS',enc:'T(1)+C(6)+S(0)=160',scene:'TACOS caducados de 160 dias: los abres y huelen a colision hash. SHA-1 esta tan roto como estos tacos verdes. T-C-S = 1-6-0 = 160.'},
+  {cat:'cripto',emoji:'&#128272;',q:'Cuantos bits produce SHA-512?',hint:'Metal amarillo para instrumentos musicales',num:'512',word:'LATON',enc:'L(5)+T(1)+N(2)=512',scene:'Una campana de LATON gigante suena con 512 vibraciones por segundo. Cada vibracion es un bit del hash resonando por el universo. L-T-N = 5-1-2 = 512.'},
+  {cat:'cripto',emoji:'&#128272;',q:'Cuantos bits produce MD5? Es seguro para autenticacion?',hint:'Herramienta policial danada',num:'128',word:'TONFA ROTA',enc:'T(1)+N(2)+F(8)=128 | rota=inseguro',scene:'La TONFA ROTA de MD5: el policia intenta usarla pero se parte. 128 bits, completamente inutil para seguridad real. Mismo 128 que AES-128, pero rota.'},
+  // REGULATORIO
+  {cat:'reg',emoji:'&#9878;',q:'En cuantas horas hay que notificar una brecha bajo GDPR?',hint:'Trabajador asiatico con reloj de cuenta regresiva',num:'72h',word:'CHINO',enc:'CH(7)+N(2)=72',scene:'Un CHINO con reloj de cuenta regresiva corre a la oficina del DPO. Tiene exactamente 72 horas. Si no llega, la empresa paga 20M EUR. CH-N = 7-2 = 72.'},
+  {cat:'reg',emoji:'&#9878;',q:'En cuantos dias hay que notificar una brecha bajo HIPAA?',hint:'Edificio donde vivir',num:'60d',word:'CASA',enc:'C(6)+S(0)=60',scene:'Tu CASA de salud tiene 60 dias antes de que el HHS llame. El medico abre y hay 60 agentes federales contando cada dia que tardaste. C-S = 6-0 = 60.'},
+  {cat:'reg',emoji:'&#9878;',q:'Cuantos dias da CISA para parchear una vulnerabilidad KEV?',hint:'Material textil o para tejados',num:'15d',word:'TELA',enc:'T(1)+L(5)=15',scene:'CISA te da una TELA de arana de 15 dias para parchear. Si no lo haces, la arana (el exploit) llega y envuelve tu sistema en capullos. T-L = 1-5 = 15.'},
+  {cat:'reg',emoji:'&#9878;',q:'Cuantos anos deben conservarse los registros contables bajo SOX?',hint:'Cuerda que ata fuerte',num:'7 anos',word:'SOGA',enc:'S(0)+G(7)=07 -> 7',scene:'Una SOGA de SOX ata los libros contables durante 7 anos. El CFO intenta escapar pero la soga lo arrastra de vuelta al archivo. S-G = 0-7 = 7 anos.'},
+  // DOMINIOS
+  {cat:'dominio',emoji:'&#128202;',q:'Que porcentaje del examen Sec+ es el Dominio 1 (General Security Concepts)?',hint:'Habilidad o instinto natural',num:'12%',word:'TINO',enc:'T(1)+N(2)=12',scene:'Con TINO el consultor (12%) explica los conceptos generales mientras equilibra libros en la cabeza. T-N = 1-2 = 12%.'},
+  {cat:'dominio',emoji:'&#128202;',q:'Que porcentaje es el Dominio 2 (Threats, Vulnerabilities & Mitigations)?',hint:'Nina pequena',num:'22%',word:'NENA',enc:'N(2)+N(2)=22',scene:'La NENA conoce todas las amenazas: tiene un catalogo de malware en la mochila del colegio. N-N = 2-2 = 22%.'},
+  {cat:'dominio',emoji:'&#128202;',q:'Que porcentaje es el Dominio 3 (Security Architecture)?',hint:'Pieza de un tejado',num:'18%',word:'TEJA',enc:'T(1)+J(8)=18',scene:'La TEJA del tejado es la arquitectura de seguridad (18%): sin ella el edificio se moja. T-J = 1-8 = 18%.'},
+  {cat:'dominio',emoji:'&#128202;',q:'Que porcentaje es el Dominio 4 (Security Operations)? Es el mas grande.',hint:'Serpiente peligrosa africana',num:'28%',word:'NAJA',enc:'N(2)+J(8)=28',scene:'La NAJA cobra es el dominio de operaciones (28%): el mas grande y peligroso. N-J = 2-8 = 28%.'},
+  {cat:'dominio',emoji:'&#128202;',q:'Que porcentaje es el Dominio 5 (Security Program Management & Oversight)?',hint:'Agencia espacial americana',num:'20%',word:'NASA',enc:'N(2)+S(0)=20',scene:'La NASA gestiona el programa de seguridad (20%) desde Houston: controlan todo el ecosistema. N-S = 2-0 = 20%.'},
+  // CONFUNDIBLES
+  {cat:'conf',emoji:'&#129300;',q:'IDS vs IPS: cual DETECTA sin bloquear? cual BLOQUEA activamente?',hint:'Guardia vs Portero',num:'---',word:'IDS=Detecta / IPS=Previene',enc:'Passive vs Inline',scene:'IDS = guardia que AVISA (pasivo, out-of-band). IPS = portero que BLOQUEA la entrada (activo, inline). "iD reSearch" vs "iP Stop".'},
+  {cat:'conf',emoji:'&#129300;',q:'SIEM vs SOAR: cual AGREGA logs? cual AUTOMATIZA la respuesta?',hint:'Ver vs Actuar',num:'---',word:'SIEM=Logs / SOAR=Automatiza',enc:'"See Em" vs "Soar solo"',scene:'SIEM = "See Em" en el panel de logs (tu actuas despues). SOAR = vuela solo con playbooks automaticos. SIEM informa, SOAR ejecuta.'},
+  {cat:'conf',emoji:'&#129300;',q:'RTO vs RPO: cual mide el tiempo de recuperacion? cual mide los datos perdidos?',hint:'Tiempo vs Datos',num:'---',word:'RTO=Tiempo / RPO=Datos',enc:'"Time to Operate" vs "Point of backup"',scene:'RTO = cuanto tardamos en volver a funcionar? RPO = cuantos datos podemos perder? RTO es el reloj, RPO es el ultimo backup.'},
+  {cat:'conf',emoji:'&#129300;',q:'Diferencia clave entre Virus, Worm y Trojan',hint:'Host / Auto-propaga / Camuflado',num:'---',word:'Virus-Worm-Trojan',enc:'host / self-propagate / disguise',scene:'Virus = necesita host y accion humana. Worm = se propaga solo por red. Trojan = disfrazado de soft legitimo, el usuario lo instala voluntariamente.'},
+  {cat:'conf',emoji:'&#129300;',q:'AuthN vs AuthZ: cual verifica identidad? cual determina permisos?',hint:'Quien eres vs Que puedes',num:'---',word:'AuthN=Identidad / AuthZ=Permisos',enc:'N=iNdentidad / Z=permisos',scene:'AuthN = Quien eres? password, MFA, biometria. AuthZ = Que puedes hacer? roles, ACLs. Orden obligatorio: primero N, luego Z.'},
+  {cat:'conf',emoji:'&#129300;',q:'Formulas de riesgo cuantitativo: SLE y ALE',hint:'AV x EF y SLE x ARO',num:'---',word:'SLE=AVxEF / ALE=SLExARO',enc:'Single -> Annual',scene:'SLE = Asset Value x Exposure Factor (perdida de un incidente). ALE = SLE x ARO (perdida anual esperada). De activo a anual: AV x EF = SLE, SLE x ARO = ALE.'}
+];
+
+// QUIZ STATE
+var deck = [], idx = 0, okCount = 0, koCount = 0;
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function setFilter(val) { resetQuiz(val); }
+
+function buildDeck(filter) {
+  var cards = filter === 'all' ? ALL_CARDS : ALL_CARDS.filter(function(c){ return c.cat === filter; });
+  deck = shuffle(cards);
+  idx = 0; okCount = 0; koCount = 0;
+}
+
+function resetQuiz(filter) {
+  var f = filter || document.getElementById('quiz-filter').value;
+  buildDeck(f);
+  document.getElementById('done-screen').style.display = 'none';
+  document.getElementById('quiz-card').style.display = 'flex';
+  updateStats();
+  loadCard();
+}
+
+function loadCard() {
+  if (idx >= deck.length) { showDone(); return; }
+  var c = deck[idx];
+  var catNames = {cripto:'CRIPTO', reg:'REGULATORIO', dominio:'DOMINIO', conf:'CONFUNDIBLE'};
+  document.getElementById('c-cat').innerHTML = c.emoji + ' ' + catNames[c.cat];
+  document.getElementById('c-q').textContent = c.q;
+  document.getElementById('c-hint').textContent = c.hint;
+  document.getElementById('c-num').textContent = c.num;
+  document.getElementById('c-word').textContent = c.word;
+  document.getElementById('c-enc').textContent = c.enc;
+  document.getElementById('c-scene').textContent = c.scene;
+  document.getElementById('c-answer').classList.remove('show');
+  document.getElementById('reveal-btn').style.display = 'block';
+  updateStats();
+}
+
+function revealCard() {
+  document.getElementById('c-answer').classList.add('show');
+  document.getElementById('reveal-btn').style.display = 'none';
+}
+
+function judgeCard(ok) {
+  if (ok) okCount++; else koCount++;
+  idx++;
+  loadCard();
+}
+
+function updateStats() {
+  var done = okCount + koCount;
+  document.getElementById('s-tot').textContent = deck.length;
+  document.getElementById('s-ok').textContent = okCount;
+  document.getElementById('s-ko').textContent = koCount;
+  document.getElementById('prog-fill').style.width = deck.length > 0 ? (done / deck.length * 100) + '%' : '0%';
+}
+
+function showDone() {
+  document.getElementById('quiz-card').style.display = 'none';
+  document.getElementById('done-screen').style.display = 'block';
+  var pct = deck.length > 0 ? Math.round(okCount / deck.length * 100) : 0;
+  document.getElementById('done-score').textContent = pct + '%';
+  var msg = pct >= 90 ? 'Listo para el examen' : pct >= 70 ? 'Buen ritmo, sigue practicando' : 'Repasa las escenas y vuelve';
+  document.getElementById('done-msg').textContent = okCount + ' / ' + deck.length + ' tarjetas  -  ' + msg;
+}
+
+// TABS
+function showTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// INIT
+buildCasillero();
+buildDeck('all');
+loadCard();
+</script>
+</body>
+</html>

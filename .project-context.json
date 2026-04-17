@@ -1,0 +1,131 @@
+{
+  "project": {
+    "name": "Security+ SY0-701 - Materiales de Estudio",
+    "type": "study-material",
+    "status": "production",
+    "version": "2.0",
+    "description": "Material completo de preparación para certificación CompTIA Security+ SY0-701"
+  },
+  "context": {
+    "purpose": "Preparación completa para examen Security+ SY0-701",
+    "main_goal": "Aprobar Security+ con 85%+ antes de mayo 2026",
+    "target_audience": "Rubén - PRIORIDAD MÁXIMA"
+  },
+  "tech_stack": {
+    "languages": ["HTML", "JSON", "Markdown"],
+    "tools": ["Browser", "Obsidian/Notion", "Git"],
+    "deployment": "Local + Syncthing (móvil)"
+  },
+  "structure": {
+    "entry_points": [
+      "CLAUDE_SecurityPlus.md",
+      "Temario_SY0701.html",
+      "flashcards.json"
+    ],
+    "important_files": {
+      "flashcards.json": "382 flashcards (220 ALTA + 162 MEDIA prioritarias)",
+      "Glosario_Errores_Simulacros.html": "Términos de errores en simulacros",
+      "Glosario_Repaso_Final.html": "Glosario de repaso final",
+      "Temario_SY0701.html": "Temario completo estructurado",
+      "Arquitecturas_Red_SecPlus.html": "Diagramas de arquitecturas",
+      "01_Errores_Simulacros/": "Análisis de errores por simulacro",
+      "Simulacros/": "Simulacros realizados y resultados",
+      "segundachance/": "Preguntas para repasar"
+    },
+    "ignore": [
+      ".git/",
+      "00_Archivo/"
+    ]
+  },
+  "conventions": {
+    "flashcards_format": {
+      "a": "Acrónimo/Término",
+      "f": "Full name (inglés)",
+      "d": "Definición (español)",
+      "nemo": "Nemotecnia",
+      "si": "Casos de uso (SÍ es esto)",
+      "no": "Errores comunes (NO es esto)",
+      "patron": "Patrones de examen",
+      "rel": "Términos relacionados"
+    },
+    "priority": "Flashcards ALTA > MEDIA > BAJA",
+    "language": "Español con términos técnicos en inglés"
+  },
+  "tasks": {
+    "common": [
+      "Añadir flashcards de errores en simulacros",
+      "Actualizar Glosario_Errores_Simulacros.html",
+      "Revisar flashcards ALTA prioridad",
+      "Analizar errores de nuevos simulacros",
+      "Crear nemotecnias para conceptos difíciles"
+    ],
+    "maintenance": [
+      "Sincronizar con móvil vía Syncthing",
+      "Backup antes de cambios masivos",
+      "Mantener estructura de directorios limpia"
+    ]
+  },
+  "auto_actions": {
+    "on_start": [
+      "Contar flashcards actuales por prioridad",
+      "Verificar integridad de flashcards.json",
+      "Revisar si hay nuevos simulacros en Simulacros/ para analizar"
+    ],
+    "on_flashcard_add": [
+      "Verificar formato correcto (a, f, d, nemo, si, no, patron, rel)",
+      "Asignar prioridad ALTA si es de error de simulacro",
+      "Detectar duplicados por término 'a'",
+      "Validar JSON antes de guardar"
+    ],
+    "on_finish": [
+      "Actualizar Glosario_Errores_Simulacros.html si se añadieron flashcards",
+      "Verificar que todos los HTML abren correctamente",
+      "Git commit si hubo cambios significativos"
+    ]
+  },
+  "skills_needed": {
+    "primary": ["Security+", "Conceptos de seguridad", "Nemotecnias"],
+    "secondary": ["HTML", "JSON", "Markdown"],
+    "domain_knowledge": [
+      "CompTIA Security+ SY0-701",
+      "General Security Concepts",
+      "Threats, Vulnerabilities & Mitigations",
+      "Security Architecture",
+      "Security Operations",
+      "Security Program Management"
+    ]
+  },
+  "study_resources": {
+    "plan": "Plan de 8 semanas estructurado",
+    "flashcards": "382 flashcards totales",
+    "labs": "15 laboratorios prácticos (~17 horas)",
+    "logs_analysis": "20 ejemplos de análisis de logs",
+    "calculations": "12 ejercicios de cálculos",
+    "simulacros": "Múltiples simulacros HTML"
+  },
+  "notes": {
+    "last_update": "2026-04-11",
+    "exam_date": "Antes de mayo 2026",
+    "target_score": "85%+",
+    "warnings": [
+      "NO borrar flashcards ALTA prioridad sin verificar",
+      "NO modificar estructura de flashcards.json (rompe HTML)",
+      "SIEMPRE verificar JSON antes de guardar",
+      "Priorizar razonamiento sobre memorización"
+    ],
+    "tips": [
+      "Flashcards ALTA son de errores reales - revisar primero",
+      "Nemotecnias visuales funcionan mejor para Rubén",
+      "Usar patrones de examen para predecir trampas",
+      "Relacionar conceptos nuevos con conocimientos previos"
+    ],
+    "focus_areas": [
+      "Controles de seguridad (preventivo/detective/correctivo)",
+      "Criptografía (PKI, certificados, algoritmos)",
+      "Network security (firewalls, IDS/IPS, VPN)",
+      "Cloud security (modelos, responsabilidad compartida)",
+      "Incident response (fases, procedimientos)",
+      "Risk management (cálculos, frameworks)"
+    ]
+  }
+}

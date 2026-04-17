@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security+ SY0-701 — Simulacro #23</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root{
+--bg:#0f1117;--bg2:#1a1d27;--bg3:#242836;--bg4:#2e3344;
+--tx:#e4e6ee;--tx2:#9ca0b0;--tx3:#686d82;
+--bd:#2e3344;--bd2:#3d4259;
+--accent:#6c8aff;--accent2:#4a6aef;--accent-bg:rgba(108,138,255,0.08);
+--green:#34d399;--green-bg:rgba(52,211,153,0.1);--green-bd:rgba(52,211,153,0.3);
+--red:#f87171;--red-bg:rgba(248,113,113,0.1);--red-bd:rgba(248,113,113,0.3);
+--amber:#fbbf24;
+--font:'IBM Plex Sans',system-ui,sans-serif;
+--mono:'IBM Plex Mono',monospace;
+--radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--tx);line-height:1.6;min-height:100vh}
+.wrap{max-width:820px;margin:0 auto;padding:16px}
+.header{text-align:center;padding:24px 0 16px;border-bottom:1px solid var(--bd)}
+.header h1{font-size:22px;font-weight:700;letter-spacing:-0.5px}
+.header .sub{font-size:13px;color:var(--tx2);margin-top:4px}
+.timer-bar{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--bd);padding:10px 0}
+.timer-inner{max-width:820px;margin:0 auto;padding:0 16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.timer{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--accent);min-width:80px}
+.timer.warning{color:var(--amber)}.timer.critical{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.progress-text{font-size:13px;color:var(--tx2)}
+.progress-bar{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.3s}
+.start-screen{text-align:center;padding:60px 20px}
+.start-screen h2{font-size:28px;font-weight:700;margin-bottom:12px}
+.start-screen p{color:var(--tx2);font-size:14px;margin-bottom:8px;max-width:500px;margin-left:auto;margin-right:auto}
+.start-screen .specs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:28px 0;max-width:480px;margin-left:auto;margin-right:auto}
+.spec{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--radius);padding:16px 12px}
+.spec-num{font-size:28px;font-weight:700;color:var(--accent)}
+.spec-label{font-size:12px;color:var(--tx2);margin-top:4px}
+.btn-start{background:var(--accent);color:#fff;border:none;padding:14px 48px;font-size:16px;font-weight:600;border-radius:var(--radius);cursor:pointer;font-family:var(--font);margin-top:20px;transition:all 0.2s}
+.btn-start:hover{background:var(--accent2);transform:translateY(-1px)}
+/* Cards */
+.q-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--radius);padding:20px;margin:12px 0}
+.q-num{font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.q-domain{font-size:10px;color:var(--tx3);background:var(--bg3);padding:2px 8px;border-radius:4px;margin-left:8px}
+.q-type-badge{font-size:10px;color:var(--amber);background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);padding:2px 8px;border-radius:4px;margin-left:6px}
+.q-text{font-size:15px;font-weight:500;margin-bottom:16px;line-height:1.7}
+.q-scenario{font-size:13px;color:var(--tx2);background:var(--bg3);border-left:3px solid var(--accent);padding:12px 14px;border-radius:0 var(--radius) var(--radius) 0;margin-bottom:14px;line-height:1.7}
+.q-instruction{font-size:12px;color:var(--amber);font-weight:600;margin-bottom:12px;padding:8px 12px;background:rgba(251,191,36,0.08);border-radius:6px;border:1px solid rgba(251,191,36,0.2)}
+/* Opciones single */
+.opt{display:block;padding:12px 14px;margin:6px 0;border:1px solid var(--bd);border-radius:8px;cursor:pointer;font-size:14px;transition:all 0.15s;background:var(--bg3)}
+.opt:hover:not(.disabled){background:var(--bg4);border-color:var(--bd2)}
+.opt.selected{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.opt.correct{background:var(--green-bg)!important;border-color:var(--green-bd)!important;color:var(--green)!important}
+.opt.wrong{background:var(--red-bg)!important;border-color:var(--red-bd)!important;color:var(--red)!important}
+.opt.disabled{pointer-events:none}
+.opt-letter{font-family:var(--mono);font-weight:600;margin-right:10px;font-size:12px;min-width:20px;display:inline-block}
+/* Multi-select */
+.opt-multi .opt-letter{font-size:16px}
+.opt-multi.selected .opt-letter{color:var(--accent)}
+.opt-multi.correct .opt-letter{color:var(--green)!important}
+.opt-multi.wrong .opt-letter{color:var(--red)!important}
+.multi-counter{font-size:12px;color:var(--tx2);margin-top:4px;margin-bottom:12px}
+.multi-counter span{color:var(--accent);font-weight:600}
+/* Ordering */
+.order-slots{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;padding:12px;background:var(--bg);border:1px dashed var(--bd2);border-radius:8px}
+.order-slots-label{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.order-slot{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;background:var(--bg3);border:1px solid var(--bd);min-height:44px;font-size:14px;transition:all 0.15s}
+.order-slot.empty{color:var(--tx3);font-style:italic;border-style:dashed}
+.order-slot.slot-correct{background:var(--green-bg)!important;border-color:var(--green-bd)!important;color:var(--green)!important}
+.order-slot.slot-wrong{background:var(--red-bg)!important;border-color:var(--red-bd)!important;color:var(--red)!important}
+.slot-num{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);min-width:20px}
+.slot-remove{margin-left:auto;font-size:16px;cursor:pointer;color:var(--tx3);padding:0 4px}
+.slot-remove:hover{color:var(--red)}
+.opt-order{display:flex;align-items:center;gap:10px;padding:12px 14px;margin:6px 0;border:1px solid var(--bd);border-radius:8px;cursor:pointer;font-size:14px;transition:all 0.15s;background:var(--bg3)}
+.opt-order:hover:not(.disabled):not(.placed){background:var(--bg4);border-color:var(--bd2)}
+.opt-order.placed{opacity:0.4;pointer-events:none;border-style:dashed}
+.opt-order.disabled{pointer-events:none}
+.opt-order.correct{background:var(--green-bg)!important;border-color:var(--green-bd)!important;color:var(--green)!important;opacity:1}
+.opt-order.wrong{background:var(--red-bg)!important;border-color:var(--red-bd)!important;color:var(--red)!important;opacity:1}
+/* Nav */
+.explanation{display:none;background:var(--bg3);border-radius:8px;padding:14px;margin-top:12px;font-size:13px;color:var(--tx2);line-height:1.7;border-left:3px solid var(--green)}
+.explanation.show{display:block}.explanation b{color:var(--green)}
+.q-nav{display:flex;justify-content:space-between;align-items:center;margin:20px 0}
+.btn{padding:10px 24px;border:1px solid var(--bd);border-radius:8px;background:var(--bg2);color:var(--tx);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);transition:all 0.15s}
+.btn:hover{background:var(--bg3);border-color:var(--bd2)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2)}
+.btn-finish{background:#dc2626;border-color:#dc2626;color:#fff}
+.btn-finish:hover{background:#b91c1c}
+.btn:disabled{opacity:0.3;pointer-events:none}
+.q-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:16px 0}
+.q-dot{width:100%;aspect-ratio:1;border-radius:6px;border:1px solid var(--bd);background:var(--bg3);cursor:pointer;font-size:11px;font-family:var(--mono);display:flex;align-items:center;justify-content:center;color:var(--tx3);transition:all 0.15s}
+.q-dot:hover{border-color:var(--accent)}
+.q-dot.current{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.q-dot.answered{background:var(--accent);border-color:var(--accent);color:#fff}
+.q-dot.correct-dot{background:var(--green);border-color:var(--green);color:#fff}
+.q-dot.wrong-dot{background:var(--red);border-color:var(--red);color:#fff}
+/* Results */
+.results{text-align:center;padding:32px 0}
+.results h2{font-size:28px;font-weight:700;margin-bottom:8px}
+.results .score-big{font-size:72px;font-weight:700;margin:16px 0}
+.results .score-big.pass{color:var(--green)}.results .score-big.fail{color:var(--red)}
+.results .verdict{font-size:18px;font-weight:600;margin-bottom:24px}
+.domain-scores{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:20px 0}
+@media(max-width:600px){.domain-scores{grid-template-columns:repeat(2,1fr)}.q-grid{grid-template-columns:repeat(9,1fr)}}
+.d-score{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--radius);padding:14px 10px;text-align:center}
+.d-score-label{font-size:11px;color:var(--tx2);font-weight:500}
+.d-score-pct{font-size:24px;font-weight:700;margin-top:4px}
+.d-score-detail{font-size:11px;color:var(--tx3);margin-top:2px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="timer-bar hidden" id="timerBar">
+<div class="timer-inner">
+<div class="timer" id="timer">90:00</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+<div class="progress-text" id="progressText">0 / 90</div>
+</div>
+</div>
+<div class="wrap">
+<div class="header">
+<h1>🔐 Security+ SY0-701 — Simulacro #23</h1>
+<p class="sub">Examen de práctica con escenarios realistas</p>
+</div>
+<div id="startScreen" class="start-screen">
+<h2>¿Preparado?</h2>
+<p>90 preguntas distribuidas por los 5 dominios con el mismo peso que el examen CompTIA real.</p>
+<div class="specs">
+<div class="spec"><div class="spec-num">90</div><div class="spec-label">Preguntas</div></div>
+<div class="spec"><div class="spec-num">90</div><div class="spec-label">Minutos</div></div>
+<div class="spec"><div class="spec-num">750</div><div class="spec-label">Para aprobar</div></div>
+</div>
+<p style="font-size:12px;color:var(--tx3)">D1 General 12% · D2 Amenazas 22% · D3 Arquitectura 18% · D4 Operaciones 28% · D5 Programa 20%</p>
+<button class="btn-start" onclick="startExam()">Empezar examen</button>
+<br><button class="btn-start" onclick="reviewOnly()" style="background:var(--green);margin-top:10px;font-size:14px;padding:10px 36px">📖 Solo ver correcciones</button>
+</div>
+<div id="examArea" class="hidden">
+<div class="q-grid" id="qGrid"></div>
+<div id="questionContainer"></div>
+<div class="q-nav">
+<button class="btn" id="btnPrev" onclick="navQ(-1)" disabled>← Anterior</button>
+<span id="navInfo" style="font-size:12px;color:var(--tx3)"></span>
+<button class="btn btn-primary" id="btnNext" onclick="navQ(1)">Siguiente →</button>
+</div>
+<div style="text-align:center;margin:20px 0">
+<button class="btn btn-finish" onclick="finishExam()">Finalizar examen</button>
+</div>
+</div>
+<div id="resultsArea" class="hidden results"></div>
+<div id="downloadArea" class="hidden" style="text-align:center;margin:20px 0">
+<button class="btn btn-primary" onclick="generateMD()" style="background:#34d399;border-color:#34d399">📥 Descargar solo errores (.md)</button>
+</div>
+</div>
+<script>
+const Q=[
+// ===== D1: General Security Concepts (~11) =====
+{d:1, s:"Un cliente solicita acceso a un servicio en una red Windows empresarial.", q:"¿Cuál componente Kerberos otorga el ticket inicial?", o:["Ticket Granting Ticket (TGT)", "Key Distribution Center (KDC)", "Authentication Server (AS)", "Service Principal Name (SPN)"], c:2},
+{d:1, q:"¿Cuál es la diferencia entre TOTP y HOTP?", o:["TOTP basado en tiempo; HOTP basado en contador de eventos", "HOTP es más seguro que TOTP", "TOTP funciona sin sincronización; HOTP requiere sincronización exacta", "Son tecnologías equivalentes para 2FA"], c:0},
+{d:1, s:"Se inserta un documento falso con un embedded token en el servidor de documentos.", q:"¿Qué tecnología de engaño se está usando?", o:["Honeypot", "Honeyfile", "Canary token", "Ambas B y C"], c:3},
+{d:1, q:"¿Cuál principio Zero Trust limita a cada usuario solo a los recursos que necesita para su trabajo?", o:["Segmentación", "Mínimo privilegio", "Cifrado total", "Detección continua"], c:1},
+{d:1, q:"En Kerberos, ¿cuál es la función del Ticket Granting Server (TGS)?", o:["Validar las credenciales del usuario en el dominio", "Emitir tickets para acceder a servicios específicos", "Almacenar las contraseñas en el Active Directory", "Detectar intentos de ataque de fuerza bruta"], c:1},
+{d:1, q:"¿Cuál es la diferencia principal entre un MAC y un HMAC?", o:["MAC usa clave simétrica; HMAC no usa clave", "HMAC usa función hash; MAC usa algoritmo de cifrado", "MAC es más rápido que HMAC (relación invertida)", "No hay diferencia técnica significativa"], c:1},
+{d:1, q:"Un firewall que bloquea el tráfico no autorizado es un ejemplo de control:", o:["Detectivo", "Correctivo", "Preventivo", "Compensatorio"], c:2},
+{d:1, q:"¿Cuál NO es un factor válido en autenticación multifactor?", o:["Algo que sabes (contraseña)", "Algo que tienes (token)", "Algo que eres (biometría)", "Algo que esperas (predicción)"], c:3},
+{d:1, s:"Un usuario tiene rol de 'Administrador' que le otorga permisos sobre todos los servidores.", q:"¿Qué modelo de control de acceso se está usando?", o:["ABAC", "RBAC", "MAC", "DAC"], c:1},
+{d:1, q:"¿Cuál es la diferencia principal entre un honeypot y un honeynet?", o:["Honeypot es un sistema individual; honeynet es una red completa simulada", "Honeypot detecta; honeynet previene (concepto incorrecto)", "Honeynet es para malware; honeypot para atacantes", "No hay diferencia técnica, son términos sinónimos"], c:0},
+{d:1, s:"Una empresa transmite datos sensibles entre servidores sin encriptación.", q:"¿Cuál aspecto de la CIA triad se ve más afectado?", o:["Autenticidad", "Confidencialidad", "Disponibilidad", "Integridad"], c:1},
+
+// ===== D2: Threats, Vulnerabilities, Mitigations (~20) =====
+{d:2, q:"¿Cuál es la principal diferencia entre un ataque de diccionario y fuerza bruta?", o:["Dictionary usa palabras comunes; brute force prueba todas las combinaciones", "Brute force solo funciona offline (concepto incorrecto)", "Dictionary es más rápido pero menos exhaustivo", "No hay diferencia técnica significativa (matiz incorrecto pero plausible)"], c:0},
+{d:2, q:"¿Cuál es la diferencia entre una vulnerabilidad 0-day y una conocida?", o:["0-day es desconocida por el vendor; vulnerabilidad conocida tiene parche", "0-day es más fácil de explotar que vulnerabilidades conocidas", "0-day solo afecta sistemas operativos Windows actuales", "No hay diferencia técnica en el impacto de seguridad"], c:0},
+{d:2, s:"Una solicitud forja un pedido en otro sitio web usando la sesión del usuario autenticado.", q:"¿Qué ataque es este?", o:["XSS Stored", "CSRF", "SQLi", "XXE"], c:1},
+{d:2, s:"Un APT utiliza un backdoor para mantener acceso permanente al sistema comprometido.", q:"¿En cuál fase del APT ocurre esto?", o:["Reconnaissance", "Intrusion", "Persistence", "Exfiltration"], c:2},
+{d:2, s:"Un sitio guarda datos maliciosos en su BD que se ejecutan cuando otro usuario los visualiza.", q:"¿Qué tipo de XSS es este?", o:["Reflected XSS", "Stored XSS", "DOM-based XSS", "Cross-site request forgery"], c:1},
+{d:2, s:"Un atacante encadena múltiples vulnerabilidades menores para lograr acceso total.", q:"¿Qué se está demostrando?", o:["Exploit chain", "Privilege escalation", "Lateral movement", "Post-exploitation"], c:0},
+{d:2, q:"¿Cuál malware recopila información del usuario sin consentimiento?", o:["Ransomware", "Spyware", "Adware", "Logic bomb"], c:1},
+{d:2, q:"¿Cuál ataque usa servidores DNS abiertos para amplificar el tráfico contra una víctima?", o:["DNS poisoning", "DNS amplification", "DNS spoofing", "DNSSec attack"], c:1},
+{d:2, s:"Un atacante modifica el JavaScript en el lado del cliente para acceder a datos sensibles.", q:"¿Qué tipo de ataque es este?", o:["Stored XSS", "Reflected XSS", "DOM-based XSS", "CSRF (matiz incorrecto pero plausible)"], c:2},
+{d:2, s:"Un atacante inserta código HTML/JavaScript en un campo de búsqueda que se ejecuta en el navegador.", q:"¿Qué tipo de ataque web es este?", o:["SQLi (concepto incorrecto)", "XSS Reflected", "CSRF (relación invertida)", "XXE (matiz incorrecto pero plausible)"], c:1},
+{d:2, s:"Un atacante contamina un sitio web popular visitado por el grupo objetivo.", q:"¿Qué técnica es esta?", o:["Typosquatting", "Watering hole", "Clickjacking", "Domain shadowing"], c:1},
+{d:2, q:"¿Cuál métrica CVSS describe si se necesita autenticación para explotar?", o:["Attack Complexity", "Privileges Required", "User Interaction", "Scope (matiz incorrecto pero plausible)"], c:1},
+{d:2, s:"Un usuario accede a /profile?id=123 pero cambia el ID y accede a otros perfiles.", q:"¿Qué vulnerabilidad es esta?", o:["Path Traversal", "IDOR", "CSRF", "Clickjacking"], c:1},
+{d:2, q:"¿Cuál tipo de SQL injection el atacante no ve directamente los resultados pero obtiene info con lógica booleana?", o:["Error-based", "Blind SQLi", "Union-based", "Time-based"], c:1},
+{d:2, q:"¿Cuál es la diferencia entre on-path attack y man-in-the-middle?", o:["No hay diferencia; son términos equivalentes", "On-path es más moderno; MITM es antiguo", "On-path requiere más privilegios", "MITM solo funciona en WiFi; on-path en cualquier red"], c:0},
+{d:2, q:"¿Cuál es la diferencia entre un virus y un worm?", o:["Virus requiere intervención del usuario; worm se propaga automáticamente", "Worm es más antiguo que virus (concepto incorrecto)", "Virus infecta ficheros; worm solo memoria (relación invertida)", "No hay diferencia técnica en el SY0-701 (matiz incorrecto pero plausible)"], c:0},
+{d:2, q:"¿Cuál es la mitigación más efectiva contra ransomware?", o:["Antivirus actualizado (concepto incorrecto)", "Backup offline regular + parches de SO", "Firewall configurado (relación invertida)", "Autenticación multifactor"], c:1},
+{d:2, s:"Un programa se propaga por red sin intervención del usuario, copiándose a sí mismo.", q:"¿Qué tipo de malware es este?", o:["Virus", "Worm", "Trojan", "RAT"], c:1},
+{d:2, s:"Un malware permanece inactivo hasta que se cumple una condición específica (ej: fecha).", q:"¿Qué tipo de malware es este?", o:["Wiper (concepto incorrecto)", "Logic bomb", "RAT (relación invertida)", "Keylogger"], c:1},
+{d:2, s:"Un sitio web detecta que se ejecutó JavaScript desde un dominio diferente.", q:"¿Qué protección se activa?", o:["CORS", "CSP", "HSTS", "X-Frame-Options"], c:1},
+
+// ===== D3: Security Architecture (~16) =====
+{d:3, q:"¿Cuál método de detección de IDS es más apropiado para patrones conocidos de ataque con tasa mínima de falsos positivos?", o:["Detección basada en anomalías", "Detección basada en firmas", "Análisis heurístico completo", "Machine learning sin supervisión"], c:1},
+{d:3, s:"Se detectan múltiples intentos fallidos de login RDP contra servidores internos desde diferentes IPs en 5 minutos.", q:"¿Cuál mecanismo debería bloquearse primero?", o:["Toda la red", "El rango de IPs atacantes en firewall", "Solo puerto 3389 internamente", "Deshabilitar RDP completamente"], c:1},
+{d:3, s:"Una empresa adquiere infraestructura en AWS donde el proveedor gestiona hipervisión, red física y almacenamiento.", q:"¿Cuál es el modelo de servicio?", o:["SaaS", "PaaS", "IaaS", "FaaS"], c:2},
+{d:3, q:"¿Cuál protocolo especifica qué hacer con correos que fallan SPF/DKIM?", o:["SPF", "DKIM", "DMARC", "TLSA"], c:2},
+{d:3, q:"¿Cuál es la desventaja principal de CRL vs OCSP para validación de certificados?", o:["CRL es más lento", "CRL puede crecer muy grande", "OCSP requiere servidor siempre disponible", "CRL no soporta revocación inmediata"], c:1},
+{d:3, q:"¿Cuál es la mejora de rendimiento de TLS 1.3 en el handshake respecto a TLS 1.2?", o:["Mayor tamaño de certificados", "Reducción de RTT (Round-Trip Time)", "Cilindros de clave más robustos", "Autenticación de servidor obligatoria"], c:1},
+{d:3, q:"Una infraestructura crítica requiere aislamiento total de la red de producción respecto a internet.", o:["Firewall bidireccional", "Air gap (desconexión física)", "NAT inverso", "Proxy inverso"], c:1},
+{d:3, s:"Dos servidores críticos requieren alta disponibilidad: si uno falla, el otro asume automáticamente todas las conexiones.", q:"¿Cuál es la configuración?", o:["Active-passive con failover automático", "Active-active con balanceo", "Passive-passive con heartbeat", "Standby manual"], c:0},
+{d:3, q:"¿Cuál herramienta monitoriza continuamente configuraciones en la nube para detectar desviaciones de políticas de seguridad?", o:["CWPP (Cloud Workload Protection)", "CSPM (Cloud Security Posture Management)", "CWP tradicional", "EDR en cloud"], c:1},
+{d:3, q:"¿Cuál mecanismo en DNSSEC asegura la integridad de respuestas DNS?", o:["Cifrado simétrico de consultas", "Firmas digitales en registros DNS", "Tunneling DNS sobre VPN", "DANE obligatorio"], c:1},
+{d:3, s:"En VPN IPsec, el cliente remoto requiere cifrado y autenticación sin encabezado adicional.", q:"¿Qué protocolo debería emplearse?", o:["AH (Authentication Header)", "ESP (Encapsulating Security Payload)", "IKE fase 1", "SHA-256 solo"], c:1},
+{d:3, s:"Se requiere establecer conexión cifrada entre dos oficinas a través de internet para datos sensibles.", q:"¿Cuál protocolo es más robusto para este escenario sitio a sitio?", o:["SSL VPN", "IPsec en modo transporte", "IPsec en modo túnel", "PPTP"], c:2},
+{d:3, s:"Una red inalámbrica corporativa requiere autenticación de usuarios contra directorio centralizado con certificados.", q:"¿Cuál estándar lo permite?", o:["WPA2 solo", "WPA3 obligatorio", "802.1X con EAP", "WEP mejorado"], c:2},
+{d:3, q:"¿Cuál principio de arquitectura requiere múltiples capas independientes de defensa?", o:["Single point of failure", "Defense in depth", "Zero Trust exclusivamente", "Firewall único potente"], c:1},
+{d:3, q:"Una solución implementa: capa 7 inspection, sandbox dinámico, análisis de comportamiento y correlación.", o:["Firewall tradicional stateful", "NGFW (Next-Generation Firewall)", "IDS pasivo", "Proxy de aplicación simple"], c:1},
+{d:3, s:"En una arquitectura de red de 3 niveles, servidores web no deben acceder directamente a las bases de datos.", q:"¿Qué componente gestiona tráfico entre zonas de forma granular?", o:["Una VLAN de gestión", "Un jump server o bastion host", "Un WAF", "Un balanceador de carga"], c:1},
+
+// ===== D4: Security Operations (~25) =====
+{d:4, s:"El equipo planea parchear servidores críticos con aplicaciones legacy.", q:"¿Por qué probar patches en staging antes de producción?", o:["Asegurar que se aplican en horario correcto", "Validar que no rompan aplicaciones dependientes", "Reducir tamaño de archivos de patch", "Garantizar acceso después del patch"], c:1},
+{d:4, s:"El equipo encuentra un S3 bucket con políticas que permiten acceso público.", q:"¿Cuál es el riesgo de bucket policy permitiendo 'Principal: *'?", o:["Solo afecta a usuarios dentro de la VPC", "Permite a cualquier persona en internet acceder", "Reduce latencia de acceso a datos", "Aumenta encriptación automáticamente"], c:1},
+{d:4, s:"Un equipo implementa YARA rules para detectar patrones de malware en tráfico.", q:"¿Cuál es el propósito de las reglas YARA?", o:["Comprimir archivos sospechosos para análisis", "Definir patrones para identificar malware en archivos", "Encriptar datos de seguridad", "Acelerar velocidad de copia de archivos"], c:1},
+{d:4, q:"En Syslog, ¿cuál es el nivel numérico para 'Critical'?", o:["4 (Warning)", "2 (Critical)", "1 (Alert)", "0 (Emergency)"], c:1},
+{d:4, q:"¿Cuál métrica CVSS v3.1 cuantifica el daño potencial si se explota la vulnerabilidad?", o:["Attack Vector", "Impact Score (C/I/A)", "Attack Complexity", "Privileges Required"], c:1},
+{d:4, s:"Una empresa BYOD preocupada por jailbreak no autorizado en dispositivos personales.", q:"¿Cuál es el riesgo principal de dispositivos jailbreak?", o:["No pueden conectarse a Wi-Fi corporativo", "Usuario elude controles y accede a datos sin restricción", "El dispositivo consume más ancho de banda", "El dispositivo requiere más actualizaciones"], c:1},
+{d:4, q:"¿Cuál es el método más apropiado para adquisición de evidencia disco duro sin modificarlo?", o:["Copia manual de archivos", "Imagen forense bit-a-bit con hash", "Backup incremental", "Sincronización rsync"], c:1},
+{d:4, s:"Una organización necesita compartir información de IoCs con socios de seguridad.", q:"¿Cuáles son ejemplos de tipos de IoC?", o:["Hashes de archivo, direcciones IP, dominios", "Declaraciones de apetito de riesgo de la organización", "Términos y condiciones de contratos de proveedores", "Longitudes de claves de encriptación utilizadas"], c:0},
+{d:4, s:"Una organización adopta Secure SDLC con múltiples fases de desarrollo.", q:"¿En cuál fase del SDLC es más crítico implementar controles?", o:["Solo en testing antes de producción", "En la fase de diseño, antes de iniciar desarrollo", "Solo en la fase de deployment", "Seguridad se valida después de estar en producción"], c:1},
+{d:4, q:"¿Cuál archivo de log de Linux registra intentos de login SSH?", o:["/var/log/syslog", "/var/log/auth.log", "/var/log/access.log", "/var/log/kernel.log"], c:1},
+{d:4, s:"Un equipo ejecuta fuzzing contra una API para descubrir vulnerabilidades de parsing.", q:"¿Cuál es el propósito principal del fuzzing?", o:["Documentar todas las funciones de API", "Inyectar datos inválidos para provocar fallos", "Optimizar rendimiento de la aplicación", "Validar cumplimiento de estándares de formato"], c:1},
+{d:4, s:"Una compañía implementa CloudTrail en AWS para auditar acciones de API.", q:"¿Cuál es el propósito principal de CloudTrail logging?", o:["Mejorar velocidad de instancias EC2", "Proporcionar trail auditable de acciones y cambios", "Reducir costos de almacenamiento en S3", "Permitir acceso público a logs de auditoría"], c:1},
+{d:4, q:"¿Cuál es la herramienta estándar para analizar memoria RAM capturada en forense?", o:["FTK", "Volatility", "Autopsy", "EnCase solo"], c:1},
+{d:4, s:"Un analista necesita analizar malware sospechoso sin infectar su sistema.", q:"¿Cuál es el propósito de usar sandbox en análisis?", o:["Comprimir malware a archivo más pequeño", "Aislar ejecución en ambiente controlado sin riesgo", "Encriptar malware antes de analizarlo", "Compartir malware con otros analistas de forma segura"], c:1},
+{d:4, s:"Una vulnerabilidad tiene Impact Score alto pero Attack Complexity muy alta.", q:"¿Cuál será aproximadamente su CVSS base?", o:["9.8 (crítico)", "7.2 (alto)", "4.5 (medio)", "1.0 (bajo)"], c:1},
+{d:4, q:"¿Cuál es la práctica de búsqueda proactiva en logs históricos para encontrar compromiso anterior desconocido?", o:["Incident response estándar", "Threat hunting", "Compliance audit", "Vulnerability scanning"], c:1},
+{d:4, s:"Una organización desplega dispositivos móviles corporativos y permite BYOD bajo controles.", q:"¿Cuál es la principal diferencia entre MDM y MAM?", o:["MDM controla apps; MAM controla el dispositivo", "MDM controla dispositivo; MAM controla apps", "Ambos tienen funcionalidad idéntica", "MDM es para Android; MAM para iOS"], c:1},
+{d:4, s:"El RTO es 4 horas, RPO es 1 hora. Se ejecuta backup incremental cada hora.", q:"¿Cuál es el impacto si un fallo ocurre 45 minutos después del último backup?", o:["Se pierden 45 minutos de datos, excepto con backup incremental", "Ningún impacto porque RPO es de 1 hora", "Se pierden 45 minutos de datos, excede el RPO", "El RTO se cumple pero RPO se viola"], c:2},
+{d:4, s:"El equipo detecta traffic sospechoso que se conecta a un servidor C2 malicioso.", q:"¿Cuál es el beneficio de bloquear comunicaciones a C2 conocidos?", o:["Reduce latencia de conexiones legítimas", "Previene exfiltración de datos y comandos maliciosos", "Elimina completamente malware del sistema", "Aumenta velocidad de procesos del sistema"], c:1},
+{d:4, s:"El equipo analiza un malware reciente e identifica técnicas de TTPs.", q:"¿Cuál es el propósito de mapear TTPs a MITRE ATT&CK?", o:["Reducir el tamaño del malware", "Entender comportamientos adversarios y mejorar defensas", "Aumentar velocidad de detección de malware", "Automatizar completamente la respuesta"], c:1},
+{d:4, s:"Un SIEM recibe 10 millones de eventos diarios y necesita identificar patrones anómalos.", q:"¿Cuál es la función principal de las reglas de correlación?", o:["Almacenar eventos indefinidamente", "Conectar eventos que indican una amenaza", "Cifrar logs en tránsito", "Generar reportes automáticos cada hora"], c:1},
+{d:4, s:"Un desarrollador escribe código sin validar entrada de usuario. El equipo prueba durante desarrollo.", q:"¿Cuál es la diferencia entre SAST y DAST?", o:["SAST analiza código fuente; DAST prueba en ejecución", "SAST es más caro; DAST es más económico", "SAST detecta malware; DAST detecta inyecciones SQL", "Ambos idénticos en diferentes lenguajes"], c:0},
+{d:4, s:"Una organización usa CSPM para monitorear su entorno AWS.", q:"¿Cuál es la función principal de una herramienta CSPM?", o:["Ejecutar máquinas virtuales en la nube económicamente", "Detectar misconfigurations y alertar desviaciones", "Reemplazar firewalls tradicionales con reglas cloud", "Automatizar deploys sin considerar seguridad"], c:1},
+{d:4, s:"El equipo implementa code review donde otro desarrollador examina código antes de merge.", q:"¿Cuál es el objetivo principal de un code review?", o:["Asegurar consistencia de estilo de código", "Detectar vulnerabilidades antes de producción", "Reducir commits por semana", "Reemplazar testing automático"], c:1},
+{d:4, s:"Un ejecutivo requiere acceso a sistemas sensibles. El least privilege limita acceso.", q:"¿Por qué el least privilege es crítico para seguridad operacional?", o:["Reduce sistemas que requieren mantenimiento", "Limita daño si una cuenta es comprometida", "Mejora velocidad de autenticación en toda la red", "Permite que usuarios cambien sus contraseñas"], c:1},
+
+// ===== D5: Security Program Management (~18) =====
+{d:5, s:"Una organización adopta NIST Cybersecurity Framework para guiar estrategia.", q:"¿Cuáles son las cinco funciones principales del NIST CSF?", o:["Detect, Defend, Deter, Deny, Destroy", "Identify, Protect, Detect, Respond, Recover", "Plan, Implement, Monitor, Audit, Report", "Assess, Mitigate, Verify, Document, Improve"], c:1},
+{d:5, s:"Una compañía con operaciones en múltiples países enfrenta requisitos GDPR, CCPA, LGPD.", q:"¿Cuál es el objetivo principal de CCPA?", o:["Aplicar solo en estado de Nueva York", "Otorgar derechos de privacidad a residentes de California", "Obligar a eliminar todos los datos después de 6 meses", "No tiene requisitos reales de privacidad"], c:1},
+{d:5, s:"Una compañía desarrolla BCP para definir cómo continuar operaciones ante disrupciones.", q:"¿Cuál es la diferencia principal entre BCP y DRP?", o:["Son términos exactamente idénticos sin diferencias prácticas", "BCP es estrategia general; DRP es componente de IT", "BCP solo aplica a desastres naturales, no tecnológicos", "DRP es solo para ciberseguridad, BCP es para todo"], c:1},
+{d:5, s:"Un contrato con vendor incluye cláusula right-to-audit.", q:"¿Por qué es crítico incluir right-to-audit?", o:["Permite que vendor audite a la compañía gratis", "Permite auditar vendor para verificar compliance", "No tiene importancia para seguridad de terceros", "Reduce automáticamente costos del contrato"], c:1},
+{d:5, s:"Un equipo red team ataca a blue team. Purple team observa para mejorar.", q:"¿Cuál es el rol del purple team?", o:["Atacar y comprometer sistemas como el red team", "Defender y proteger sistemas como el blue team", "Combinar perspectivas de ataque y defensa para mejorar", "Reportar resultados de ejercicios a reguladores externos"], c:2},
+{d:5, s:"Una instalación implementa Faraday cage alrededor de su lab de pruebas.", q:"¿Cuál es el propósito de una Faraday cage?", o:["Mantener equipos en temperatura y humedad controladas", "Bloquear radiación electromagnética para evitar eavesdropping", "Reducir el ruido acústico generado por ventiladores", "Mejorar la apariencia visual y profesional del área"], c:1},
+{d:5, s:"Una compañía realiza análisis cualitativo usando matriz de probabilidad × impacto.", q:"¿Cuál es la diferencia entre análisis cualitativo y cuantitativo?", o:["Cualitativo usa números exactos; cuantitativo usa estimaciones", "Cualitativo categoriza (alto/medio/bajo); cuantitativo usa ALE", "Ambos son idénticos", "Cualitativo no es válido para decisiones"], c:1},
+{d:5, s:"Una compañía lanza bug bounty donde investigadores reportan vulnerabilidades.", q:"¿Cuál es el beneficio principal de un programa bug bounty?", o:["Reduce costos eliminando pentesters", "Aprovecha talento externo para identificar vulnerabilidades", "Garantiza que no habrá vulnerabilidades futuras", "No tiene beneficio real de seguridad"], c:1},
+{d:5, s:"Una organización implementa SOC 2 Type II audit por 12 meses.", q:"¿Por qué SOC 2 Type II requiere evaluación de 6-12 meses?", o:["Para alargar innecesariamente el proceso", "Para validar que controls fueron efectivos durante período", "Para cumulativamente más costos de auditoría", "No es realmente requerido"], c:1},
+{d:5, s:"Un regulador audita que compañía tiene disaster recovery testing anual.", q:"¿Cuál es el objetivo de auditar DR tests regularmente?", o:["Asegurar que plan existe solo en papel", "Validar que plan puede ejecutarse en realidad", "Reducir presupuesto de TI", "Los tests de DR nunca son requeridos"], c:1},
+{d:5, s:"Una organización debe decidir entre aceptar riesgo vs implementar controles costosos.", q:"¿Qué es risk tolerance?", o:["Nivel de riesgo que organización está dispuesta a aceptar", "Nivel máximo de riesgo teórico posible", "Cantidad de dinero invertida en seguridad", "Tiempo máximo permitido para resolver incidente"], c:0},
+{d:5, s:"Una compañía realiza assessment contra NIST SP 800-53 requirements.", q:"¿Cuál es el propósito de NIST SP 800-53?", o:["Definir arquitectura de redes corporativas", "Proporcionar catálogo de security controls", "Definir salarios de equipo de seguridad", "No tiene relación con compliance"], c:1},
+{d:5, s:"Un penetration tester realiza ataque simulado contra infraestructura.", q:"¿Cuál es el objetivo de penetration test vs vulnerability scan?", o:["Penetration test explota vulnerabilidades para demostrar riesgo real", "Ambos proporcionan exactamente el mismo tipo de resultados", "Penetration test puede ejecutarse sin autorización previa", "Vulnerability scans son considerablemente más peligrosos"], c:0},
+{d:5, s:"Una política establece que datos Confidential retenerse 3 años y luego eliminar.", q:"¿Cuál es el propósito de una data retention policy?", o:["Guardar todos los datos indefinidamente", "Definir períodos de retención y métodos de disposición", "Permitir que empleados decidan cuándo eliminar", "No tiene relación con seguridad de datos"], c:1},
+{d:5, s:"Una compañía opera en EU y procesa datos personales de clientes europeos.", q:"¿Cuál es el requisito GDPR para notificación de brechas?", o:["Notificar dentro de 30 días", "Notificar dentro de 72 horas", "Solo si más de 1000 registros", "No es necesario si datos están encriptados"], c:1},
+{d:5, s:"Un auditor interno realiza auditoría de cumplimiento de seguridad.", q:"¿Cuál es la diferencia entre auditoría interna y externa?", o:["Interna es realizada por staff interno; externa por tercero", "Interna es mucho más rigurosa y comprensiva que externa", "En términos prácticos no existe diferencia significativa", "Interna no requiere documentación formal de resultados"], c:0},
+{d:5, s:"Un BIA identifica que una aplicación tiene MTD de 2 horas.", q:"¿Cuál es la relación entre MTD, RTO y RPO?", o:["MTD es máximo; RTO/RPO son objetivos ≤ MTD", "MTD, RTO y RPO son exactamente lo mismo", "No hay relación entre estos términos", "RPO siempre debe ser mayor que RTO"], c:0},
+{d:5, s:"Un riesgo tiene probabilidad alta e impacto bajo. El equipo evalúa tratamiento.", q:"¿Cuáles son las opciones de tratamiento de riesgo?", o:["Accept, Avoid, Transfer (seguro), Mitigate", "Detect, Respond, Recover, Document", "Identify, Classify, Prioritize, Remediate", "Report, Escalate, Monitor, Verify"], c:0},
+
+];
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]]}return arr}
+
+// shuffleOpts: solo para single y multi (no ordering)
+function shuffleOpts(q){
+  if(q.type==='order') return q; // ordering mantiene su propio orden
+  const idx=[0,1,2,3];
+  for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+  // extend idx if more than 4 options (multi can have 5)
+  if(q.o.length>4){for(let k=4;k<q.o.length;k++)idx.push(k);shuffle(idx);}
+  const remapC = ci => idx.indexOf(ci);
+  const c = Array.isArray(q.c) ? q.c.map(remapC) : remapC(q.c);
+  return Object.assign({},q,{o:idx.map(i=>q.o[i]),c:c});
+}
+
+function isAnswered(i){
+  const a=answers[i],q=questions[i];
+  if(q.type==='multi'){const need=q.count||q.c.length;return Array.isArray(a)&&a.length>=need;}
+  if(q.type==='order'){return Array.isArray(a)&&a.length===q.c.length;}
+  return a>=0;
+}
+function answeredCount(){return questions.filter((_,i)=>isAnswered(i)).length;}
+
+function isCorrect(i){
+  const a=answers[i],q=questions[i];
+  if(q.type==='multi'){
+    if(!Array.isArray(a)||a.length!==q.c.length) return false;
+    return q.c.every(v=>a.includes(v))&&a.every(v=>q.c.includes(v));
+  }
+  if(q.type==='order'){
+    if(!Array.isArray(a)||a.length!==q.c.length) return false;
+    return a.every((v,j)=>v===q.c[j]);
+  }
+  return a===q.c;
+}
+
+// ── Estado ────────────────────────────────────────────────────────────────────
+let questions=[], currentQ=0, answers=[], timerInterval, timeLeft=90*60, examFinished=false, forceFinish=false;
+
+function startExam(){
+  questions=shuffle([...Q]).map(shuffleOpts);
+  answers=questions.map(q=>(q.type==='multi'||q.type==='order')?[]:-1);
+  currentQ=0;timeLeft=90*60;examFinished=false;forceFinish=false;
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('examArea').classList.remove('hidden');
+  document.getElementById('timerBar').classList.remove('hidden');
+  buildGrid();showQuestion(0);startTimer();
+}
+
+// ── Grid ──────────────────────────────────────────────────────────────────────
+function buildGrid(){
+  const g=document.getElementById('qGrid');g.innerHTML='';
+  questions.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='q-dot'+(i===currentQ?' current':'');
+    d.textContent=i+1;d.onclick=()=>showQuestion(i);g.appendChild(d);
+  });
+}
+function updateGrid(){
+  document.querySelectorAll('.q-dot').forEach((d,i)=>{
+    d.className='q-dot';
+    if(i===currentQ)d.classList.add('current');
+    if(isAnswered(i))d.classList.add('answered');
+    if(examFinished){
+      if(isCorrect(i))d.classList.add('correct-dot');
+      else if(isAnswered(i))d.classList.add('wrong-dot');
+    }
+  });
+}
+
+// ── Render preguntas ──────────────────────────────────────────────────────────
+function showQuestion(idx){
+  currentQ=idx;
+  const q=questions[idx];
+  const domNames=['','D1 General','D2 Amenazas','D3 Arquitectura','D4 Operaciones','D5 Programa'];
+  const typeLabel={multi:'MULTI-SELECT',order:'ORDENAR'};
+  const typeBadge=q.type&&q.type!=='single'?`<span class="q-type-badge">${typeLabel[q.type]||q.type}</span>`:'';
+
+  let html=`<div class="q-card">
+    <div class="q-num">Pregunta ${idx+1} de ${questions.length}
+      <span class="q-domain">${domNames[q.d]}</span>${typeBadge}
+    </div>`;
+  if(q.s)html+=`<div class="q-scenario">${q.s}</div>`;
+  html+=`<div class="q-text">${q.q}</div>`;
+
+  if(!q.type||q.type==='single'){
+    html+=renderSingle(q,idx);
+  } else if(q.type==='multi'){
+    html+=renderMulti(q,idx);
+  } else if(q.type==='order'){
+    html+=renderOrder(q,idx);
+  }
+
+  if(examFinished&&q.e) html+=`<div class="explanation show"><b>Explicación:</b> ${q.e}</div>`;
+  html+=`</div>`;
+
+  document.getElementById('questionContainer').innerHTML=html;
+  document.getElementById('btnPrev').disabled=idx===0;
+  document.getElementById('btnNext').textContent=idx===questions.length-1?'Finalizar':'Siguiente →';
+  document.getElementById('navInfo').textContent=`${idx+1} / ${questions.length}`;
+  const ac=answeredCount();
+  document.getElementById('progressFill').style.width=((ac/questions.length)*100)+'%';
+  document.getElementById('progressText').textContent=ac+' / '+questions.length+' respondidas';
+  updateGrid();
+}
+
+// ── Render: Single ────────────────────────────────────────────────────────────
+function renderSingle(q,idx){
+  const letters='ABCD';
+  const ua=answers[idx];
+  let html='';
+  q.o.forEach((opt,oi)=>{
+    let cls='opt';
+    if(examFinished){cls+=' disabled';if(oi===q.c)cls+=' correct';else if(oi===ua)cls+=' wrong';}
+    else if(oi===ua)cls+=' selected';
+    html+=`<div class="${cls}" onclick="selectSingle(${idx},${oi})"><span class="opt-letter">${letters[oi]}</span>${opt}</div>`;
+  });
+  return html;
+}
+
+// ── Render: Multi-select ──────────────────────────────────────────────────────
+function renderMulti(q,idx){
+  const letters='ABCDE';
+  const need=q.count||q.c.length;
+  const ua=Array.isArray(answers[idx])?answers[idx]:[];
+  let html=`<div class="q-instruction">☑ Selecciona exactamente ${need} respuesta${need>1?'s':''} correctas</div>`;
+  if(!examFinished) html+=`<div class="multi-counter">Seleccionadas: <span id="mcCount${idx}">${ua.length}</span> / ${need}</div>`;
+  q.o.forEach((opt,oi)=>{
+    const checked=ua.includes(oi);
+    const isCorrectOpt=Array.isArray(q.c)&&q.c.includes(oi);
+    let cls='opt opt-multi';
+    if(examFinished){
+      cls+=' disabled';
+      if(isCorrectOpt)cls+=' correct';
+      else if(checked)cls+=' wrong';
+    } else {
+      if(checked)cls+=' selected';
+    }
+    const icon=examFinished?(isCorrectOpt?'✓':checked?'✗':'○'):(checked?'☑':'☐');
+    html+=`<div class="${cls}" onclick="selectMulti(${idx},${oi})"><span class="opt-letter">${icon}</span>${opt}</div>`;
+  });
+  return html;
+}
+
+// ── Render: Ordering ──────────────────────────────────────────────────────────
+function renderOrder(q,idx){
+  const ua=Array.isArray(answers[idx])?answers[idx]:[];
+  const slots=q.c.length; // nº de slots = nº de pasos correctos (puede haber distractores en q.o)
+  const hasDistractors=q.o.length>slots;
+  const hint=hasDistractors
+    ?`↕ Coloca los ${slots} elementos correctos en orden — hay distractores que NO pertenecen`
+    :`↕ Haz clic en los elementos en el orden correcto (de primero a último)`;
+  let html=`<div class="q-instruction">${hint}</div>`;
+
+  // Slots
+  html+=`<div class="order-slots"><div class="order-slots-label">Tu respuesta (${slots} posiciones):</div>`;
+  for(let pos=0;pos<slots;pos++){
+    if(pos<ua.length){
+      const itemIdx=ua[pos];
+      let slotCls='order-slot';
+      if(examFinished) slotCls+=itemIdx===q.c[pos]?' slot-correct':' slot-wrong';
+      const removeBtn=(!examFinished&&pos===ua.length-1)?`<span class="slot-remove" onclick="removeLastOrder(${idx})">✕</span>`:'';
+      html+=`<div class="${slotCls}"><span class="slot-num">${pos+1}</span>${q.o[itemIdx]}${removeBtn}</div>`;
+    } else {
+      html+=`<div class="order-slot empty"><span class="slot-num">${pos+1}</span>— clic para colocar —</div>`;
+    }
+  }
+  html+=`</div>`;
+
+  // Items disponibles (incluye distractores)
+  html+=`<div style="margin-top:8px">`;
+  q.o.forEach((opt,oi)=>{
+    const placed=ua.includes(oi);
+    const isCorrectItem=q.c.includes(oi);
+    let cls='opt-order';
+    if(examFinished){
+      cls+=' disabled';
+      if(!isCorrectItem){
+        cls+=placed?' wrong':''; // distractor colocado = error; no colocado = neutro
+      } else {
+        const pos=q.c.indexOf(oi);
+        cls+=ua[pos]===oi?' correct':' wrong';
+      }
+    } else if(placed){
+      cls+=' placed';
+    }
+    html+=`<div class="${cls}" onclick="selectOrder(${idx},${oi})"><span class="opt-letter">${placed?'✓':'·'}</span>${opt}</div>`;
+  });
+  html+=`</div>`;
+  return html;
+}
+
+// ── Selección ─────────────────────────────────────────────────────────────────
+function selectSingle(qi,oi){if(examFinished)return;answers[qi]=oi;showQuestion(qi);}
+
+function selectMulti(qi,oi){
+  if(examFinished)return;
+  const q=questions[qi];
+  const need=q.count||q.c.length;
+  let ua=[...answers[qi]];
+  if(ua.includes(oi)){
+    ua=ua.filter(v=>v!==oi); // deselect
+  } else if(ua.length<need){
+    ua.push(oi);
+  }
+  answers[qi]=ua;
+  showQuestion(qi);
+}
+
+function selectOrder(qi,oi){
+  if(examFinished)return;
+  const q=questions[qi];
+  let ua=[...answers[qi]];
+  if(!ua.includes(oi)&&ua.length<q.c.length){
+    ua.push(oi);
+    answers[qi]=ua;
+    showQuestion(qi);
+  }
+}
+
+function removeLastOrder(qi){
+  if(examFinished)return;
+  let ua=[...answers[qi]];
+  if(ua.length>0){ua.pop();answers[qi]=ua;showQuestion(qi);}
+}
+
+function navQ(dir){
+  const next=currentQ+dir;
+  if(next>=0&&next<questions.length)showQuestion(next);
+  else if(next>=questions.length)finishExam();
+}
+
+// ── Timer ─────────────────────────────────────────────────────────────────────
+function startTimer(){
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    if(timeLeft<=0){clearInterval(timerInterval);finishExam();return;}
+    const m=Math.floor(timeLeft/60),s=timeLeft%60;
+    const el=document.getElementById('timer');
+    el.textContent=m+':'+(s<10?'0':'')+s;
+    el.className='timer'+(timeLeft<300?' critical':timeLeft<600?' warning':'');
+  },1000);
+}
+
+// ── Finalizar ─────────────────────────────────────────────────────────────────
+function finishExam(){
+  if(examFinished)return;
+  const ac=answeredCount();
+  if(ac<questions.length&&!forceFinish){
+    const unanswered=questions.length-ac;
+    const fb=document.querySelector('.btn-finish');
+    fb.textContent=`⚠️ ${unanswered} sin responder — Click otra vez para confirmar`;
+    fb.style.background='#f59e0b';fb.style.borderColor='#f59e0b';
+    forceFinish=true;
+    setTimeout(()=>{forceFinish=false;fb.textContent='Finalizar examen';fb.style.background='#dc2626';fb.style.borderColor='#dc2626';},4000);
+    return;
+  }
+  clearInterval(timerInterval);examFinished=true;
+  const domScores={1:{t:0,c:0},2:{t:0,c:0},3:{t:0,c:0},4:{t:0,c:0},5:{t:0,c:0}};
+  let total=0,correct=0;
+  questions.forEach((q,i)=>{
+    total++;domScores[q.d].t++;
+    if(isCorrect(i)){correct++;domScores[q.d].c++;}
+  });
+  const pct=Math.round((correct/total)*100);
+  const score=Math.round(100+(pct/100)*800);
+  const pass=score>=750;
+  const domNames={1:'D1 General',2:'D2 Amenazas',3:'D3 Arquitectura',4:'D4 Operaciones',5:'D5 Programa'};
+  let html=`<h2>Resultado del examen</h2>
+    <div class="score-big ${pass?'pass':'fail'}">${score}</div>
+    <div class="verdict" style="color:${pass?'var(--green)':'var(--red)'}">${pass?'✅ APROBADO':'❌ NO APROBADO'} — ${correct}/${total} correctas (${pct}%)</div>
+    <p style="color:var(--tx2);font-size:13px;margin-bottom:20px">Puntuación para aprobar: 750 / 900</p>
+    <div class="domain-scores">`;
+  for(let d=1;d<=5;d++){
+    const ds=domScores[d];const dp=ds.t?Math.round((ds.c/ds.t)*100):0;
+    html+=`<div class="d-score"><div class="d-score-label">${domNames[d]}</div>
+      <div class="d-score-pct" style="color:${dp>=80?'var(--green)':dp>=60?'var(--amber)':'var(--red)'}">${dp}%</div>
+      <div class="d-score-detail">${ds.c}/${ds.t}</div></div>`;
+  }
+  html+=`</div><div style="margin:24px 0">
+    <button class="btn btn-primary" onclick="reviewExam()">📝 Revisar respuestas</button>
+    <button class="btn" onclick="location.reload()" style="margin-left:8px">🔄 Nuevo examen</button></div>`;
+  document.getElementById('examArea').classList.add('hidden');
+  document.getElementById('resultsArea').classList.remove('hidden');
+  document.getElementById('downloadArea').classList.remove('hidden');
+  document.getElementById('resultsArea').innerHTML=html;
+}
+
+function reviewExam(){
+  document.getElementById('resultsArea').classList.add('hidden');
+  document.getElementById('examArea').classList.remove('hidden');
+  document.querySelector('.btn-finish').style.display='none';
+  showQuestion(0);
+}
+
+// ── Descargar errores MD ──────────────────────────────────────────────────────
+function generateMD(){
+  if(!questions||!questions.length){alert('Completa el examen primero.');return;}
+  const dNames={1:'D1 General Security',2:'D2 Amenazas',3:'D3 Arquitectura',4:'D4 Operaciones',5:'D5 Programa'};
+  const letters='ABCDE';
+  const fecha=new Date().toLocaleDateString('es-ES');
+  const errores=[];
+  questions.forEach((q,i)=>{if(!isCorrect(i))errores.push({q,i});});
+  if(!errores.length){alert('Sin errores — ¡excelente!');return;}
+  const total=questions.length;
+  const score=Math.round((total-errores.length)/total*100);
+  const dErr={};errores.forEach(({q})=>{dErr[q.d]=(dErr[q.d]||0)+1;});
+  const titulo=document.title.replace('Security+ SY0-701 \u2014 ','');
+  let md='# \u274c Errores \u2014 '+titulo+'\n\n';
+  md+='**Fecha:** '+fecha+'  \n**Score:** '+score+'% ('+(total-errores.length)+'/'+total+' correctas)  \n**Errores:** '+errores.length+' de '+total+'\n\n';
+  md+='## Resumen por Dominio\n';
+  Object.entries(dErr).sort(([a],[b])=>Number(a)-Number(b)).forEach(([d,n])=>{
+    md+='- '+dNames[d]+': **'+n+'** error'+(n>1?'es':'')+' de '+questions.filter(q=>q.d==d).length+'\n';
+  });
+  md+='\n---\n\n';
+  errores.forEach(({q,i})=>{
+    const ua=answers[i];
+    md+='## \u274c P'+(i+1)+' \u00b7 D'+q.d+(q.type&&q.type!=='single'?' ['+q.type.toUpperCase()+']':'')+'\n\n';
+    if(q.s)md+='> '+q.s+'\n\n';
+    md+='**'+q.q+'**\n\n';
+    if(!q.type||q.type==='single'){
+      q.o.forEach((opt,j)=>{
+        let mark='  ';
+        if(j===q.c)mark='\u2713';else if(j===ua)mark='\u2717';
+        md+=mark+' **'+letters[j]+')** '+opt+'\n\n';
+      });
+      if(ua>=0)md+='> \u26a0\ufe0f Respondiste: **'+letters[ua]+')** '+q.o[ua]+'\n\n';
+      md+='> \u2705 Correcta: **'+letters[q.c]+')** '+q.o[q.c]+'\n\n';
+    } else if(q.type==='multi'){
+      const uaArr=Array.isArray(ua)?ua:[];
+      q.o.forEach((opt,j)=>{
+        const isC=q.c.includes(j),isU=uaArr.includes(j);
+        let mark=isC?(isU?'\u2713':'\u25a1'):isU?'\u2717':'  ';
+        md+=mark+' **'+letters[j]+')** '+opt+(isC?' \u2190 CORRECTA':'')+'\n\n';
+      });
+      md+='> \u26a0\ufe0f Marcaste: '+uaArr.map(j=>letters[j]).join(', ')+'\n\n';
+      md+='> \u2705 Correctas: '+q.c.map(j=>letters[j]).join(', ')+'\n\n';
+    } else if(q.type==='order'){
+      const uaArr=Array.isArray(ua)?ua:[];
+      md+='**Orden correcto:**\n\n';
+      q.c.forEach((ci,pos)=>{md+=(pos+1)+'. '+q.o[ci]+'\n\n';});
+      if(uaArr.length){
+        md+='**Tu orden:**\n\n';
+        uaArr.forEach((ci,pos)=>{
+          const ok=ci===q.c[pos];
+          md+=(pos+1)+'. '+q.o[ci]+(ok?' \u2714':' \u2718')+'\n\n';
+        });
+      }
+    }
+    if(q.e)md+='**\ud83d\udca1 Explicaci\u00f3n:**\n\n'+q.e.replace(/<br>/g,'\n').replace(/<[^>]+>/g,'')+'\n\n';
+    md+='---\n\n';
+  });
+  const blob=new Blob([md],{type:'text/markdown'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=titulo.replace(/[\s\u2014]+/g,'_')+'_Errores.md';a.click();URL.revokeObjectURL(url);
+}
+
+// ── Modo revisión ─────────────────────────────────────────────────────────────
+function reviewOnly(){
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('timerBar').classList.remove('hidden');
+  document.getElementById('examArea').classList.remove('hidden');
+  document.getElementById('downloadArea').classList.remove('hidden');
+  questions=[...Q];
+  answers=questions.map(q=>(q.type==='multi'||q.type==='order')?[]:-1);
+  examFinished=true;
+  const grid=document.getElementById('qGrid');
+  grid.innerHTML=questions.map((_,i)=>`<div class="q-dot wrong-dot" onclick="showQuestion(${i})">${i+1}</div>`).join('');
+  document.getElementById('timer').textContent='\ud83d\udcd6';
+  document.getElementById('progressText').textContent='Modo revisi\u00f3n';
+  document.getElementById('progressFill').style.width='100%';
+  document.querySelector('.btn-finish').style.display='none';
+  showQuestion(0);
+}
+</script>
+</body>
+</html>

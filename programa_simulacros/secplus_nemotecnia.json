@@ -1,0 +1,1338 @@
+{
+  "meta": {
+    "titulo": "Sec+ SY0-701 — Nemotecnia por término",
+    "formato": "nemo | si[] | no[] | patron",
+    "leyenda": {
+      "nemo": "Frase corta memorable (TÉRMINO → 'esencia')",
+      "si": "Para qué SÍ sirve en contexto real (máx 2)",
+      "no": "Para qué NO sirve / error frecuente en examen",
+      "patron": "Cómo aparece en el Sec+ y cuál es la trampa"
+    }
+  },
+  "grupos": [
+
+    {
+      "id": "A",
+      "nombre": "Criptografía",
+      "terminos": [
+        {
+          "a": "AES",
+          "nemo": "AES → 'El candado simétrico universal: cifra datos, no intercambia claves'",
+          "si": [
+            "Cifrar discos y volúmenes en reposo (BitLocker, FileVault)",
+            "Cifrar datos dentro de TLS una vez que la sesión está establecida"
+          ],
+          "no": [
+            "Intercambiar claves entre partes (eso es RSA o ECDHE)",
+            "Autenticar identidades o garantizar no repudio"
+          ],
+          "patron": "Pregunta: '¿Qué cifrado para datos sensibles en reposo en 10.000 laptops?' → AES-256. Trampa: confundirlo con RSA (asimétrico, lento, solo para claves). Si la pregunta dice 'simétrico' o 'en reposo' → AES."
+        },
+        {
+          "a": "AES-GCM",
+          "nemo": "AES-GCM → 'Un solo paso: cifra Y autentica (AEAD)'",
+          "si": [
+            "Cuando necesitas confidencialidad + integridad en un único paso (TLS 1.3, WireGuard)",
+            "APIs internas y comunicaciones donde el auth tag elimina la necesidad de HMAC separado"
+          ],
+          "no": [
+            "Solo integridad sin cifrado (usa HMAC-SHA256)",
+            "Intercambio de claves (ECDHE es quien establece la clave, GCM solo la usa)"
+          ],
+          "patron": "'Cifrado autenticado' o 'AEAD' en el enunciado → AES-GCM. TLS 1.3 lo usa obligatoriamente. Diferenciador: AES-CBC no incluye auth tag, AES-GCM sí."
+        },
+        {
+          "a": "ChaCha20",
+          "nemo": "ChaCha20 → 'AES para quien no tiene hardware AES: IoT y Android'",
+          "si": [
+            "Dispositivos IoT, móviles Android sin AES-NI donde ChaCha20 es más rápido por software",
+            "TLS 1.3 como suite alternativa a AES-GCM (ambas son válidas y seguras)"
+          ],
+          "no": [
+            "No es más seguro que AES, solo más eficiente en CPU sin AES-NI",
+            "No reemplaza AES en hardware con aceleración (en esos casos AES-GCM es más rápido)"
+          ],
+          "patron": "Enunciado con 'IoT', 'dispositivo sin AES-NI', 'CPU limitada' + cifrado → ChaCha20-Poly1305. Trampa: pensar que es mejor que AES en general; solo lo es sin hardware de aceleración."
+        },
+        {
+          "a": "3DES",
+          "nemo": "3DES → 'DES tres veces: legacy bancario que nunca debes elegir en diseños nuevos'",
+          "si": [
+            "Sistemas bancarios EMV legacy que aún no han migrado (único caso válido)"
+          ],
+          "no": [
+            "Cualquier diseño nuevo: usa AES-256",
+            "No es 'más seguro que DES y suficiente': NIST lo deprecó en 2017"
+          ],
+          "patron": "En preguntas de 'qué cifrado recomiendas', 3DES es siempre la respuesta INCORRECTA. Trampa: suena robusto por 'triple'. Si aparece junto a AES, la respuesta es AES."
+        },
+        {
+          "a": "Shannon",
+          "nemo": "Shannon → 'Confusión oculta la clave, Difusión propaga cada bit: la base teórica de AES'",
+          "si": [
+            "Explicar por qué AES es criptográficamente robusto (S-boxes = confusión, MixColumns = difusión)",
+            "Responder preguntas sobre principios teóricos de cifrado moderno"
+          ],
+          "no": [
+            "No es un algoritmo implementable por sí mismo, es teoría matemática de 1949",
+            "No aplica directamente a hashing (aunque influyó en el diseño)"
+          ],
+          "patron": "'¿Qué principio explica que 1 bit cambiado en el plaintext altere todo el ciphertext?' → Difusión (Shannon). '¿Qué oculta la relación entre clave y ciphertext?' → Confusión."
+        },
+        {
+          "a": "Argon2id",
+          "nemo": "Argon2id → 'Bcrypt con esteroides: memory-hard para resistir GPUs y ASICs'",
+          "si": [
+            "Almacenar passwords de usuarios de forma segura (reemplaza bcrypt/PBKDF2)",
+            "Derivar claves criptográficas desde passwords (KDF)"
+          ],
+          "no": [
+            "Verificar integridad de archivos (usa SHA-256, no un KDF)",
+            "Cifrar datos directamente (no es un cifrador, es una función de derivación)"
+          ],
+          "patron": "'¿Cómo almacenar passwords resistiendo ataques de GPU?' → Argon2id / bcrypt / PBKDF2 (cualquiera memory-hard). Argon2id es el más moderno. La clave: 'memory-hard' en el enunciado."
+        },
+        {
+          "a": "Hashing",
+          "nemo": "Hashing → 'Huella digital irreversible: detecta cambios, no oculta datos'",
+          "si": [
+            "Verificar integridad de archivos (SHA-256 del ejecutable antes/después de descarga)",
+            "Almacenar passwords de forma que no sean reversibles (con salt)"
+          ],
+          "no": [
+            "Cifrar datos para confidencialidad (hash es irreversible, no cifrado)",
+            "MD5 o SHA-1 para seguridad: tienen colisiones conocidas (solo SHA-256/SHA-3 son seguros)"
+          ],
+          "patron": "Trampa clásica: 'Usa MD5 para verificar integridad' → FALSO (colisiones). 'Hash garantiza confidencialidad' → FALSO (one-way no oculta). Siempre SHA-256 o superior para seguridad."
+        },
+        {
+          "a": "Salt",
+          "nemo": "Salt → 'Valor aleatorio único por usuario que derrota las rainbow tables'",
+          "si": [
+            "Concatenar al password antes de hashear para que el mismo password produzca hashes distintos",
+            "Almacenamiento seguro de passwords en bases de datos"
+          ],
+          "no": [
+            "Cifrar datos (el salt no es cifrado, es un valor aleatorio agregado al input del hash)",
+            "Funcionar sin hashing: salt sin hash = inútil"
+          ],
+          "patron": "'¿Cómo prevenir ataques de rainbow table contra passwords hasheados?' → Salt. Trampa: salt NO es secreto (se guarda junto al hash), su función es hacer único cada hash, no ocultar el salt."
+        },
+        {
+          "a": "KMS",
+          "nemo": "KMS → 'La caja fuerte central de claves: crea, rota, audita y destruye claves'",
+          "si": [
+            "Centralizar el ciclo de vida completo de claves criptográficas (AWS KMS, Azure Key Vault)",
+            "Rotación automática de claves con audit trail completo"
+          ],
+          "no": [
+            "Cifrar datos directamente (el KMS gestiona claves, AES cifra los datos)",
+            "Almacenar passwords de usuarios (eso es un gestor de contraseñas o vault de PAM)"
+          ],
+          "patron": "'¿Cómo gestionar rotación automática de claves en cloud?' → KMS. Diferencia con HSM: KMS = servicio software/cloud, HSM = hardware físico externo (para CAs y bancos de alto valor)."
+        }
+      ]
+    },
+
+    {
+      "id": "B",
+      "nombre": "PKI y Certificados",
+      "terminos": [
+        {
+          "a": "PKI",
+          "nemo": "PKI → 'La cadena de confianza que responde: ¿cómo sé que esta clave pública es de X?'",
+          "si": [
+            "Emitir y validar certificados digitales para sitios web, usuarios y dispositivos",
+            "Establecer confianza jerárquica entre entidades (Root CA → ICA → entidad final)"
+          ],
+          "no": [
+            "Cifrar datos directamente (PKI gestiona certificados y confianza, no cifrado de datos)",
+            "Autenticar usuarios con username/password (PKI usa certificados, no credenciales)"
+          ],
+          "patron": "'¿Cómo sabe el navegador que bank.com es quien dice ser?' → PKI/CA. La Root CA se mantiene OFFLINE para protegerla. Si la Root CA se compromete, toda la cadena de confianza cae."
+        },
+        {
+          "a": "RSA",
+          "nemo": "RSA → 'Asimétrico y lento: solo para intercambiar claves y firmar, no para cifrar volúmenes'",
+          "si": [
+            "Intercambio de clave de sesión inicial en TLS (RSA cifra la clave, AES cifra los datos)",
+            "Firmas digitales y autenticación de identidad"
+          ],
+          "no": [
+            "Cifrar grandes volúmenes de datos (demasiado lento)",
+            "Claves de 1024 bits: están comprometidas. Mínimo 2048, recomendado 3072+"
+          ],
+          "patron": "'RSA cifra los datos de la sesión TLS' → FALSO. RSA negocia la clave de sesión → AES cifra los datos. Trampa de tamaño: 1024 bits = inseguro, 2048 = mínimo actual."
+        },
+        {
+          "a": "ECC",
+          "nemo": "ECC → 'RSA con claves cortas: misma seguridad, ideal para IoT y móviles'",
+          "si": [
+            "Dispositivos con CPU/memoria limitada (IoT, smartcards, móviles)",
+            "TLS moderno donde ECC 256 bits ≈ RSA 3072 bits en seguridad"
+          ],
+          "no": [
+            "No es más seguro que RSA del mismo nivel equivalente, solo más eficiente",
+            "Sistemas legacy que no soportan curvas elípticas"
+          ],
+          "patron": "'IoT necesita cifrado asimétrico eficiente' → ECC. ECC 256 ≈ RSA 3072 en seguridad. ECDHE = ECC aplicado a Diffie-Hellman para PFS. No confundir ECC (algoritmo) con ECDHE (protocolo de intercambio)."
+        },
+        {
+          "a": "ECDHE",
+          "nemo": "ECDHE → 'Clave nueva por sesión: el garante del PFS en TLS 1.3'",
+          "si": [
+            "Intercambio de claves con Perfect Forward Secrecy en TLS 1.3",
+            "Garantizar que sesiones pasadas no puedan descifrarse aunque roben la clave privada del servidor"
+          ],
+          "no": [
+            "Cifrar datos (solo establece la clave de sesión, AES cifra con esa clave)",
+            "Autenticar identidades (para eso está PKI/certificados)"
+          ],
+          "patron": "'Si roban la clave privada del servidor, ¿las sesiones pasadas siguen cifradas?' → SÍ, si se usó ECDHE (PFS). Sin ECDHE (RSA estático): las sesiones pasadas se descifran con la clave robada. TLS 1.3 hace ECDHE obligatorio."
+        },
+        {
+          "a": "Firma digital",
+          "nemo": "Firma digital → 'Hash + clave privada = integridad + no repudio. NO confidencialidad'",
+          "si": [
+            "Probar que el emisor firmó el mensaje y no lo repudia (no repudio)",
+            "Verificar que el mensaje no fue alterado en tránsito (integridad)"
+          ],
+          "no": [
+            "Confidencialidad: la firma no oculta el contenido del mensaje",
+            "Cifrado de datos: firmar ≠ cifrar. Para cifrar se usa la clave PÚBLICA del destinatario"
+          ],
+          "patron": "Trampa favorita: 'La firma digital garantiza confidencialidad' → FALSO. Solo garantiza integridad + no repudio. La clave PRIVADA firma, la clave PÚBLICA verifica (al revés del cifrado asimétrico)."
+        },
+        {
+          "a": "CRL",
+          "nemo": "CRL → 'Lista de certificados revocados: periódica y puede estar desactualizada'",
+          "si": [
+            "Publicar y distribuir la lista de certificados revocados por la CA",
+            "Verificación offline donde OCSP no está disponible"
+          ],
+          "no": [
+            "Verificación en tiempo real de revocación (usa OCSP para eso)",
+            "Revocación instantánea: la CRL se publica periódicamente, puede haber lag"
+          ],
+          "patron": "'CRL vs OCSP: ¿cuál es más actual?' → OCSP (tiempo real). CRL = descarga periódica, puede estar horas/días atrasada. CRL grande = descarga lenta. OCSP Stapling resuelve los problemas de privacidad de OCSP."
+        },
+        {
+          "a": "OCSP",
+          "nemo": "OCSP → '¿Sigue válido este cert? Consulta en tiempo real. Stapling = el servidor lo incluye por ti'",
+          "si": [
+            "Verificar en tiempo real si un certificado ha sido revocado",
+            "OCSP Stapling: el servidor incluye la respuesta OCSP firmada en el handshake TLS (más rápido y privado)"
+          ],
+          "no": [
+            "Revocar certificados (eso lo hace la CA, OCSP solo informa del estado)",
+            "Emitir certificados nuevos"
+          ],
+          "patron": "OCSP Stapling resuelve 2 problemas de OCSP básico: velocidad (no contacta CA en cada handshake) y privacidad (la CA no sabe qué sitios visitas). Pregunta sobre privacidad en TLS → OCSP Stapling."
+        },
+        {
+          "a": "TLS",
+          "nemo": "TLS → 'El tubo cifrado del tráfico: protege datos en tránsito, no en reposo'",
+          "si": [
+            "Cifrar comunicaciones en tránsito: HTTPS, email (SMTPS), VPN (TLS-VPN)",
+            "TLS 1.3: handshake más rápido (1-RTT), PFS obligatorio (ECDHE), sin algoritmos débiles"
+          ],
+          "no": [
+            "Cifrar datos en reposo (para eso usa AES/FDE)",
+            "Autenticar usuarios finales (TLS autentica el servidor, no necesariamente el usuario)"
+          ],
+          "patron": "TLS 1.3 elimina: MD5, RC4, DES, SHA-1, RSA estático. 'Protocolo con cifrado en tránsito débil' → TLS 1.0/1.1 son inseguros. HSTS fuerza TLS en el navegador y previene SSL stripping."
+        },
+        {
+          "a": "HSM",
+          "nemo": "HSM → 'La caja fuerte física para criptografía: la clave privada NUNCA sale del dispositivo'",
+          "si": [
+            "Proteger claves privadas de CAs raíz y sistemas bancarios críticos",
+            "Operaciones criptográficas de alto valor donde la clave jamás puede estar en software"
+          ],
+          "no": [
+            "Uso en PCs de usuario final (para eso es TPM, que está integrado en la placa base)",
+            "Almacenamiento masivo de contraseñas de usuarios (eso es un vault/KMS)"
+          ],
+          "patron": "HSM vs TPM: HSM = módulo externo de alta gama (servidores, CAs, bancos). TPM = chip soldado en la placa base de cada PC (BitLocker, Secure Boot). 'Root CA offline segura' → HSM es el control correcto."
+        },
+        {
+          "a": "TPM",
+          "nemo": "TPM → 'Chip en tu placa base: custodia la clave de BitLocker y mide el arranque'",
+          "si": [
+            "Full disk encryption con BitLocker (almacena la clave de cifrado del disco)",
+            "Secure Boot y remote attestation: el equipo prueba su estado de integridad al servidor"
+          ],
+          "no": [
+            "Reemplazar HSM en entornos de alta seguridad (TPM es para PCs, HSM es para infraestructura crítica)",
+            "Autenticación de usuarios (TPM protege claves del dispositivo, no identidades de personas)"
+          ],
+          "patron": "'¿Qué protege las claves de BitLocker si alguien roba el disco duro?' → TPM (la clave está ligada al hardware). Sin TPM, BitLocker requiere PIN o USB con clave. Remote attestation también es una función del TPM."
+        }
+      ]
+    },
+
+    {
+      "id": "C",
+      "nombre": "Autenticación e Identidad",
+      "terminos": [
+        {
+          "a": "AAA",
+          "nemo": "AAA → 'Quién eres (Auth) + qué puedes hacer (Authz) + qué hiciste (Acct): el marco, no el protocolo'",
+          "si": [
+            "Describir el modelo conceptual de control de acceso completo",
+            "RADIUS y TACACS+ son los protocolos que implementan AAA en redes"
+          ],
+          "no": [
+            "Un producto o protocolo específico (AAA es el concepto, RADIUS/TACACS+ son las implementaciones)",
+            "Solo autenticación: AAA es el conjunto completo de las 3 funciones"
+          ],
+          "patron": "Pregunta: '¿Qué protocolo implementa AAA para WiFi corporativo?' → RADIUS. '¿Qué protocolo implementa AAA para gestión de dispositivos de red Cisco?' → TACACS+. AAA como concepto engloba ambos."
+        },
+        {
+          "a": "RADIUS",
+          "nemo": "RADIUS → 'UDP, cifra solo el password, puertos 1812/1813: el protocolo de WiFi 802.1X'",
+          "si": [
+            "Autenticación de usuarios en WiFi corporativo (802.1X)",
+            "Autenticación de usuarios en VPN de acceso remoto"
+          ],
+          "no": [
+            "Gestión granular de dispositivos Cisco/switches (para eso TACACS+ es superior)",
+            "Cuando necesitas cifrar TODO el paquete AAA (RADIUS solo cifra el campo password)"
+          ],
+          "patron": "'Empresa implementa WiFi seguro con autenticación centralizada' → RADIUS + 802.1X. Diferencia clave RADIUS vs TACACS+: RADIUS=UDP+solo cifra password+combina auth/authz. TACACS+=TCP+cifra todo+separa las 3 fases."
+        },
+        {
+          "a": "TACACS+",
+          "nemo": "TACACS+ → 'TCP, todo cifrado, puerto 49, fases separadas: el protocolo de administradores de red'",
+          "si": [
+            "Autenticación de administradores en switches, routers y firewalls (especialmente Cisco)",
+            "Cuando necesitas autorización granular por comando en dispositivos de red"
+          ],
+          "no": [
+            "Autenticación de usuarios finales en WiFi (ahí RADIUS es el estándar)",
+            "Entornos multi-vendor donde RADIUS tiene más soporte universal"
+          ],
+          "patron": "'Administradores de red necesitan AAA granular con logs por fase' → TACACS+. La separación de auth/authz/acct en pasos independientes permite políticas más detalladas. Puerto 49 = TACACS+. Puertos 1812/1813 = RADIUS."
+        },
+        {
+          "a": "Kerberos",
+          "nemo": "Kerberos → 'Tickets en lugar de passwords: SSO de Active Directory con reloj sincronizado'",
+          "si": [
+            "SSO en redes Windows/Active Directory sin enviar passwords por la red",
+            "Autenticación entre servicios en el dominio AD (servidores, recursos compartidos)"
+          ],
+          "no": [
+            "Entornos cloud nativos o apps web públicas (OIDC/OAuth son el estándar web)",
+            "Autenticación sin KDC disponible (Kerberos requiere KDC accesible)"
+          ],
+          "patron": "Kerberos requiere sincronización de reloj (máx 5 min de desfase o falla). Ataques clave en examen: Golden Ticket (hash de KRBTGT = TGT falso ilimitado), Kerberoasting (crack TGS offline sin necesitar privilegios)."
+        },
+        {
+          "a": "LDAP",
+          "nemo": "LDAP → 'El directorio telefónico de usuarios: consulta quién existe, Kerberos autentica quién es'",
+          "si": [
+            "Consultar Active Directory para buscar usuarios, grupos y atributos (búsqueda/lectura)",
+            "LDAPS (puerto 636) para consultas cifradas al directorio"
+          ],
+          "no": [
+            "Autenticar por sí solo de forma robusta: LDAP bind puede ser, pero Kerberos es el mecanismo de auth de AD",
+            "Cifrar datos de aplicación (solo cifra la consulta al directorio, no datos de negocio)"
+          ],
+          "patron": "Puerto 389 = LDAP (texto claro). Puerto 636 = LDAPS (TLS). 'LDAP busca, Kerberos autentica' — trabajan juntos en AD. Pregunta sobre 'integrar app con Active Directory para buscar usuarios' → LDAP."
+        },
+        {
+          "a": "OAuth 2.0",
+          "nemo": "OAuth 2.0 → 'Autoriza lo que la app puede hacer en tu nombre: NO dice quién eres'",
+          "si": [
+            "Permitir que una app acceda a tus recursos (calendario, fotos) sin darle tu contraseña",
+            "Delegar acceso a APIs: 'esta app puede leer tus emails' (access token)"
+          ],
+          "no": [
+            "Autenticar quién es el usuario: OAuth da autorización, no identidad (para identidad usa OIDC encima de OAuth)",
+            "Gestionar sesiones de usuario directamente (sin OIDC no sabes quién es el usuario)"
+          ],
+          "patron": "Trampa clásica Sec+: 'OAuth autentica usuarios' → FALSO. OAuth = AUTORIZACIÓN (qué puede hacer). OIDC = AUTENTICACIÓN (quién es). 'App accede a tu Google Calendar' = OAuth. 'Login con Google' = OIDC sobre OAuth."
+        },
+        {
+          "a": "OIDC",
+          "nemo": "OIDC → 'OAuth + ID token: el protocolo que hace el Login con Google'",
+          "si": [
+            "Autenticación federada en apps web modernas ('Login con Google/Facebook/Apple')",
+            "SSO en apps SaaS cuando el IdP soporta OIDC (más moderno y ligero que SAML)"
+          ],
+          "no": [
+            "Federación B2B enterprise legacy (ahí SAML sigue dominando)",
+            "Solo autorización sin necesitar saber quién es el usuario (usa solo OAuth)"
+          ],
+          "patron": "OIDC añade el ID token (JWT con identidad del usuario) sobre OAuth 2.0. OIDC vs SAML: OIDC = moderno, JSON, móviles/SPAs. SAML = legacy enterprise, XML, federación B2B. Ambos hacen SSO pero para contextos distintos."
+        },
+        {
+          "a": "SAML",
+          "nemo": "SAML → 'SSO enterprise con XML: el IdP firma assertions que el SP consume'",
+          "si": [
+            "SSO entre empresa y SaaS enterprise (Salesforce, AWS SSO, Workday)",
+            "Federación de identidad entre organizaciones distintas (B2B)"
+          ],
+          "no": [
+            "Apps móviles o SPAs modernas (SAML con XML es pesado; usa OIDC)",
+            "APIs REST (SAML no es práctico para tokens de API; usa OAuth/JWT)"
+          ],
+          "patron": "'Empresa necesita que sus empleados accedan a Salesforce con sus credenciales AD' → SAML. IdP (empresa, AD) genera assertion XML → SP (Salesforce) la valida. Más maduro en enterprise, pero OIDC lo está reemplazando en nuevas implementaciones."
+        },
+        {
+          "a": "MFA",
+          "nemo": "MFA → '2 factores de CATEGORÍAS distintas: saber+tener+ser. Dos del mismo tipo NO cuenta'",
+          "si": [
+            "Combinar algo que sabes (PIN/contraseña) + algo que tienes (token/teléfono) o eres (huella)",
+            "Reducir drásticamente el riesgo de compromiso de cuenta aunque el password sea robado"
+          ],
+          "no": [
+            "PIN + contraseña = dos veces 'algo que sabes' → NO es MFA",
+            "MFA sola no previene phishing si el segundo factor es TOTP (interceptable en tiempo real)"
+          ],
+          "patron": "Trampa favorita del Sec+: '¿Cuál de estas opciones es MFA? A) PIN+contraseña B) Tarjeta+PIN C) Tarjeta+huella D) Contraseña+pregunta secreta' → C (tener+ser). A, B, D tienen 2 factores del mismo tipo."
+        },
+        {
+          "a": "TOTP",
+          "nemo": "TOTP → 'Código de 30 segundos: más seguro que password solo, pero phisheable en tiempo real'",
+          "si": [
+            "Segundo factor de autenticación en apps web (Google Authenticator, Authy)",
+            "MFA para usuarios que no pueden usar FIDO2/passkeys"
+          ],
+          "no": [
+            "Resistir phishing sofisticado en tiempo real: atacante puede interceptar el código y usarlo antes de que expire",
+            "Autenticación offline sin sincronización de tiempo (usa HOTP para eso)"
+          ],
+          "patron": "'¿Qué MFA es vulnerable a ataques AiTM (Adversary-in-the-Middle) en tiempo real?' → TOTP. '¿Qué MFA NO es vulnerable a phishing?' → FIDO2/WebAuthn. TOTP vs HOTP: TOTP=tiempo (30s). HOTP=contador (no expira por tiempo)."
+        },
+        {
+          "a": "HOTP",
+          "nemo": "HOTP → 'OTP por contador, no por tiempo: tokens bancarios hardware que funcionan offline'",
+          "si": [
+            "Tokens hardware bancarios offline donde no hay sincronización de tiempo fiable",
+            "Entornos donde el código no debe expirar automáticamente por tiempo"
+          ],
+          "no": [
+            "Entornos donde el contador puede desincronizarse (el token puede quedar inutilizable si genera muchos OTPs sin usarlos)",
+            "Reemplazar TOTP en apps modernas (TOTP es más conveniente y seguro en práctica)"
+          ],
+          "patron": "HOTP usa contador secuencial: OTP = HMAC(clave_secreta, contador++). No expira por tiempo, expira al usarse. TOTP usa el tiempo como contador implícito (floor(tiempo/30s)). Pregunta: 'token que funciona sin reloj sincronizado' → HOTP."
+        },
+        {
+          "a": "FIDO2",
+          "nemo": "FIDO2 → 'Passkey ligada al dominio: el único MFA verdaderamente resistente a phishing'",
+          "si": [
+            "Autenticación passwordless o segundo factor resistente a phishing (passkeys)",
+            "Biometría del dispositivo como factor de autenticación seguro (la biometría verifica localmente, no viaja al servidor)"
+          ],
+          "no": [
+            "Entornos sin dispositivos compatibles con FIDO2 (requiere hardware específico o plataforma moderna)",
+            "Autenticación entre sistemas backend (FIDO2 es para usuarios, no para service-to-service)"
+          ],
+          "patron": "La clave de FIDO2: la credencial está ligada al ORIGEN (URL del sitio). En fake-bank.com, la clave de bank.com no funciona → phishing imposible. '¿Qué MFA resiste phishing, vishing y AiTM?' → FIDO2/WebAuthn/Passkey."
+        },
+        {
+          "a": "EER",
+          "nemo": "EER → 'El punto donde el biométrico falla igual en ambos lados: menor EER = mejor sistema'",
+          "si": [
+            "Comparar la precisión de diferentes sistemas biométricos entre sí (estándar de la industria)",
+            "Evaluar el equilibrio entre seguridad (bajo FAR) y usabilidad (bajo FRR)"
+          ],
+          "no": [
+            "Medir velocidad de autenticación (EER mide precisión, no velocidad)",
+            "Aplicar a sistemas no biométricos como tokens o contraseñas"
+          ],
+          "patron": "FAR (False Acceptance Rate) = acepta impostores. FRR (False Rejection Rate) = rechaza usuarios legítimos. EER = punto donde FAR=FRR. Pregunta: '¿Cómo comparas dos sistemas biométricos?' → EER. Menor EER = más preciso."
+        }
+      ]
+    },
+
+    {
+      "id": "D",
+      "nombre": "Zero Trust y Control de Acceso",
+      "terminos": [
+        {
+          "a": "Zero Trust",
+          "nemo": "Zero Trust → 'Nunca confíes, siempre verifica: ni dentro de la red interna'",
+          "si": [
+            "Arquitectura para entornos híbridos/cloud donde el perímetro tradicional ya no existe",
+            "Reducir movimiento lateral si un atacante ya está dentro de la red"
+          ],
+          "no": [
+            "Un producto que se compra e instala: es un modelo/filosofía de arquitectura",
+            "Eliminar todos los controles perimetrales de golpe (se implementa gradualmente)"
+          ],
+          "patron": "Componentes Sec+ que debes mapear: Control Plane = Policy Engine (PDP) + Policy Administrator. Data Plane = Policy Enforcement Point (PEP). 'Zero Trust asume que la amenaza ya está dentro' → verdadero y es la base del modelo."
+        },
+        {
+          "a": "PEP/PDP",
+          "nemo": "PDP decide, PEP ejecuta: el cerebro y el músculo de Zero Trust",
+          "si": [
+            "Implementar decisiones de acceso dinámicas basadas en contexto en tiempo real",
+            "Separar la lógica de política (PDP) de la aplicación de la política (PEP)"
+          ],
+          "no": [
+            "Son intercambiables o el mismo componente: tienen roles distintos e independientes",
+            "Gestionar identidades (eso es el IdP que alimenta al PDP con contexto)"
+          ],
+          "patron": "Flujo Zero Trust: Usuario intenta acceder → PEP intercepta → consulta PDP → PDP evalúa (identidad, dispositivo, hora, riesgo) → PDP decide → PEP aplica. 'Adaptive identity' es el contexto que alimenta al PDP."
+        },
+        {
+          "a": "RBAC",
+          "nemo": "RBAC → 'Acceso por rol predefinido: gestión sencilla y escalable para estructuras estables'",
+          "si": [
+            "Entornos con roles organizativos claros (empleado, manager, admin, auditor)",
+            "Gestión masiva: cambiar el rol cambia todos los permisos sin tocar usuarios individuales"
+          ],
+          "no": [
+            "Acceso contextual dinámico que cambia según hora, IP o clasificación del recurso (usa ABAC)",
+            "Entornos altamente dinámicos donde los roles no son suficientemente granulares"
+          ],
+          "patron": "Jerarquía de modelos de acceso: MAC (más restrictivo, gobierno/militar) > RBAC (roles fijos) > DAC (el propietario decide). ABAC no está en esta jerarquía porque es un modelo diferente (dinámico por atributos). Pregunta: 'mínimo privilegio con roles' → RBAC."
+        },
+        {
+          "a": "ABAC",
+          "nemo": "ABAC → 'Acceso según contexto: quién eres + qué es el recurso + dónde + cuándo'",
+          "si": [
+            "Zero Trust donde el contexto cambia dinámicamente (hora, dispositivo, IP, clasificación del recurso)",
+            "Políticas granulares: 'acceso solo si es empleado de finanzas + dispositivo corporativo + horario laboral'"
+          ],
+          "no": [
+            "Entornos simples con roles fijos (RBAC es más simple de gestionar)",
+            "Sin motor de políticas robusto: ABAC sin automatización es inmanejable"
+          ],
+          "patron": "'Control de acceso que considera la ubicación, hora del día y clasificación del documento' → ABAC. Más flexible que RBAC pero más complejo. En examen: si el escenario tiene múltiples condiciones dinámicas → ABAC."
+        },
+        {
+          "a": "PAM",
+          "nemo": "PAM → 'Vault de cuentas privilegiadas: just-in-time, grabación de sesión, rotación automática'",
+          "si": [
+            "Gestionar cuentas de administrador: vault de passwords, acceso JIT, grabación de sesiones SSH/RDP",
+            "Prevenir que los admins conozcan las contraseñas reales (el vault rota y gestiona automáticamente)"
+          ],
+          "no": [
+            "Gestión de cuentas de usuario normales (eso es IAM general, no PAM)",
+            "Autenticación de aplicaciones web de cara al público"
+          ],
+          "patron": "'Jump server' o 'bastion host' es un componente de PAM para acceso SSH/RDP a servidores. 'Just-in-time access' = el acceso privilegiado se concede solo cuando se necesita y se revoca automáticamente. PAM reduce la superficie de ataque de cuentas admin."
+        },
+        {
+          "a": "SDP",
+          "nemo": "SDP → 'La red invisible: no hay puertos abiertos hasta que el usuario se autentica'",
+          "si": [
+            "Ocultar completamente la infraestructura de internet hasta que se autentique el usuario",
+            "Reemplazar VPN tradicional con acceso más granular y sin exposición de endpoints"
+          ],
+          "no": [
+            "Solo cifrar tráfico (TLS/VPN hacen eso sin ocultar la existencia del endpoint)",
+            "Gestión de identidad (SDP depende de un IdP externo para la autenticación)"
+          ],
+          "patron": "SDP vs VPN: VPN expone el endpoint (aunque requiera credenciales para acceder). SDP = dark cloud, el recurso no existe en internet hasta después del auth. 'Reducir superficie de ataque de la infraestructura externa' → SDP."
+        },
+        {
+          "a": "ZTNA",
+          "nemo": "ZTNA → 'Acceso solo a la app específica, no a toda la red: VPN con principio de least privilege'",
+          "si": [
+            "Acceso remoto granular a aplicaciones específicas sin exponer toda la red corporativa",
+            "Reemplazar VPN split-tunnel con control por aplicación e identidad"
+          ],
+          "no": [
+            "Reemplazar firewalls perimetrales internos (ZTNA es para acceso remoto, no segmentación interna)",
+            "Cifrar el tráfico de red completo como lo hace una VPN de túnel completo"
+          ],
+          "patron": "'VPN da acceso a toda la red. ZTNA da acceso solo a la app de RRHH' → ZTNA aplica least privilege al acceso remoto. En examen: 'acceso remoto granular por aplicación' = ZTNA. Parte de SASE. Verifica identidad + dispositivo + contexto por cada acceso."
+        },
+        {
+          "a": "Kubernetes RBAC",
+          "nemo": "K8s RBAC → 'Least privilege para pods y namespaces: ServiceAccounts no son cluster-admin'",
+          "si": [
+            "Controlar qué usuarios, grupos y pods pueden hacer qué operaciones en el clúster",
+            "Implementar least privilege en microservicios: cada pod solo accede a lo que necesita"
+          ],
+          "no": [
+            "Reemplazar el RBAC de la nube subyacente (AWS IAM, Azure AD): son capas complementarias",
+            "Proteger el sistema operativo de los nodos (eso es hardening del nodo, no K8s RBAC)"
+          ],
+          "patron": "'ServiceAccount con ClusterAdmin en todos los pods' = error crítico de seguridad. RBAC en K8s: Role/ClusterRole (define permisos) + RoleBinding (asigna a usuario/SA). En examen DevSecOps: siempre least privilege en ServiceAccounts."
+        }
+      ]
+    },
+
+    {
+      "id": "E",
+      "nombre": "Malware y Ataques Web/App",
+      "terminos": [
+        {
+          "a": "Ransomware",
+          "nemo": "Ransomware → 'Cifra + exfiltra + pide rescate: el backup offline 3-2-1 es tu única defensa real'",
+          "si": [
+            "Identificar el tipo de ataque cuando hay cifrado de archivos y demanda de rescate",
+            "Justificar estrategias de backup 3-2-1 con copia offline"
+          ],
+          "no": [
+            "El pago del rescate garantiza la recuperación de datos: estadísticamente no es así",
+            "Los backups en línea protegen completamente: el ransomware moderno también cifra los backups accesibles desde la red"
+          ],
+          "patron": "Double extortion = cifra Y exfiltra datos → doble amenaza (no puedes recuperar + te amenazan con publicar). WannaCry = worm + ransomware (se propagó solo via EternalBlue). Pregunta: '¿Control más efectivo contra ransomware?' → Backups offline 3-2-1."
+        },
+        {
+          "a": "Fileless",
+          "nemo": "Fileless → 'Vive solo en RAM usando tus propias herramientas: el AV de firmas no lo ve'",
+          "si": [
+            "Evadir antivirus basados en firmas de archivos en disco usando LOLBins (PowerShell, WMI, certutil)",
+            "Persistencia sin dejar artefactos obvios en el sistema de archivos"
+          ],
+          "no": [
+            "Persistir automáticamente al reiniciar sin un mecanismo adicional (RAM se borra al apagar)",
+            "Evadir EDR moderno: EDR monitoriza comportamiento en memoria, no solo archivos en disco"
+          ],
+          "patron": "'Malware que no aparece en escaneos de disco' → Fileless. '¿Qué lo detecta?' → EDR (monitoriza comportamiento y memoria) no AV tradicional. AMSI (Antimalware Scan Interface) en Windows escanea scripts PowerShell en memoria antes de ejecutarlos."
+        },
+        {
+          "a": "Rootkit",
+          "nemo": "Rootkit → 'Se oculta modificando el kernel: invisible para el SO que comprometió'",
+          "si": [
+            "Persistencia oculta en el sistema a nivel de kernel, invisible para AV convencional",
+            "Ocultar procesos, archivos y conexiones de red a las herramientas del SO"
+          ],
+          "no": [
+            "Detectarse con AV convencional: el rootkit opera a nivel más profundo que el AV",
+            "Funcionar en sistemas con Secure Boot correctamente configurado (detecta alteraciones al arranque)"
+          ],
+          "patron": "'¿Cómo detectar/prevenir un rootkit?' → Secure Boot verifica la integridad del bootloader antes de cargar el SO. Bootkit = rootkit instalado en el MBR. 'Sistema comprometido a nivel kernel sin detección' → indicador de rootkit."
+        },
+        {
+          "a": "SQLi",
+          "nemo": "SQLi → 'Input malicioso que manipula la BD: prepared statements lo previenen completamente'",
+          "si": [
+            "Explotar campos de formulario/URL que construyen queries SQL sin sanitizar",
+            "Extraer, modificar o eliminar datos de la base de datos directamente"
+          ],
+          "no": [
+            "Ataques del lado del cliente como XSS (SQLi va al servidor, XSS al navegador del usuario)",
+            "WAF como solución definitiva: WAF detecta pero los prepared statements previenen en el código"
+          ],
+          "patron": "Mitigación principal: Prepared Statements (parametrización de queries). WAF añade una capa pero no es suficiente sola. Blind SQLi = no hay error visible, el atacante infiere por respuestas booleanas o tiempos. 'OR 1=1' = SQLi clásico en examen."
+        },
+        {
+          "a": "XSS",
+          "nemo": "XSS → 'Script del atacante en el navegador de la víctima: el navegador confía en el sitio'",
+          "si": [
+            "Robar cookies de sesión, redirigir usuarios, ejecutar acciones en nombre del usuario",
+            "Stored XSS: payload guardado en servidor afecta a todos los visitantes"
+          ],
+          "no": [
+            "Atacar directamente el servidor/base de datos (eso es SQLi/SSTI, XSS corre en el cliente)",
+            "Funcionar contra sitios con CSP (Content Security Policy) bien configurado"
+          ],
+          "patron": "XSS explota la confianza del NAVEGADOR en el sitio. CSRF explota la confianza del SITIO en el navegador del usuario — diferencia crítica en examen. Reflected (URL, 1 víctima) vs Stored (servidor, todos los visitantes). Mitigación: CSP + output encoding."
+        },
+        {
+          "a": "CSRF",
+          "nemo": "CSRF → 'Tu navegador hace una petición autenticada sin que lo sepas: la cookie válida es el arma'",
+          "si": [
+            "Forzar acciones autenticadas en nombre del usuario (transferencia bancaria, cambio de email/password)",
+            "Explotar que el navegador envía automáticamente las cookies al sitio objetivo"
+          ],
+          "no": [
+            "Ver o robar los datos de la respuesta (el atacante CSRF no ve la respuesta, solo lanza la petición)",
+            "Funcionar con CSRF tokens o cookies SameSite=Strict correctamente implementados"
+          ],
+          "patron": "XSS vs CSRF (trampa clásica Sec+): XSS = código malicioso corre EN el navegador del usuario. CSRF = el navegador del usuario hace petición al sitio legítimo sin saberlo. Mitigaciones: CSRF token (único por sesión/formulario) + atributo SameSite en cookies."
+        },
+        {
+          "a": "Buffer Overflow",
+          "nemo": "Buffer Overflow → 'Más datos de los que caben: sobrescribe memoria y puede dar ejecución de código'",
+          "si": [
+            "Explotar aplicaciones C/C++ sin validación de límites para RCE o escalada de privilegios",
+            "Stack smashing: sobrescribir la dirección de retorno para redirigir la ejecución"
+          ],
+          "no": [
+            "Lenguajes memory-safe (Python, Go, Java, Rust): el runtime previene el overflow",
+            "Binarios con ASLR + DEP/NX + Stack Canary: hacen la explotación extremadamente difícil"
+          ],
+          "patron": "Mitigaciones en examen: ASLR (aleatoriza layout de memoria), DEP/NX (stack no ejecutable), Stack Canary (valor centinela antes del return address). Pregunta: '¿Control que hace no ejecutable el stack?' → DEP/NX. '¿Control que detecta overflow antes de retornar?' → Stack Canary."
+        },
+        {
+          "a": "Clickjacking",
+          "nemo": "Clickjacking → 'Iframe invisible sobre botón legítimo: el clic va a donde tú no ves'",
+          "si": [
+            "Forzar clics no intencionados en botones ocultos (autorizar pagos, conceder permisos de cámara/mic)",
+            "UI Redressing: superponer contenido invisible sobre la interfaz real"
+          ],
+          "no": [
+            "Robar datos de formularios directamente (eso es XSS/keylogger, no clickjacking)",
+            "Ataques de red o servidor: clickjacking es puramente un ataque de interfaz de usuario"
+          ],
+          "patron": "Mitigación: X-Frame-Options: DENY (el sitio no puede embeberse en ningún iframe) o SAMEORIGIN (solo en el mismo dominio). CSP frame-ancestors 'none' es el equivalente moderno. Pregunta: '¿Control para prevenir que tu sitio sea embebido en un iframe malicioso?' → X-Frame-Options."
+        },
+        {
+          "a": "SSTI",
+          "nemo": "SSTI → '{{7*7}}=49 en la respuesta = el servidor ejecutó tu input como código: RCE posible'",
+          "si": [
+            "Explotar apps que pasan input del usuario a un motor de plantillas sin sanitizar (Jinja2, Twig, Freemarker)",
+            "Conseguir RCE en el servidor mediante evaluación de expresiones del motor de plantillas"
+          ],
+          "no": [
+            "XSS: SSTI es server-side (ejecuta en el servidor), XSS es client-side (ejecuta en el navegador)",
+            "Aplicaciones que no usan motores de plantillas o que usan sandboxing correcto"
+          ],
+          "patron": "SSTI es más grave que SQLi porque puede dar RCE directamente. Payload de prueba: {{7*7}} (Jinja2/Twig) o ${7*7} (Freemarker). Si la respuesta muestra 49, el motor ejecutó la expresión. Mitigación: nunca pasar input de usuario como template, usar sandbox."
+        },
+        {
+          "a": "Format String",
+          "nemo": "Format String → 'printf(input) sin formato: %x lee la pila, %n escribe en memoria'",
+          "si": [
+            "Explotar código C donde el input del usuario se pasa directamente como string de formato a printf/sprintf",
+            "Leer valores de la pila (%x, %p) o escribir en direcciones arbitrarias (%n)"
+          ],
+          "no": [
+            "Lenguajes modernos que no usan funciones de formato C directamente",
+            "Código que usa printf('%s', user_input) correctamente (el formato es literal, no el input)"
+          ],
+          "patron": "Regla de oro: NUNCA printf(user_input). SIEMPRE printf('%s', user_input). El string de formato debe ser una constante del programador, nunca datos del usuario. Detectado con fuzzing y análisis estático (SAST). Muy común en CTFs y código C legacy."
+        },
+        {
+          "a": "Integer Overflow",
+          "nemo": "Integer Overflow → 'El número que supera el límite del tipo y vuelve a cero o se vuelve negativo'",
+          "si": [
+            "Bypass de controles de límite cuando el resultado de una operación hace wrap-around",
+            "Causar buffer overflow secundario: si el tamaño calculado con overflow se usa para malloc"
+          ],
+          "no": [
+            "Lenguajes con enteros de precisión arbitraria (Python, Java con BigInteger)",
+            "Código con validación explícita de límites antes de operaciones aritméticas"
+          ],
+          "patron": "Muy común en C/C++ con tipos int/short. Ejemplo: if (size + 8 > MAX) → si size es muy grande, size+8 hace overflow y resulta pequeño → bypass. Frecuente como paso previo a buffer overflow. 'Vulnerabilidad aritmética que causa heap corruption' → Integer Overflow."
+        },
+        {
+          "a": "Use-After-Free",
+          "nemo": "UAF → 'Usas memoria después de liberar: el atacante ya puso sus datos en ese chunk'",
+          "si": [
+            "RCE en navegadores y apps C/C++ que acceden a punteros después de free()",
+            "Corrupción de heap controlada cuando el atacante puede llenar el chunk liberado"
+          ],
+          "no": [
+            "Lenguajes memory-safe con garbage collector (Java, Go, Python, Rust con ownership)",
+            "Código con smart pointers y ownership claro (Rust previene UAF en tiempo de compilación)"
+          ],
+          "patron": "Muy frecuente en CVEs de Chrome y Firefox. Mitigation: lenguajes memory-safe, ASLR, heap hardening (safe unlinking). 'Vulnerabilidad de memoria después de liberación' → UAF. En examen, si aparece junto a buffer overflow en opciones de tipo de vulnerabilidad, UAF implica free() previo."
+        },
+        {
+          "a": "Deserialization",
+          "nemo": "Deserialization → 'Datos no confiables deserializados = el servidor ejecuta lo que el atacante envió'",
+          "si": [
+            "Explotar aplicaciones Java (ObjectInputStream), Python (pickle), PHP (unserialize) con datos no validados",
+            "RCE mediante gadget chains que se activan durante la deserialización"
+          ],
+          "no": [
+            "APIs que solo usan JSON con tipos primitivos (sin deserializar objetos complejos con comportamiento)",
+            "Código con whitelist estricta de clases permitidas para deserializar"
+          ],
+          "patron": "OWASP Top 10. ysoserial = herramienta de gadget chains para Java. 'La app deserializa datos del usuario directamente' → vulnerabilidad crítica. Solución: firmar datos serializados + validar tipo antes de deserializar + usar formatos sin comportamiento (JSON simple)."
+        },
+        {
+          "a": "DGA",
+          "nemo": "DGA → 'El malware genera dominios C2 automáticamente: lista negra inútil, analiza el DNS'",
+          "si": [
+            "Evadir bloqueos por listas negras de dominios C2 conocidos",
+            "Garantizar que el C2 siempre tenga un dominio activo aunque se bloqueen los anteriores"
+          ],
+          "no": [
+            "Cifrar el tráfico C2 (DGA solo genera los nombres de dominio, no cifra el contenido)",
+            "Evadir inspección del contenido del tráfico (solo evita el bloqueo por nombre de dominio)"
+          ],
+          "patron": "Detección: análisis DNS por entropía alta (dominios random tienen alta entropía) o patrones de consultas masivas a dominios desconocidos. DNS Sinkhole redirige las consultas DGA a IP controlada → detecta qué hosts internos están infectados."
+        }
+      ]
+    },
+
+    {
+      "id": "F",
+      "nombre": "Ataques de Red y Active Directory",
+      "terminos": [
+        {
+          "a": "DDoS Amplif.",
+          "nemo": "DDoS Amplificado → 'Petición pequeña, respuesta enorme enviada a la víctima: spoofeo de IP + amplificador'",
+          "si": [
+            "Saturar el ancho de banda de la víctima con pocos recursos propios usando servidores reflectores",
+            "Identificar el tipo de ataque cuando el tráfico volumétrico proviene de servidores UDP legítimos"
+          ],
+          "no": [
+            "Comprometer servidores: amplification/reflection no requiere acceso a los reflectores",
+            "Exfiltrar datos: el objetivo es la saturación de ancho de banda, no la extracción"
+          ],
+          "patron": "Factores de amplificación: DNS ×54, NTP ×556, Memcached ×50.000. Mitigación: BCP38 (filtrado de IPs spoofed en el origen), rate limiting en servicios UDP, no exponer Memcached/NTP a internet. 'Ataque volumétrico con amplificación' → BCP38 es la mitigación de red."
+        },
+        {
+          "a": "Slowloris",
+          "nemo": "Slowloris → 'DoS de bajo ancho de banda: conexiones HTTP infinitamente lentas agotan el pool'",
+          "si": [
+            "Tumbar servidores Apache con muy pocas conexiones abiertas y pocas peticiones",
+            "Demostrar que un DoS no requiere gran ancho de banda (ataque de agotamiento de recursos)"
+          ],
+          "no": [
+            "Servidores con timeout corto de conexión (nginx con configuración correcta es inmune)",
+            "Infraestructuras con load balancers y pools de conexión grandes"
+          ],
+          "patron": "Slowloris no es volumétrico: es un ataque de agotamiento de recursos. Mantiene conexiones con cabeceras HTTP incompletas para que el servidor las mantenga abiertas. 'DoS sin gran ancho de banda' → Slowloris. Diferencia con DDoS volumétrico: Slowloris = agotamiento, DDoS = saturación."
+        },
+        {
+          "a": "VLAN Hopping",
+          "nemo": "VLAN Hopping → 'Double-tag 802.1Q o trunk DTP falso: salta a VLANs prohibidas desde tu puerto'",
+          "si": [
+            "Acceder a VLANs restringidas desde un puerto de acceso usando doble encapsulación 802.1Q",
+            "Negociar trunk con DTP (por defecto activo en switches Cisco no endurecidos)"
+          ],
+          "no": [
+            "Switches con DTP deshabilitado y VLAN nativa dedicada sin tráfico: los ataques más comunes no funcionan",
+            "Acceder a subredes de diferentes redes físicas (VLAN hopping es dentro del mismo switch/dominio de capa 2)"
+          ],
+          "patron": "Mitigaciones: 1) Deshabilitar DTP en todos los puertos de usuario (switchport mode access). 2) Asignar VLAN nativa diferente sin tráfico real. 3) Nunca usar VLAN 1 para tráfico. Pregunta: '¿Cómo prevenir VLAN hopping?' → deshabilitar DTP + VLAN nativa aislada."
+        },
+        {
+          "a": "ARP Poisoning",
+          "nemo": "ARP Poisoning → 'Respuestas ARP falsas en LAN: asocia tu MAC con la IP de la víctima para MITM L2'",
+          "si": [
+            "Posición MITM en capa 2 dentro de la misma subred para interceptar o modificar tráfico",
+            "Precursor de ataques como SSL stripping en redes locales sin controles de capa 2"
+          ],
+          "no": [
+            "Funcionar entre subredes diferentes: ARP opera solo en la misma subred (L2)",
+            "Contra tráfico HTTPS con HSTS: el navegador rechaza el certificado del atacante"
+          ],
+          "patron": "ARP no tiene autenticación: cualquiera puede enviar respuestas ARP falsas. Mitigación: DAI (Dynamic ARP Inspection) en switches gestionados — valida ARP contra tabla DHCP snooping. Solo funciona en la misma VLAN/subred. 'Ataque MITM en LAN' → ARP Poisoning."
+        },
+        {
+          "a": "MITM",
+          "nemo": "MITM → 'El atacante en medio: intercepta, lee y puede modificar todo el tráfico entre dos partes'",
+          "si": [
+            "Interceptar credenciales, cookies y datos en tránsito cuando no hay cifrado fuerte",
+            "SSL Stripping: degradar HTTPS a HTTP para leer el tráfico en claro"
+          ],
+          "no": [
+            "Contra HTTPS con HSTS: el navegador insiste en HTTPS aunque el atacante intente degradar",
+            "Contra mTLS: ambas partes verifican el certificado del otro, el atacante no puede interponerse"
+          ],
+          "patron": "Métodos para posición MITM: ARP Poisoning (LAN), Evil Twin / Rogue AP (WiFi), DNS Poisoning. HSTS previene SSL Stripping forzando HTTPS en el navegador. Pregunta: '¿Control contra SSL Stripping?' → HSTS (HTTP Strict Transport Security)."
+        },
+        {
+          "a": "DNS Poisoning",
+          "nemo": "DNS Poisoning → 'Respuesta DNS falsa: redirige a la víctima al servidor del atacante'",
+          "si": [
+            "Redirigir usuarios a sitios maliciosos de forma transparente para robar credenciales",
+            "Como base para otros ataques (MITM, phishing de alta fidelidad)"
+          ],
+          "no": [
+            "Contra clientes que validan DNSSEC (las respuestas falsas no tienen firma válida)",
+            "Contra infraestructura con DNS-over-HTTPS/TLS (el tráfico DNS está cifrado)"
+          ],
+          "patron": "DNSSEC previene DNS poisoning firmando digitalmente las respuestas DNS. DNS Sinkhole: técnica defensiva — redirige dominios maliciosos conocidos (C2, DGA) a IP controlada para detectar hosts infectados que intentan contactarlos. Diferente a DNS Poisoning (que es ofensivo)."
+        },
+        {
+          "a": "Golden Ticket",
+          "nemo": "Golden Ticket → 'Hash de KRBTGT = TGT falso ilimitado: control total de Active Directory'",
+          "si": [
+            "Persistencia máxima en AD después de comprometer el Domain Controller (tiene el hash KRBTGT)",
+            "Generar TGTs con cualquier identidad y privilegios ilimitados, incluyendo futuras cuentas"
+          ],
+          "no": [
+            "Requiere conocer passwords de usuarios: solo necesita el hash de KRBTGT",
+            "Se invalida reiniciando el DC: el Golden Ticket persiste aunque se cambien passwords de usuarios"
+          ],
+          "patron": "Mitigación: rotar el password de KRBTGT DOS veces (la segunda invalida todos los tickets activos basados en el hash anterior). Requiere compromiso previo del DC para obtener el hash KRBTGT. 'Persistencia post-compromiso total en AD' → Golden Ticket."
+        },
+        {
+          "a": "Kerberoasting",
+          "nemo": "Kerberoasting → 'Cualquier usuario AD puede pedir TGS para servicios: el hash de la service account es crackeable offline'",
+          "si": [
+            "Obtener hashes de service accounts para crackear offline sin límite de intentos",
+            "Escalar privilegios desde cualquier cuenta de dominio hacia service accounts privilegiadas"
+          ],
+          "no": [
+            "Requiere privilegios elevados para iniciarse: cualquier usuario autenticado de AD puede pedir TGS",
+            "Detectable fácilmente durante la fase de petición: las peticiones TGS son normales en AD"
+          ],
+          "patron": "Mitigación: passwords de 25+ caracteres aleatorios en service accounts + Managed Service Accounts (MSA/gMSA) que rotan automáticamente. 'El atacante tiene cuenta de dominio sin privilegios pero quiere escalar' → Kerberoasting es el camino. Diferencia con Golden Ticket: Kerberoasting no necesita comprometer el DC."
+        },
+        {
+          "a": "Pass-the-Hash",
+          "nemo": "PtH → 'Con el hash NTLM ya te autenticas: Mimikatz lo extrae de LSASS en memoria'",
+          "si": [
+            "Movimiento lateral en AD sin conocer el password en texto claro",
+            "Reutilizar hashes NTLM extraídos para autenticarse en otros sistemas de la red"
+          ],
+          "no": [
+            "Funcionar contra sistemas que usan Kerberos exclusivamente (sin NTLM) con Credential Guard activo",
+            "Requiere primero una posición inicial con acceso a LSASS (no es el primer paso del ataque)"
+          ],
+          "patron": "Mimikatz = herramienta que extrae hashes NTLM de la memoria del proceso LSASS. Mitigaciones: deshabilitar NTLM, activar Windows Defender Credential Guard (virtualiza LSASS), Protected Users security group (bloquea NTLM para usuarios privilegiados). 'Lateral movement sin conocer la contraseña' → PtH."
+        },
+        {
+          "a": "Domain Fronting",
+          "nemo": "Domain Fronting → 'El C2 se esconde detrás de cloudflare.com: el tráfico parece legítimo al firewall'",
+          "si": [
+            "Evadir firewalls y DPI haciendo que el tráfico C2 aparezca como tráfico a un CDN conocido",
+            "Bypass de bloqueos por reputación de dominio usando la reputación de grandes CDNs"
+          ],
+          "no": [
+            "CDNs modernos lo detectan y bloquean activamente (AWS, Cloudflare lo prohiben en sus TOS)",
+            "Evadir TLS Deep Inspection: si el proxy empresarial descifra TLS, el Host header real queda expuesto"
+          ],
+          "patron": "Técnica: SNI del TLS apunta a dominio legítimo del CDN (cloudflare.com), pero el HTTP Host header redirige al C2 real. El firewall ve cloudflare.com en el SNI y permite el tráfico. Detección: TLS inspection o análisis de anomalías en tráfico CDN."
+        }
+      ]
+    },
+
+    {
+      "id": "G",
+      "nombre": "Arquitectura Red, Cloud y DevOps",
+      "terminos": [
+        {
+          "a": "NGFW",
+          "nemo": "NGFW → 'Firewall + IPS + inspección capa 7: ve el payload y bloquea por aplicación, no solo por puerto'",
+          "si": [
+            "Inspección profunda de paquetes incluyendo TLS inspection para descifrar y analizar el tráfico",
+            "Bloqueo basado en aplicación (bloquea Facebook aunque use el puerto 443)"
+          ],
+          "no": [
+            "Reemplazar WAF para protección específica de apps web: NGFW protege la red, WAF protege la app web",
+            "Ser un IDS pasivo: NGFW está inline y puede bloquear activamente"
+          ],
+          "patron": "NGFW vs WAF: NGFW = protección general de red (L3-L7, cualquier tipo de tráfico). WAF = protección específica de apps web (HTTP/HTTPS, OWASP Top 10). TLS inspection = MITM legítimo que el NGFW hace con cert de empresa para ver tráfico cifrado."
+        },
+        {
+          "a": "WAF",
+          "nemo": "WAF → 'El guardaespaldas de la app web: bloquea SQLi, XSS, CSRF en el tráfico HTTP'",
+          "si": [
+            "Proteger aplicaciones web de ataques de capa 7 del OWASP Top 10 (SQLi, XSS, traversal)",
+            "Proporcionar una capa de protección frente al servidor web antes de que el ataque llegue al código"
+          ],
+          "no": [
+            "Proteger infraestructura de red general (NGFW), ni tráfico no-HTTP",
+            "Reemplazar código seguro: WAF detecta patrones conocidos pero no previene todas las variantes"
+          ],
+          "patron": "WAF se coloca DELANTE del servidor web (reverse proxy). Detecta patrones de ataque web pero no previene si el código no está sanitizado (prepared statements, etc.). 'Protección de app web en producción como control compensatorio' → WAF."
+        },
+        {
+          "a": "IDS/IPS",
+          "nemo": "IDS alerta (pasivo), IPS bloquea (inline): misma detección, diferente posición y acción",
+          "si": [
+            "IDS: visibilidad de amenazas sin riesgo de cortar tráfico legítimo por falsos positivos",
+            "IPS: bloqueo automático de amenazas conocidas en tiempo real"
+          ],
+          "no": [
+            "IDS detiene ataques activamente: IDS solo detecta y alerta, no bloquea",
+            "IPS sin tuning: genera falsos positivos que cortan servicios legítimos"
+          ],
+          "patron": "IDS = pasivo (tap/span port, no está en el flujo de tráfico). IPS = inline (el tráfico pasa a través, puede bloquear). Signature-based = detecta ataques conocidos. Anomaly-based = detecta desviaciones del baseline (detecta ataques 0-day pero más falsos positivos)."
+        },
+        {
+          "a": "VPN/IPsec",
+          "nemo": "VPN/IPsec → 'Túnel cifrado entre puntos: acceso a red completa (no por app como ZTNA)'",
+          "si": [
+            "Site-to-site entre sedes de una empresa (IPsec tunnel mode cifra todo el paquete)",
+            "Acceso remoto de usuarios cuando necesitan acceso amplio a la red corporativa"
+          ],
+          "no": [
+            "Acceso granular por aplicación (ZTNA es más adecuado en Zero Trust)",
+            "Garantizar Zero Trust por sí solo: VPN autentica acceso a la red, no valida contexto continuo"
+          ],
+          "patron": "IPsec Transport = cifra solo el payload (host-to-host). IPsec Tunnel = cifra todo el paquete incluyendo cabecera IP (site-to-site). Split tunnel = solo tráfico corporativo por VPN. Full tunnel = todo el tráfico por VPN. IKEv2 = protocolo moderno de negociación IPsec."
+        },
+        {
+          "a": "SASE",
+          "nemo": "SASE → 'SD-WAN + seguridad cloud integrada: el reemplazo moderno de VPN para trabajo remoto'",
+          "si": [
+            "Trabajo remoto moderno con seguridad aplicada en el borde cloud sin backhauling",
+            "Consolidar múltiples soluciones de seguridad de red en un servicio cloud unificado"
+          ],
+          "no": [
+            "Entornos puramente on-premise sin cloud: SASE requiere infraestructura cloud",
+            "Reemplazar seguridad de endpoints (SASE es seguridad de red/acceso, no de endpoint)"
+          ],
+          "patron": "SASE = SD-WAN + CASB + SWG + ZTNA + FWaaS. Zscaler, Palo Alto Prisma Access son ejemplos. 'Empresa con trabajadores remotos necesita seguridad de red sin VPN tradicional' → SASE. El tráfico va directamente al cloud con seguridad aplicada en el borde."
+        },
+        {
+          "a": "mTLS",
+          "nemo": "mTLS → 'TLS mutuo: ambos presentan certificado. Autentica el servicio que llama, no solo el que responde'",
+          "si": [
+            "Comunicación segura entre microservicios donde cada servicio debe probar su identidad",
+            "APIs internas donde se requiere autenticación mutua sin gestionar usuarios/passwords"
+          ],
+          "no": [
+            "Autenticación de usuarios finales desde navegadores (los usuarios no tienen certificados cliente por defecto)",
+            "TLS normal donde solo el servidor necesita ser autenticado"
+          ],
+          "patron": "TLS estándar: solo el servidor tiene cert → el cliente verifica que habla con el servidor correcto. mTLS: ambos tienen cert → el servidor también verifica que el cliente es un servicio autorizado. Usado en service mesh (Istio) y APIs internas B2B."
+        },
+        {
+          "a": "Service Mesh",
+          "nemo": "Service Mesh → 'mTLS automático entre microservicios sin tocar el código de la app'",
+          "si": [
+            "Gestión automática de mTLS, observabilidad (tracing) y políticas de acceso en K8s",
+            "Circuit breakers, retry policies y load balancing entre microservicios sin código adicional"
+          ],
+          "no": [
+            "Monolitos o aplicaciones no containerizadas",
+            "Reemplazar un firewall perimetral: service mesh es seguridad este-oeste (entre servicios), no norte-sur (entrada/salida)"
+          ],
+          "patron": "Istio y Linkerd son las implementaciones más comunes. El sidecar proxy (Envoy) en cada pod intercepta y gestiona el tráfico automáticamente. 'mTLS automático entre todos los microservicios sin modificar el código' → Service Mesh con sidecar pattern."
+        },
+        {
+          "a": "Purdue Model",
+          "nemo": "Purdue Model → 'L0 a L5: segmentación OT/IT con DMZ que aísla la fábrica de la oficina'",
+          "si": [
+            "Segmentación de redes industriales ICS/SCADA para separar IT corporativa de OT",
+            "Diseñar arquitecturas de seguridad para entornos de infraestructura crítica"
+          ],
+          "no": [
+            "Arquitecturas cloud nativas o microservicios (Purdue es específico para ICS/OT)",
+            "Reemplazar controles de seguridad en cada nivel: es un modelo de referencia, no una solución"
+          ],
+          "patron": "5 niveles: L0=proceso físico, L1=PLCs/RTUs, L2=SCADA, L3=MES/operaciones, L4-5=IT corporativa. DMZ entre L3 y L4 es el control clave. En examen: 'ICS + segmentación de red' → Purdue Model. CIA invertida en OT: Disponibilidad primero (AIC)."
+        },
+        {
+          "a": "CSPM",
+          "nemo": "CSPM → 'El auditor de configuraciones cloud: detecta S3 públicos y security groups abiertos'",
+          "si": [
+            "Detectar automáticamente misconfiguraciones en cloud: S3 público, IAM excesivo, SGs 0.0.0.0/0",
+            "Cumplimiento continuo de políticas de seguridad cloud en entornos multi-cloud"
+          ],
+          "no": [
+            "Detectar permisos excesivos de identidades IAM (eso es CIEM)",
+            "Proteger workloads en runtime de amenazas activas (eso es CWPP)"
+          ],
+          "patron": "Trio cloud security: CSPM = configuración (¿está bien configurado?). CIEM = entitlements/permisos (¿tiene demasiado acceso?). CWPP = workload protection (¿está siendo atacado en runtime?). Tres herramientas distintas para tres capas distintas."
+        },
+        {
+          "a": "CIEM",
+          "nemo": "CIEM → 'Cazador de over-privilege en cloud: tienes AdministratorAccess pero solo usas 3 permisos'",
+          "si": [
+            "Implementar least privilege en IAM de AWS/Azure/GCP detectando permisos no utilizados",
+            "Reducir el blast radius si una identidad cloud es comprometida"
+          ],
+          "no": [
+            "Detectar misconfiguraciones de red o almacenamiento (eso es CSPM)",
+            "Gestionar credenciales o secretos (eso es secrets management/KMS)"
+          ],
+          "patron": "'Usuario tiene AdministratorAccess en AWS pero en 90 días solo llamó a 3 APIs de S3' → CIEM lo detecta y recomienda política mínima. Diferencia clave con CSPM en el examen: CSPM = configuraciones. CIEM = permisos/entitlements de identidades."
+        },
+        {
+          "a": "Immutable Infra",
+          "nemo": "Immutable Infra → 'No se parchea: se destruye y se recrea desde imagen limpia y validada'",
+          "si": [
+            "Eliminar configuration drift y garantizar que todos los servidores son idénticos a la imagen base",
+            "Respuesta a incidentes en cloud: destroy + redeploy en lugar de forensics en la instancia activa"
+          ],
+          "no": [
+            "Sistemas legacy que requieren mantenimiento in-place y no pueden ser reemplazados fácilmente",
+            "Entornos sin pipelines de CI/CD automatizados para reconstruir imágenes"
+          ],
+          "patron": "Si la instancia está comprometida → no la parcheas, la destruyes y recreas desde imagen prevalidada. Esto garantiza estado conocido. 'Cómo garantizar que los servidores de producción no tienen configuration drift' → Immutable Infrastructure."
+        },
+        {
+          "a": "CI/CD Security",
+          "nemo": "CI/CD Security → 'SAST + secrets-scan + SCA en cada commit: la seguridad en el pipeline'",
+          "si": [
+            "Detectar vulnerabilidades en código, dependencias e imágenes antes de llegar a producción",
+            "Prevenir supply chain attacks que comprometen el pipeline de build"
+          ],
+          "no": [
+            "Seguridad en runtime de producción (eso es EDR/CWPP/SIEM)",
+            "Reemplazar pentesting o auditorías de seguridad (CI/CD security complementa, no reemplaza)"
+          ],
+          "patron": "Supply chain attack puede comprometer el pipeline: un plugin de Jenkins malicioso puede exfiltrar secretos de build. Secrets en repositorio = crítico (usar secret scanning antes de cada commit). SAST = análisis de código estático. SCA = análisis de dependencias (CVEs en librerías)."
+        },
+        {
+          "a": "DevSecOps",
+          "nemo": "DevSecOps → 'Shift-left: seguridad desde el primer commit, no como auditoría al final'",
+          "si": [
+            "Integrar controles de seguridad en todo el SDLC para detectar vulnerabilidades cuando son baratas de arreglar",
+            "Cultura donde developers son responsables de la seguridad de su código, no solo el equipo de seg"
+          ],
+          "no": [
+            "Solo herramientas: DevSecOps es una cultura + procesos + herramientas",
+            "Reemplazar pentesting o red team: DevSecOps complementa, los adversarial tests siguen siendo necesarios"
+          ],
+          "patron": "Shift-left = mover los controles de seguridad más a la izquierda del SDLC (más temprano = más barato arreglar). Flujo: SAST en commits → SCA en dependencias → DAST en staging → container scanning → IaC scanning → antes de producción."
+        }
+      ]
+    },
+
+    {
+      "id": "H",
+      "nombre": "Operaciones, SOC e Incident Response",
+      "terminos": [
+        {
+          "a": "SIEM",
+          "nemo": "SIEM → 'El cerebro del SOC: centraliza, correlaciona logs y genera alertas pero NO responde solo'",
+          "si": [
+            "Correlacionar eventos de múltiples fuentes (firewall, IDS, endpoints, servidores) para detectar patrones de ataque",
+            "Cumplimiento normativo: centralizar y retener logs para auditorías (PCI DSS, HIPAA)"
+          ],
+          "no": [
+            "Responder automáticamente a incidentes (eso es SOAR, que complementa al SIEM)",
+            "Reemplazar a los analistas de seguridad: SIEM alerta, los analistas investigan"
+          ],
+          "patron": "SIEM detecta → SOAR responde. Sin SOAR, el SIEM solo genera alertas que requieren acción manual. ELK Stack (Elasticsearch + Logstash + Kibana) = SIEM open source alternativo. 'Solución para correlacionar logs de toda la infraestructura y generar alertas' → SIEM."
+        },
+        {
+          "a": "SOAR",
+          "nemo": "SOAR → 'El automatizador del SOC: playbooks que responden sin esperar al analista'",
+          "si": [
+            "Automatizar respuesta a incidentes comunes: bloquear IP, aislar host, crear ticket, notificar",
+            "Reducir MTTR (Mean Time To Respond) eliminando pasos manuales repetitivos"
+          ],
+          "no": [
+            "Detectar amenazas (eso es SIEM + IDS/EDR que alimentan al SOAR)",
+            "Reemplazar analistas para incidentes complejos y novedosos (SOAR automatiza los playbooks conocidos)"
+          ],
+          "patron": "SIEM detecta anomalía → envía alerta a SOAR → SOAR ejecuta playbook automático (aislar host, bloquear IP en firewall, abrir ticket, notificar). KPI clave: MTTR. Diferencia Sec+: SIEM=detección+correlación, SOAR=automatización+respuesta."
+        },
+        {
+          "a": "NIST IR",
+          "nemo": "NIST IR → '4 fases en orden fijo: Prep → Detect → Contain+Eradicate+Recover → Post-Incident'",
+          "si": [
+            "Framework estándar para manejar incidentes de seguridad de forma estructurada",
+            "Justificar el orden correcto de acciones durante un incidente en el examen"
+          ],
+          "no": [
+            "Saltarse fases o cambiarlas de orden (el examen pregunta la secuencia exacta)",
+            "Confundirlo con BCP/DRP: NIST IR es para incidentes de seguridad, BCP/DRP es para continuidad de negocio"
+          ],
+          "patron": "4 fases SIEMPRE en este orden: 1-Preparation, 2-Detection & Analysis, 3-Containment + Eradication + Recovery (en ese sub-orden), 4-Post-Incident Activity. Trampa: '¿Qué va después de Detection?' → Containment (NO Eradication directamente)."
+        },
+        {
+          "a": "Order of Volatility",
+          "nemo": "Order of Volatility → 'RAM primero, disco último: lo que se pierde al apagar va primero'",
+          "si": [
+            "Determinar el orden correcto de recolección de evidencia forense digital",
+            "Justificar por qué capturar la RAM antes de apagar o aislar un sistema comprometido"
+          ],
+          "no": [
+            "Apagar el sistema antes de recoger evidencia: pierdes la RAM y los procesos activos",
+            "Empezar por el disco duro si hay procesos sospechosos activos en memoria"
+          ],
+          "patron": "Orden correcto (RFC 3227): CPU/Registros → RAM → Swap/Pagefile → Conexiones de red activas → Procesos en ejecución → Disco duro → Logs remotos → Backups/Archivos. 'Primera acción en forense de un sistema live' → capturar la RAM."
+        },
+        {
+          "a": "YARA",
+          "nemo": "YARA → 'Reglas que cazan malware por patrones de strings y bytes: detecta variantes sin depender del hash'",
+          "si": [
+            "Identificar malware por patrones característicos (strings, secuencias de bytes, condiciones lógicas)",
+            "Detectar variantes del mismo malware que han cambiado solo ligeramente (evasión de hash)"
+          ],
+          "no": [
+            "Analizar logs del SIEM para patrones de comportamiento (para eso usa Sigma)",
+            "Ser un antivirus completo: YARA es una herramienta de clasificación/detección por reglas"
+          ],
+          "patron": "YARA = para archivos y memoria (malware hunting). Sigma = para logs de SIEM (behavioral detection). STIX/TAXII = formato y transporte de threat intel. La triada de detección: YARA detecta malware, Sigma detecta TTPs en logs, STIX/TAXII comparte ambos."
+        },
+        {
+          "a": "Sigma",
+          "nemo": "Sigma → 'YARA para logs de SIEM: escribe una regla, despliégala en Splunk, ELK o QRadar'",
+          "si": [
+            "Escribir reglas de detección portables que funcionan en cualquier SIEM",
+            "Compartir TTPs de detección entre organizaciones de forma estandarizada"
+          ],
+          "no": [
+            "Analizar archivos o binarios en busca de malware (para eso es YARA)",
+            "Ser un protocolo de transporte de threat intel (para eso es TAXII)"
+          ],
+          "patron": "Sigma:logs :: YARA:archivos. La portabilidad es la clave: una regla Sigma se convierte automáticamente a query de Splunk, ELK, QRadar, etc. Facilita compartir detecciones entre organizaciones sin reescribir para cada SIEM."
+        },
+        {
+          "a": "STIX/TAXII",
+          "nemo": "STIX describe la amenaza, TAXII la transporta: el lenguaje y el correo de threat intelligence",
+          "si": [
+            "Describir y compartir IOCs, TTPs, actores y campañas entre organizaciones de forma estandarizada",
+            "Automatizar el intercambio de threat intel con feeds externos"
+          ],
+          "no": [
+            "STIX no transporta (eso es TAXII), ni TAXII describe el contenido (eso es STIX)",
+            "Son herramientas de detección directa: son formatos y protocolos de intercambio de información"
+          ],
+          "patron": "Analogía perfecta: STIX = HTML (el contenido/formato). TAXII = HTTP (el protocolo de transporte). Los ISACs y plataformas de threat intel usan STIX/TAXII para compartir IOCs automáticamente. 'Formato de intercambio de threat intel' → STIX. 'Protocolo para transmitirlo' → TAXII."
+        },
+        {
+          "a": "ISAC",
+          "nemo": "ISAC → 'El gremio sectorial de threat intel: financiero con financiero, salud con salud'",
+          "si": [
+            "Compartir IOCs, TTPs y vulnerabilidades entre organizaciones del mismo sector de forma confidencial",
+            "Obtener inteligencia de amenazas específica del sector sin revelar la identidad"
+          ],
+          "no": [
+            "Una herramienta técnica de detección (es un consorcio organizacional)",
+            "Reemplazar tu propio SOC o capacidades de detección internas"
+          ],
+          "patron": "FS-ISAC (Financial Services), H-ISAC (Health), E-ISAC (Energy/Electricity), MS-ISAC (Multi-State). Los miembros comparten información vía STIX/TAXII. 'Organización del sector financiero quiere compartir IOCs con peers del sector' → FS-ISAC."
+        },
+        {
+          "a": "Dwell Time",
+          "nemo": "Dwell Time → 'Días que el atacante vive en tu red sin que lo detectes: cuanto menos, mejor'",
+          "si": [
+            "KPI crítico del SOC para medir qué tan rápido se detectan compromisos activos",
+            "Justificar inversión en SIEM + EDR como herramientas que reducen el tiempo de detección"
+          ],
+          "no": [
+            "Tiempo de respuesta al incidente (eso es MTTR, que empieza cuando se detecta)",
+            "Medir el daño causado directamente (el dwell time mide el tiempo, no el impacto)"
+          ],
+          "patron": "Media histórica según Mandiant: 200+ días. Objetivo moderno: horas. SIEM + EDR son las herramientas principales para reducirlo. Dwell time bajo = SOC efectivo. 'Tiempo desde compromiso hasta detección' → Dwell Time. MTTD = Mean Time To Detect (sinónimo operacional)."
+        },
+        {
+          "a": "ESI",
+          "nemo": "ESI → 'Información electrónica bajo legal hold: no borres nada hasta que el juicio termine'",
+          "si": [
+            "Preservar evidencia electrónica para litigios: emails, documentos, logs, chats, metadata",
+            "E-discovery: proceso de identificar y producir ESI relevante para un proceso legal"
+          ],
+          "no": [
+            "Análisis forense técnico de malware (eso es forense de incidentes, no e-discovery legal)",
+            "Solo los archivos: la metadata (quién, cuándo, desde dónde) es tan importante como el contenido"
+          ],
+          "patron": "Legal hold = orden de preservación que suspende la política normal de borrado de datos. Chain of custody = registro de quién tuvo la evidencia en cada momento. 'Empresa recibe demanda legal y debe preservar emails' → ESI + Legal Hold. Metadata es admisible como evidencia."
+        }
+      ]
+    },
+
+    {
+      "id": "I",
+      "nombre": "Gobernanza, Riesgo y Compliance",
+      "terminos": [
+        {
+          "a": "CIA Triad",
+          "nemo": "CIA → 'Todo control de seguridad protege Confidencialidad, Integridad o Disponibilidad. En ICS/OT: AIC'",
+          "si": [
+            "Clasificar y justificar cualquier control de seguridad mapeándolo a uno de los tres pilares",
+            "Analizar el impacto de un incidente: ransomware viola los 3 simultáneamente"
+          ],
+          "no": [
+            "ICS/SCADA mantiene el mismo orden CIA: en OT la disponibilidad es el pilar más crítico (AIC)",
+            "No repudio: el cuarto principio de seguridad mencionado en Sec+ junto a CIA"
+          ],
+          "patron": "Ransomware viola CIA completo: exfiltra (Confidencialidad) + cifra (Integridad) + bloquea acceso (Disponibilidad). En ICS/SCADA el orden es AIC porque parar una planta eléctrica es más crítico que una brecha de confidencialidad. 'Pilar más importante en ICS' → Disponibilidad."
+        },
+        {
+          "a": "ALE/SLE/ARO",
+          "nemo": "ALE = SLE × ARO, SLE = AV × EF → 'Pérdida anual en dinero: si ALE > costo del control, impleméntalo'",
+          "si": [
+            "Análisis cuantitativo de riesgo para justificar en dinero la inversión en controles de seguridad",
+            "Comparar el costo de un control vs la pérdida esperada sin él"
+          ],
+          "no": [
+            "Análisis cualitativo de riesgo (alto/medio/bajo): ALE es cuantitativo, requiere datos de frecuencia y valor",
+            "Capturar todos los factores de riesgo: ALE es una simplificación que no incluye reputación, multas, etc."
+          ],
+          "patron": "SLE = Asset Value × Exposure Factor. ALE = SLE × ARO. Trampa Sec+: confundir SLE (pérdida por UN evento) con ALE (pérdida anualizada). 'Servidor vale $100K, si falla se pierde 40% del valor, falla 2 veces al año' → SLE=$40K, ALE=$80K."
+        },
+        {
+          "a": "FAIR",
+          "nemo": "FAIR → 'Riesgo en dólares con modelo formal: TEF × Vulnerability → LEF × PLM = Risk $'",
+          "si": [
+            "Análisis cuantitativo formal de riesgo para comunicar riesgo en términos financieros a ejecutivos",
+            "Comparar diferentes riesgos entre sí en términos monetarios para priorizar inversiones"
+          ],
+          "no": [
+            "Análisis cualitativo rápido (FAIR requiere datos precisos y tiempo de análisis)",
+            "Framework de controles técnicos: FAIR mide el riesgo, no dice qué controles implementar"
+          ],
+          "patron": "FAIR complementa (no reemplaza) frameworks cualitativos como NIST CSF o ISO 27001. Factor Analysis of Information Risk: TEF=frecuencia de amenaza, Vulnerability=probabilidad de éxito, PLM=magnitud de pérdida probable. Sec+: 'análisis cuantitativo de riesgo más completo' → FAIR."
+        },
+        {
+          "a": "BCP/DRP",
+          "nemo": "BCP ⊃ DRP ⊃ IRP → 'Negocio completo > solo IT > solo incidente de seguridad'",
+          "si": [
+            "BCP: mantener TODAS las operaciones del negocio durante/después de un desastre",
+            "DRP: recuperar específicamente la infraestructura IT (subconjunto del BCP)"
+          ],
+          "no": [
+            "BCP y DRP son intercambiables: BCP abarca negocio completo, DRP es solo IT",
+            "IRP (Incident Response Plan) es lo mismo que DRP: IRP es para incidentes de seguridad, DRP para recuperación IT post-desastre"
+          ],
+          "patron": "Trampa Sec+: 'Plan para recuperar el datacenter tras un incendio' → DRP (solo IT). 'Plan para que el negocio siga funcionando mientras recuperamos IT' → BCP. Jerarquía: BCP es el paraguas, DRP e IRP son planes específicos dentro del BCP."
+        },
+        {
+          "a": "RTO/RPO",
+          "nemo": "RTO = tiempo para volver a funcionar, RPO = datos que nos permitimos perder",
+          "si": [
+            "RTO bajo → hot site (disponible en minutos/horas). RPO bajo → replicación en tiempo real o backups frecuentes",
+            "Definir los requisitos de continuidad que determinan qué tecnologías de recuperación se necesitan"
+          ],
+          "no": [
+            "RTO y RPO son lo mismo o intercambiables (son dimensiones ortogonales: tiempo vs datos)",
+            "RPO es el tiempo de recuperación: RPO mide pérdida de datos, RTO mide tiempo de recuperación"
+          ],
+          "patron": "Trampa favorita Sec+: 'La empresa puede tolerar máximo 2 horas de datos perdidos' → RPO = 2 horas. 'La empresa debe volver a operar en máximo 4 horas' → RTO = 4 horas. RPO 0 = replicación síncrona en tiempo real. RTO 0 = alta disponibilidad activa-activa."
+        },
+        {
+          "a": "NIST 800-53",
+          "nemo": "NIST 800-53 → 'El catálogo de controles para sistemas federales USA: la base de FedRAMP'",
+          "si": [
+            "Referencia de controles técnicos, operacionales y de gestión para sistemas federales y contratistas",
+            "Base de FedRAMP para cloud providers que quieren vender al gobierno federal de EE.UU."
+          ],
+          "no": [
+            "Un framework de gestión de procesos (eso es NIST CSF o ISO 27001): 800-53 es un catálogo de controles específicos",
+            "Exclusivo para organizaciones gubernamentales: muchas organizaciones privadas lo adoptan como referencia"
+          ],
+          "patron": "NIST 800-53 vs NIST CSF: 800-53 = controles detallados específicos (familias AC, AU, IR, SC, SI...). CSF = framework de gestión de riesgo de alto nivel (Identify, Protect, Detect, Respond, Recover). FedRAMP = certificación cloud basada en 800-53."
+        },
+        {
+          "a": "PIA/DPIA",
+          "nemo": "DPIA → 'Evaluación de impacto antes de procesar datos de alto riesgo: obligatorio en GDPR Art. 35'",
+          "si": [
+            "Evaluar riesgos de privacidad antes de implementar sistemas con biométricos, profiling masivo o vigilancia",
+            "Demostrar compliance con GDPR para procesamientos de datos de alto riesgo"
+          ],
+          "no": [
+            "Un checklist de cumplimiento genérico: DPIA es específica para alto riesgo y requiere análisis profundo",
+            "Obligatorio para todo procesamiento de datos: solo se requiere cuando el procesamiento es de 'alto riesgo' según GDPR Art. 35"
+          ],
+          "patron": "DPIA = nombre GDPR. PIA = nombre genérico (Privacy Impact Assessment). GDPR Art. 35 obliga DPIA para: datos biométricos para identificar personas, profiling sistemático y a gran escala, vigilancia sistemática de áreas públicas. 'Empresa lanza sistema de reconocimiento facial' → DPIA obligatoria."
+        },
+        {
+          "a": "CMMI",
+          "nemo": "CMMI → '5 niveles de madurez: del caos total a la mejora continua medida'",
+          "si": [
+            "Medir la madurez del programa de seguridad de la organización y trazar el camino de mejora",
+            "Comparar la postura de seguridad de la organización con un benchmark estándar"
+          ],
+          "no": [
+            "Un estándar de controles técnicos: CMMI mide madurez del proceso, no qué controles tienes",
+            "Específico de seguridad: CMMI es un modelo general de madurez de procesos aplicable a cualquier área"
+          ],
+          "patron": "Niveles CMMI: 1=Initial (caótico, ad-hoc), 2=Managed (repetible), 3=Defined (estandarizado), 4=Quantitatively Managed, 5=Optimizing (mejora continua). 'La empresa no documenta sus procesos de seguridad y cada incidente se maneja diferente' → CMMI nivel 1."
+        },
+        {
+          "a": "GDPR",
+          "nemo": "GDPR → '72 horas para notificar brecha + right to forget + multa hasta 4% facturación global'",
+          "si": [
+            "Marco legal de privacidad para cualquier empresa que procese datos de ciudadanos de la UE",
+            "Referencia para derechos de los titulares de datos: acceso, rectificación, supresión, portabilidad"
+          ],
+          "no": [
+            "Solo aplica a empresas europeas: aplica a CUALQUIER empresa que procese datos de ciudadanos UE, sin importar dónde esté la empresa",
+            "Anonimización = sigue siendo PII bajo GDPR: la anonimización correcta saca los datos del alcance del GDPR"
+          ],
+          "patron": "Trampa: 'Solo empresas en Europa deben cumplir GDPR' → FALSO, cualquier empresa con clientes/usuarios de la UE debe cumplirlo. Multas: hasta 4% de facturación global anual o 20M€ (lo que sea mayor). Anonimización genuina → deja de ser PII → GDPR no aplica."
+        },
+        {
+          "a": "Mobile Site",
+          "nemo": "Mobile Site → 'El datacenter sobre ruedas: se mueve a donde ocurrió el desastre'",
+          "si": [
+            "Desastres geográficos extensos donde el personal y equipos deben moverse al lugar afectado",
+            "Cuando la infraestructura fija de recuperación está también afectada por el desastre"
+          ],
+          "no": [
+            "Reemplazar un hot site en velocidad de recuperación: mobile site tarda tiempo en desplazarse",
+            "Para desastres pequeños o localizados donde los sites fijos son suficientes"
+          ],
+          "patron": "Jerarquía de sites de recuperación por costo y velocidad: Hot (horas, más caro, ya equipado) > Warm (días, equipo parcial) > Cold (semanas, más barato, solo espacio) > Mobile (se desplaza físicamente). 'Desastre regional que afecta todos los sites del área' → Mobile Site."
+        }
+      ]
+    }
+
+  ]
+}

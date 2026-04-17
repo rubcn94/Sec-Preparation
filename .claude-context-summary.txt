@@ -1,0 +1,30 @@
+============================================================
+PROYECTO: Security+ SY0-701 - Materiales de Estudio
+Tipo: study-material | Estado: production | v2.0
+============================================================
+
+PROPOSITO: Preparación completa para examen Security+ SY0-701
+OBJETIVO: Aprobar Security+ con 85%+ antes de mayo 2026
+
+TECNOLOGIAS:
+  - languages: HTML, JSON, Markdown
+  - tools: Browser, Obsidian/Notion, Git
+  - deployment: Local + Syncthing (móvil)
+
+ENTRY POINTS:
+  - CLAUDE_SecurityPlus.md
+  - Temario_SY0701.html
+  - flashcards.json
+
+ACCIONES AL INICIAR:
+  [*] Contar flashcards actuales por prioridad
+  [*] Verificar integridad de flashcards.json
+  [*] Revisar si hay nuevos simulacros en Simulacros/ para analizar
+
+ADVERTENCIAS:
+  [!] NO borrar flashcards ALTA prioridad sin verificar
+  [!] NO modificar estructura de flashcards.json (rompe HTML)
+  [!] SIEMPRE verificar JSON antes de guardar
+  [!] Priorizar razonamiento sobre memorización
+
+============================================================

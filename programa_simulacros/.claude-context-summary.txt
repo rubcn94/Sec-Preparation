@@ -1,0 +1,35 @@
+============================================================
+PROYECTO: Programa Simulacros Security+
+Tipo: web-app | Estado: production | v2.0
+============================================================
+
+PROPOSITO: Herramienta de estudio para certificación CompTIA Security+ SY0-701
+OBJETIVO: Proporcionar simulacros realistas con preguntas en español
+
+TECNOLOGIAS:
+  - frontend: HTML5 + CSS + Vanilla JavaScript
+  - data_format: JSON
+  - deployment: Portable (ZIP autónomo)
+  - launcher: Python + BAT (Windows)
+
+ENTRY POINTS:
+  - INICIAR.bat
+  - iniciar.py
+  - SimulacroSecPlusmegabank.html
+
+ARCHIVOS DE DATOS:
+  - mega_bank.json: Banco principal de 2,292 preguntas (ÚNICA FUENTE)
+  - secplus_completo.json: Glosario por dominios Security+
+  - secplus_nemotecnia.json: Términos con nemotecnias
+
+ACCIONES AL INICIAR:
+  [*] Verificar integridad de mega_bank.json
+  [*] Contar preguntas actuales
+  [*] Revisar si hay archivos .json nuevos para consolidar
+
+ADVERTENCIAS:
+  [!] NO crear archivos JSON adicionales - consolidar en mega_bank.json
+  [!] NO tocar archivos_fuente_backup/
+  [!] Verificar duplicados SIEMPRE antes de añadir preguntas
+
+============================================================

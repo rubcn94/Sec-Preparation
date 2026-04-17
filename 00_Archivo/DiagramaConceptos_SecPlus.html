@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security+ SY0-701 — Mapa Visual Completo</title>
+<style>
+:root {
+  --bg: #0f0f13;
+  --bg2: #1a1a22;
+  --bg3: #24242e;
+  --bd: #2e2e3a;
+  --tx: #e8e6f0;
+  --tx2: #9896a8;
+  --d1: #4f9cf9; --d1b: #1a3a6e; --d1t: #c8dffe;
+  --d2: #f97b4f; --d2b: #6e2a1a; --d2t: #feddce;
+  --d3: #4fc98b; --d3b: #1a5a38; --d3t: #c0f0d8;
+  --d4: #c97ef9; --d4b: #4a1a6e; --d4t: #e8ccfe;
+  --d5: #f9c84f; --d5b: #6e4a1a; --d5t: #feeece;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--tx); min-height: 100vh; }
+
+/* NAV */
+.nav { display: flex; gap: 6px; padding: 14px 20px; background: var(--bg2); border-bottom: 1px solid var(--bd); flex-wrap: wrap; align-items: center; position: sticky; top: 0; z-index: 100; }
+.nav-title { font-size: 15px; font-weight: 700; color: var(--tx); margin-right: 10px; }
+.tab { padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; border: 1px solid var(--bd); background: var(--bg3); color: var(--tx2); transition: all .15s; white-space: nowrap; }
+.tab:hover { border-color: var(--tx2); color: var(--tx); }
+.tab.active { color: var(--bg); border-color: transparent; }
+.tab.t0.active { background: var(--tx); }
+.tab.t1.active { background: var(--d1); }
+.tab.t2.active { background: var(--d2); }
+.tab.t3.active { background: var(--d3); }
+.tab.t4.active { background: var(--d4); }
+.tab.t5.active { background: var(--d5); }
+.tab.t6.active { background: #e879a0; }
+
+/* PANES */
+.pane { display: none; padding: 20px; }
+.pane.active { display: block; }
+
+/* OVERVIEW */
+.overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.domain-card { border-radius: 16px; padding: 20px; border: 1px solid; cursor: pointer; transition: transform .2s, box-shadow .2s; }
+.domain-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.4); }
+.domain-card.d1 { background: var(--d1b); border-color: var(--d1); }
+.domain-card.d2 { background: var(--d2b); border-color: var(--d2); }
+.domain-card.d3 { background: var(--d3b); border-color: var(--d3); }
+.domain-card.d4 { background: var(--d4b); border-color: var(--d4); }
+.domain-card.d5 { background: var(--d5b); border-color: var(--d5); }
+.dc-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.dc-pct { font-size: 28px; font-weight: 800; }
+.dc-pct.d1 { color: var(--d1); }
+.dc-pct.d2 { color: var(--d2); }
+.dc-pct.d3 { color: var(--d3); }
+.dc-pct.d4 { color: var(--d4); }
+.dc-pct.d5 { color: var(--d5); }
+.dc-label { font-size: 13px; color: var(--tx2); line-height: 1.3; }
+.dc-name { font-size: 16px; font-weight: 700; color: var(--tx); }
+.dc-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+.pill { padding: 3px 9px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.pill.d1 { background: rgba(79,156,249,.2); color: var(--d1); border: 1px solid rgba(79,156,249,.3); }
+.pill.d2 { background: rgba(249,123,79,.2); color: var(--d2); border: 1px solid rgba(249,123,79,.3); }
+.pill.d3 { background: rgba(79,201,139,.2); color: var(--d3); border: 1px solid rgba(79,201,139,.3); }
+.pill.d4 { background: rgba(201,126,249,.2); color: var(--d4); border: 1px solid rgba(201,126,249,.3); }
+.pill.d5 { background: rgba(249,200,79,.2); color: var(--d5); border: 1px solid rgba(249,200,79,.3); }
+
+/* MIND MAP */
+.mindmap-wrap { width: 100%; overflow-x: auto; }
+svg.mindmap { display: block; margin: 0 auto; }
+
+/* DOMAIN DETAIL */
+.domain-header { display: flex; align-items: center; gap: 16px; padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid; }
+.domain-header.d1 { background: var(--d1b); border-color: var(--d1); }
+.domain-header.d2 { background: var(--d2b); border-color: var(--d2); }
+.domain-header.d3 { background: var(--d3b); border-color: var(--d3); }
+.domain-header.d4 { background: var(--d4b); border-color: var(--d4); }
+.domain-header.d5 { background: var(--d5b); border-color: var(--d5); }
+.dh-pct { font-size: 48px; font-weight: 800; line-height: 1; }
+.dh-pct.d1 { color: var(--d1); }
+.dh-pct.d2 { color: var(--d2); }
+.dh-pct.d3 { color: var(--d3); }
+.dh-pct.d4 { color: var(--d4); }
+.dh-pct.d5 { color: var(--d5); }
+.dh-info { flex: 1; }
+.dh-name { font-size: 22px; font-weight: 700; color: var(--tx); }
+.dh-desc { font-size: 13px; color: var(--tx2); margin-top: 4px; }
+
+/* TREE */
+.tree-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.tree-node { background: var(--bg2); border: 1px solid var(--bd); border-radius: 12px; overflow: hidden; }
+.tree-node-head { padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.tree-node-head:hover { background: var(--bg3); }
+.node-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.node-title { font-size: 14px; font-weight: 600; color: var(--tx); flex: 1; }
+.node-toggle { color: var(--tx2); font-size: 12px; transition: transform .2s; }
+.tree-node.open .node-toggle { transform: rotate(90deg); }
+.tree-body { display: none; padding: 0 16px 14px; }
+.tree-node.open .tree-body { display: block; }
+.tree-item { padding: 6px 0 6px 12px; border-left: 2px solid var(--bd); margin: 4px 0; font-size: 13px; color: var(--tx2); line-height: 1.4; }
+.tree-item b { color: var(--tx); font-weight: 600; }
+.tree-item.key { border-left-color: inherit; }
+.badge-exam { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; background: rgba(249,200,79,.2); color: var(--d5); border: 1px solid rgba(249,200,79,.3); margin-left: 4px; }
+.badge-trap { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; background: rgba(249,123,79,.2); color: var(--d2); border: 1px solid rgba(249,123,79,.3); margin-left: 4px; }
+
+/* COMPARISON CARDS */
+.compare-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+.compare-card { background: var(--bg2); border: 1px solid var(--bd); border-radius: 12px; padding: 16px; }
+.compare-title { font-size: 13px; font-weight: 700; color: var(--tx); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--bd); }
+.compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.compare-col { border-radius: 8px; padding: 10px 12px; }
+.compare-col.a { background: rgba(79,156,249,.1); border: 1px solid rgba(79,156,249,.2); }
+.compare-col.b { background: rgba(249,123,79,.1); border: 1px solid rgba(249,123,79,.2); }
+.compare-col.c { background: rgba(79,201,139,.1); border: 1px solid rgba(79,201,139,.2); }
+.compare-col-title { font-size: 11px; font-weight: 700; margin-bottom: 5px; }
+.compare-col.a .compare-col-title { color: var(--d1); }
+.compare-col.b .compare-col-title { color: var(--d2); }
+.compare-col.c .compare-col-title { color: var(--d3); }
+.compare-text { font-size: 12px; color: var(--tx2); line-height: 1.4; }
+.compare-text b { color: var(--tx); }
+
+/* FORMULAS */
+.formula-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.formula-card { background: var(--bg2); border: 1px solid var(--bd); border-radius: 12px; padding: 16px; }
+.formula-label { font-size: 11px; font-weight: 700; color: var(--tx2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .5px; }
+.formula-eq { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 14px; font-weight: 700; color: var(--d4); padding: 10px 14px; background: var(--bg3); border-radius: 8px; margin-bottom: 8px; }
+.formula-desc { font-size: 12px; color: var(--tx2); line-height: 1.5; }
+
+/* FLOW */
+.flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+.flow-step { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.flow-arrow { color: var(--tx2); font-size: 16px; }
+
+/* PORTS TABLE */
+.ports-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ports-table th { background: var(--bg3); color: var(--tx2); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--bd); }
+.ports-table td { padding: 9px 14px; border-bottom: 1px solid var(--bd); color: var(--tx2); }
+.ports-table tr:hover td { background: var(--bg3); }
+.ports-table .port-num { font-family: monospace; font-weight: 700; color: var(--d1); font-size: 14px; }
+.ports-table .port-name { color: var(--tx); font-weight: 600; }
+.ports-table .port-unsafe { color: var(--d2); }
+.ports-table .port-safe { color: var(--d3); }
+
+/* SECTION */
+.section-label { font-size: 11px; font-weight: 700; color: var(--tx2); text-transform: uppercase; letter-spacing: .8px; margin: 24px 0 12px; display: flex; align-items: center; gap: 8px; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--bd); }
+
+.progress-bar-wrap { background: var(--bg3); border-radius: 100px; height: 8px; margin-bottom: 20px; }
+.progress-bar { height: 100%; border-radius: 100px; }
+
+/* MATRIX */
+.matrix { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.matrix-cell { border-radius: 10px; padding: 14px; }
+.matrix-cell.tp { background: rgba(79,201,139,.15); border: 1px solid rgba(79,201,139,.3); }
+.matrix-cell.fp { background: rgba(249,200,79,.15); border: 1px solid rgba(249,200,79,.3); }
+.matrix-cell.tn { background: rgba(79,156,249,.15); border: 1px solid rgba(79,156,249,.3); }
+.matrix-cell.fn { background: rgba(249,79,79,.2); border: 1px solid rgba(249,79,79,.4); }
+.matrix-label { font-size: 11px; font-weight: 800; margin-bottom: 4px; }
+.matrix-cell.tp .matrix-label { color: var(--d3); }
+.matrix-cell.fp .matrix-label { color: var(--d5); }
+.matrix-cell.tn .matrix-label { color: var(--d1); }
+.matrix-cell.fn .matrix-label { color: #f94f4f; }
+.matrix-desc { font-size: 12px; color: var(--tx2); }
+
+/* SCROLL */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bd); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <span class="nav-title">🔐 Sec+ SY0-701</span>
+  <div class="tab t0 active" onclick="showPane(0)">📊 Overview</div>
+  <div class="tab t1" onclick="showPane(1)">D1 · General (12%)</div>
+  <div class="tab t2" onclick="showPane(2)">D2 · Amenazas (22%)</div>
+  <div class="tab t3" onclick="showPane(3)">D3 · Arquitectura (18%)</div>
+  <div class="tab t4" onclick="showPane(4)">D4 · Operaciones (28%)</div>
+  <div class="tab t5" onclick="showPane(5)">D5 · Programa (20%)</div>
+  <div class="tab t6" onclick="showPane(6)">⚡ Comparativas</div>
+</div>
+
+<!-- PANE 0: OVERVIEW -->
+<div class="pane active" id="pane0">
+  <div style="max-width:1200px;margin:0 auto;">
+
+    <!-- Progress visual -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:13px;color:var(--tx2);margin-bottom:10px;">Distribución de preguntas en el examen (~90 preguntas)</div>
+      <div style="display:flex;height:20px;border-radius:100px;overflow:hidden;gap:2px;">
+        <div style="width:12%;background:var(--d1);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--bg);">12%</div>
+        <div style="width:22%;background:var(--d2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--bg);">22%</div>
+        <div style="width:18%;background:var(--d3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--bg);">18%</div>
+        <div style="width:28%;background:var(--d4);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--bg);">28%</div>
+        <div style="width:20%;background:var(--d5);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--bg);">20%</div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;">
+        <span style="font-size:11px;color:var(--d1);">■ D1 General</span>
+        <span style="font-size:11px;color:var(--d2);">■ D2 Amenazas</span>
+        <span style="font-size:11px;color:var(--d3);">■ D3 Arquitectura</span>
+        <span style="font-size:11px;color:var(--d4);">■ D4 Operaciones</span>
+        <span style="font-size:11px;color:var(--d5);">■ D5 Programa</span>
+      </div>
+    </div>
+
+    <!-- Domain cards -->
+    <div class="overview-grid">
+      <!-- D1 -->
+      <div class="domain-card d1" onclick="showPane(1)">
+        <div class="dc-header">
+          <div class="dc-pct d1">12%</div>
+          <div>
+            <div class="dc-name">D1 · General Security Concepts</div>
+            <div class="dc-label">~11 preguntas · Fundamentos teóricos</div>
+          </div>
+        </div>
+        <div class="dc-pills">
+          <span class="pill d1">CIA Triad</span><span class="pill d1">AAA</span><span class="pill d1">Threat Actors</span><span class="pill d1">Social Engineering</span><span class="pill d1">Security Controls</span><span class="pill d1">Zero Trust</span><span class="pill d1">Cryptography</span><span class="pill d1">PKI</span><span class="pill d1">Phishing tipos</span><span class="pill d1">Supply Chain</span>
+        </div>
+      </div>
+      <!-- D2 -->
+      <div class="domain-card d2" onclick="showPane(2)">
+        <div class="dc-header">
+          <div class="dc-pct d2">22%</div>
+          <div>
+            <div class="dc-name">D2 · Threats, Vulnerabilities & Mitigations</div>
+            <div class="dc-label">~20 preguntas · Mayor peso tras D4</div>
+          </div>
+        </div>
+        <div class="dc-pills">
+          <span class="pill d2">Malware tipos</span><span class="pill d2">Ataques red</span><span class="pill d2">SQLi/XSS/CSRF</span><span class="pill d2">Password attacks</span><span class="pill d2">CVSS</span><span class="pill d2">Vulnerability mgmt</span><span class="pill d2">Kerberoasting</span><span class="pill d2">Pass-the-Hash</span><span class="pill d2">DDoS types</span><span class="pill d2">Zero-day</span>
+        </div>
+      </div>
+      <!-- D3 -->
+      <div class="domain-card d3" onclick="showPane(3)">
+        <div class="dc-header">
+          <div class="dc-pct d3">18%</div>
+          <div>
+            <div class="dc-name">D3 · Security Architecture</div>
+            <div class="dc-label">~16 preguntas · Cloud + Red + Diseño</div>
+          </div>
+        </div>
+        <div class="dc-pills">
+          <span class="pill d3">IaaS/PaaS/SaaS</span><span class="pill d3">Firewalls tipos</span><span class="pill d3">IDS vs IPS</span><span class="pill d3">SASE</span><span class="pill d3">VPN/TLS</span><span class="pill d3">DMZ</span><span class="pill d3">802.1X</span><span class="pill d3">Containers</span><span class="pill d3">Zero Trust Arch</span><span class="pill d3">Secure design</span>
+        </div>
+      </div>
+      <!-- D4 -->
+      <div class="domain-card d4" onclick="showPane(4)">
+        <div class="dc-header">
+          <div class="dc-pct d4">28%</div>
+          <div>
+            <div class="dc-name">D4 · Security Operations</div>
+            <div class="dc-label">~25 preguntas · El dominio más pesado</div>
+          </div>
+        </div>
+        <div class="dc-pills">
+          <span class="pill d4">SIEM / SOAR</span><span class="pill d4">EDR / XDR</span><span class="pill d4">Incident Response</span><span class="pill d4">NIST 800-61</span><span class="pill d4">Forense</span><span class="pill d4">Order of Volatility</span><span class="pill d4">MFA</span><span class="pill d4">IAM / PAM</span><span class="pill d4">Vulnerability scan</span><span class="pill d4">Pentesting</span>
+        </div>
+      </div>
+      <!-- D5 -->
+      <div class="domain-card d5" onclick="showPane(5)">
+        <div class="dc-header">
+          <div class="dc-pct d5">20%</div>
+          <div>
+            <div class="dc-name">D5 · Security Program Management</div>
+            <div class="dc-label">~18 preguntas · Gobernanza + Compliance</div>
+          </div>
+        </div>
+        <div class="dc-pills">
+          <span class="pill d5">Risk Management</span><span class="pill d5">ALE/SLE/ARO</span><span class="pill d5">GDPR/HIPAA</span><span class="pill d5">BIA/BCP/DRP</span><span class="pill d5">RTO/RPO</span><span class="pill d5">Frameworks</span><span class="pill d5">Auditorías</span><span class="pill d5">Data Privacy</span><span class="pill d5">Security awareness</span><span class="pill d5">Políticas</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key formulas -->
+    <div class="section-label">Fórmulas críticas del examen</div>
+    <div class="formula-grid">
+      <div class="formula-card">
+        <div class="formula-label">Risk Quantification</div>
+        <div class="formula-eq">ALE = SLE × ARO</div>
+        <div class="formula-desc"><b>SLE</b> = Valor activo × Factor exposición<br><b>ARO</b> = Frecuencia anual del evento<br>Si control cuesta más que ALE → No implementar</div>
+      </div>
+      <div class="formula-card">
+        <div class="formula-label">Password Security</div>
+        <div class="formula-eq">hash = H(password + salt + pepper)</div>
+        <div class="formula-desc"><b>Salt</b>: único por usuario, almacenado con el hash<br><b>Pepper</b>: secreto global, fuera de la BD</div>
+      </div>
+      <div class="formula-card">
+        <div class="formula-label">Biometrics</div>
+        <div class="formula-eq">EER = punto donde FAR = FRR</div>
+        <div class="formula-desc"><b>FAR</b>: acepta impostores (falso positivo)<br><b>FRR</b>: rechaza legítimos (falso negativo)<br>EER bajo = sistema más preciso</div>
+      </div>
+      <div class="formula-card">
+        <div class="formula-label">Return on Security</div>
+        <div class="formula-eq">ROSI = (ALE₁ − ALE₂) − Coste</div>
+        <div class="formula-desc">ALE₁ = antes del control<br>ALE₂ = después del control<br>Si ROSI > 0 → inversión justificada</div>
+      </div>
+    </div>
+
+    <!-- IR Flow -->
+    <div class="section-label">Incident Response (NIST 800-61)</div>
+    <div style="background:var(--bg2);border-radius:12px;padding:20px;border:1px solid var(--bd);">
+      <div class="flow">
+        <div class="flow-step" style="background:rgba(79,156,249,.2);color:var(--d1);border:1px solid rgba(79,156,249,.3);">1 Preparación</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step" style="background:rgba(249,200,79,.2);color:var(--d5);border:1px solid rgba(249,200,79,.3);">2 Detección & Análisis</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step" style="background:rgba(249,123,79,.2);color:var(--d2);border:1px solid rgba(249,123,79,.3);">3 Contención</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step" style="background:rgba(201,126,249,.2);color:var(--d4);border:1px solid rgba(201,126,249,.3);">4 Erradicación</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step" style="background:rgba(79,201,139,.2);color:var(--d3);border:1px solid rgba(79,201,139,.3);">5 Recuperación</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step" style="background:rgba(79,156,249,.15);color:var(--d1);border:1px solid rgba(79,156,249,.3);">6 Lecciones aprendidas</div>
+      </div>
+      <div style="font-size:12px;color:var(--tx2);margin-top:10px;">Nemotecnia: <b style="color:var(--tx)">PaPá Dice Cosas Limpias</b> → Preparación · Detección · Contención/Erradicación/Recuperación · Lecciones</div>
+    </div>
+
+    <!-- Order of Volatility -->
+    <div class="section-label">Order of Volatility (Forense)</div>
+    <div style="background:var(--bg2);border-radius:12px;padding:20px;border:1px solid var(--bd);">
+      <div class="flow" style="flex-direction:column;align-items:flex-start;">
+        <div style="display:flex;align-items:center;gap:12px;width:100%;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--d2);color:var(--bg);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;">1</div>
+          <div style="background:rgba(249,123,79,.15);border:1px solid rgba(249,123,79,.3);border-radius:8px;padding:8px 14px;flex:1;">
+            <b style="color:var(--d2);">Registros CPU / Cache</b> <span style="color:var(--tx2);font-size:12px;">— Más volátil. Se pierde al parar la CPU</span>
+          </div>
+        </div>
+        <div style="width:2px;height:16px;background:var(--bd);margin-left:11px;"></div>
+        <div style="display:flex;align-items:center;gap:12px;width:100%;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--d2);color:var(--bg);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;">2</div>
+          <div style="background:rgba(249,123,79,.12);border:1px solid rgba(249,123,79,.25);border-radius:8px;padding:8px 14px;flex:1;">
+            <b style="color:var(--d2);">RAM / Memoria principal</b> <span style="color:var(--tx2);font-size:12px;">— Procesos, conexiones activas, claves de cifrado</span>
+          </div>
+        </div>
+        <div style="width:2px;height:16px;background:var(--bd);margin-left:11px;"></div>
+        <div style="display:flex;align-items:center;gap:12px;width:100%;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--d4);color:var(--bg);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;">3</div>
+          <div style="background:rgba(201,126,249,.12);border:1px solid rgba(201,126,249,.25);border-radius:8px;padding:8px 14px;flex:1;">
+            <b style="color:var(--d4);">Tráfico de red</b> <span style="color:var(--tx2);font-size:12px;">— PCAP, NetFlow activo</span>
+          </div>
+        </div>
+        <div style="width:2px;height:16px;background:var(--bd);margin-left:11px;"></div>
+        <div style="display:flex;align-items:center;gap:12px;width:100%;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--d3);color:var(--bg);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;">4</div>
+          <div style="background:rgba(79,201,139,.12);border:1px solid rgba(79,201,139,.25);border-radius:8px;padding:8px 14px;flex:1;">
+            <b style="color:var(--d3);">Disco / Storage</b> <span style="color:var(--tx2);font-size:12px;">— Archivos, sistema de ficheros, artefactos</span>
+          </div>
+        </div>
+        <div style="width:2px;height:16px;background:var(--bd);margin-left:11px;"></div>
+        <div style="display:flex;align-items:center;gap:12px;width:100%;">
+          <div style="width:24px;height:24px;border-radius:50%;background:var(--d3);color:var(--bg);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;">5</div>
+          <div style="background:rgba(79,201,139,.1);border:1px solid rgba(79,201,139,.2);border-radius:8px;padding:8px 14px;flex:1;">
+            <b style="color:var(--d3);">Logs / Archivos remotos</b> <span style="color:var(--tx2);font-size:12px;">— Menos volátil. SIEM, syslog centralizado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANE 1: D1 -->
+<div class="pane" id="pane1">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="domain-header d1">
+      <div class="dh-pct d1">12%</div>
+      <div class="dh-info">
+        <div class="dh-name">D1 · General Security Concepts</div>
+        <div class="dh-desc">~11 preguntas | Fundamentos: CIA, AAA, controles, criptografía, actores de amenaza, ingeniería social</div>
+      </div>
+    </div>
+
+    <div class="tree-grid">
+      <!-- CIA + AAA -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(79,156,249,.2);">🔒</div>
+          <span class="node-title">CIA Triad + AAA</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>C</b>onfidentiality — Solo acceden quienes deben. Cifrado, control de acceso</div>
+          <div class="tree-item"><b>I</b>ntegrity — Los datos no se alteran. Hashing, firmas digitales</div>
+          <div class="tree-item"><b>A</b>vailability — El sistema está disponible. Redundancia, RAID, backups</div>
+          <div class="tree-item" style="border-left-color:var(--d1);margin-top:10px;"><b>Authentication</b> — Verificar identidad (¿quién eres?)</div>
+          <div class="tree-item" style="border-left-color:var(--d1);"><b>Authorization</b> — Qué puedes hacer (permisos, ACL)</div>
+          <div class="tree-item" style="border-left-color:var(--d1);"><b>Accounting</b> — Registrar lo que hiciste (logs, auditoría)</div>
+        </div>
+      </div>
+
+      <!-- Threat Actors -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,123,79,.2);">🎭</div>
+          <span class="node-title">Actores de Amenaza</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Nation-state / APT</b> — Mayor sofisticación, recursos ilimitados, espionaje</div>
+          <div class="tree-item"><b>Insider</b> — Mayor riesgo REAL: tiene acceso legítimo. Malicioso o accidental</div>
+          <div class="tree-item"><b>Crimen organizado</b> — Motivación económica: ransomware, fraude</div>
+          <div class="tree-item"><b>Hacktivista</b> — Motivación ideológica (Anonymous). DDoS, filtraciones</div>
+          <div class="tree-item"><b>Script kiddie</b> — Bajo nivel técnico, usa herramientas de otros</div>
+          <div class="tree-item"><b>Privilege creep</b> — Acumulación de permisos por cambios de rol sin revocar</div>
+        </div>
+      </div>
+
+      <!-- Social Engineering -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,200,79,.2);">🪤</div>
+          <span class="node-title">Ingeniería Social / Phishing</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Phishing</b> — Email masivo falso → credenciales o malware</div>
+          <div class="tree-item"><b>Spear phishing</b> — Dirigido a persona/empresa específica</div>
+          <div class="tree-item"><b>Whaling</b> — Spear phishing a ejecutivos C-level</div>
+          <div class="tree-item"><b>Smishing</b> — Phishing por SMS</div>
+          <div class="tree-item"><b>Vishing</b> — Phishing por voz / llamada</div>
+          <div class="tree-item"><b>Quishing</b> — Phishing por QR code</div>
+          <div class="tree-item"><b>BEC</b> — Business Email Compromise: suplantar CEO para transferencias</div>
+          <div class="tree-item"><b>Pretexting</b> — Historia falsa creíble ("soy de IT, dame tu password")</div>
+          <div class="tree-item"><b>Watering hole</b> — Infectar sitio que visitan los empleados objetivo</div>
+          <div class="tree-item"><b>Typosquatting</b> — Dominio con error tipográfico (gooogle.com)</div>
+          <div class="tree-item"><b>Shoulder surfing</b> — Mirar pantalla para robar credenciales</div>
+          <div class="tree-item"><b>Dumpster diving</b> — Buscar info en la basura</div>
+        </div>
+      </div>
+
+      <!-- Security Controls -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(79,201,139,.2);">🛡️</div>
+          <span class="node-title">Controles de Seguridad</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div style="font-size:11px;color:var(--tx2);margin-bottom:6px;font-weight:700;">POR FUNCIÓN:</div>
+          <div class="tree-item"><b>Preventivo</b> — Evita que ocurra. Firewall, antivirus, MFA</div>
+          <div class="tree-item"><b>Detectivo</b> — Detecta cuando ocurre. IDS, SIEM, auditoría</div>
+          <div class="tree-item"><b>Correctivo</b> — Repara después. Backup, patch, IR</div>
+          <div class="tree-item"><b>Compensatorio</b> — Sustituto temporal cuando el ideal no es viable. WAF sin parche</div>
+          <div class="tree-item"><b>Disuasorio</b> — Desalienta ataques. Cámaras, señales de advertencia</div>
+          <div style="font-size:11px;color:var(--tx2);margin:10px 0 6px;font-weight:700;">POR CATEGORÍA:</div>
+          <div class="tree-item"><b>Técnico</b> — Software/hardware: firewall, cifrado</div>
+          <div class="tree-item"><b>Administrativo</b> — Políticas, procedimientos, formación</div>
+          <div class="tree-item"><b>Operacional</b> — Procesos del día a día: revisiones, guardia</div>
+          <div class="tree-item"><b>Físico</b> — Barreras físicas: candados, jaulas, CCTV</div>
+          <div style="font-size:11px;color:var(--tx2);margin-top:8px;">Nemotecnia: <b style="color:var(--tx)">TOFG</b> → Técnico Odia el Frío → T·O·F·G</div>
+        </div>
+      </div>
+
+      <!-- Cryptography -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(201,126,249,.2);">🔑</div>
+          <span class="node-title">Criptografía</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Simétrica</b> — Misma clave cifra/descifra. Rápida. AES, DES, 3DES</div>
+          <div class="tree-item"><b>Asimétrica</b> — Clave pública/privada. Lenta. RSA, ECC, Diffie-Hellman</div>
+          <div class="tree-item"><b>Hashing</b> — IRREVERSIBLE, integridad. MD5 (roto), SHA-256, SHA-3</div>
+          <div class="tree-item"><b>AES</b> — Estándar simétrico. 128/192/256 bits. FIPS 197</div>
+          <div class="tree-item"><b>RSA</b> — Asimétrico más común. 2048+ bits recomendado</div>
+          <div class="tree-item"><b>ECC</b> — Más eficiente que RSA. Misma seguridad con clave más corta</div>
+          <div class="tree-item"><b>Salt</b> — Único por usuario, público, almacenado con el hash</div>
+          <div class="tree-item"><b>Pepper</b> — Secreto global, fuera de la BD</div>
+          <div class="tree-item"><b>PKI</b> — Infraestructura de clave pública. CA, RA, certificados X.509</div>
+          <div class="tree-item"><b>OCSP</b> — Verificación en tiempo real de revocación de certificado</div>
+          <div class="tree-item"><b>CRL</b> — Lista de certificados revocados (batch)</div>
+        </div>
+      </div>
+
+      <!-- Zero Trust -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,123,79,.2);">🚫</div>
+          <span class="node-title">Zero Trust + Supply Chain</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Zero Trust</b> — "Never trust, always verify". No hay perímetro seguro</div>
+          <div class="tree-item"><b>Least privilege</b> — Solo los permisos mínimos necesarios</div>
+          <div class="tree-item"><b>Microsegmentación</b> — Dividir la red en zonas pequeñas aisladas</div>
+          <div class="tree-item"><b>Supply chain attack</b> — Comprometer proveedor para atacar a sus clientes</div>
+          <div class="tree-item"><b>SBOM</b> — Software Bill of Materials: lista de componentes del software</div>
+          <div class="tree-item"><b>SolarWinds (2020)</b> — Actualización maliciosa afectó 18.000 organizaciones</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANE 2: D2 -->
+<div class="pane" id="pane2">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="domain-header d2">
+      <div class="dh-pct d2">22%</div>
+      <div class="dh-info">
+        <div class="dh-name">D2 · Threats, Vulnerabilities & Mitigations</div>
+        <div class="dh-desc">~20 preguntas | Malware, ataques de red y app, gestión de vulnerabilidades, técnicas de ataque avanzadas</div>
+      </div>
+    </div>
+
+    <div class="tree-grid">
+      <!-- Malware -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,123,79,.2);">🦠</div>
+          <span class="node-title">Tipos de Malware</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Virus</b> — Necesita interacción del usuario. Se replica por archivos</div>
+          <div class="tree-item"><b>Worm</b> — Automático, sin interacción. Se propaga por la red</div>
+          <div class="tree-item"><b>Trojan</b> — Se hace pasar por software legítimo. No se replica solo</div>
+          <div class="tree-item"><b>Ransomware</b> — Cifra archivos y pide rescate. Doble extorsión = también exfiltra</div>
+          <div class="tree-item"><b>RAT</b> — Remote Access Trojan: control remoto del sistema</div>
+          <div class="tree-item"><b>Rootkit</b> — Oculta su presencia a nivel kernel/OS</div>
+          <div class="tree-item"><b>Bootkit</b> — Persiste en MBR/UEFI. <span class="badge-trap">TRAMPA</span> Sobrevive a reinstalar el OS</div>
+          <div class="tree-item"><b>Keylogger</b> — Registra pulsaciones de teclado</div>
+          <div class="tree-item"><b>Spyware</b> — Monitorea actividad del usuario</div>
+          <div class="tree-item"><b>Adware</b> — Muestra publicidad + puede monitorear</div>
+          <div class="tree-item"><b>Logic bomb</b> — Ejecuta payload cuando se cumple condición (fecha, evento)</div>
+          <div class="tree-item"><b>Fileless</b> — Solo en RAM, sin archivos en disco. Evade AV basado en firmas</div>
+          <div class="tree-item"><b>Crypto miner</b> — Usa CPU/GPU para minar criptomonedas</div>
+          <div class="tree-item"><b>Botnet</b> — Red de dispositivos infectados (zombies) bajo C2</div>
+        </div>
+      </div>
+
+      <!-- Network Attacks -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,123,79,.2);">🌐</div>
+          <span class="node-title">Ataques de Red</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>DDoS</b> — Desde múltiples orígenes → colapsar servicio</div>
+          <div class="tree-item"><b>SYN Flood</b> — Inunda con paquetes SYN sin completar handshake</div>
+          <div class="tree-item"><b>Smurf attack</b> — ICMP broadcast con IP spoofed de la víctima</div>
+          <div class="tree-item"><b>ARP Spoofing</b> — Falsifica tabla ARP → MITM en red local</div>
+          <div class="tree-item"><b>DNS Poisoning</b> — Envenena caché DNS → redirige a IP falsa</div>
+          <div class="tree-item"><b>DNS Amplification</b> — Spoofea IP víctima + open resolvers → DDoS <span class="badge-trap">≠ DNS Poisoning</span></div>
+          <div class="tree-item"><b>MITM</b> — Intercepta y puede modificar comunicación</div>
+          <div class="tree-item"><b>Evil Twin</b> — AP falso con mismo SSID que red legítima → MITM</div>
+          <div class="tree-item"><b>Rogue AP</b> — AP no autorizado en la red (no necesariamente imita nada)</div>
+          <div class="tree-item"><b>MAC Flooding</b> — Satura tabla CAM del switch → tráfico a todos los puertos</div>
+          <div class="tree-item"><b>VLAN Hopping</b> — Accede a VLANs no autorizadas. Prevención: apagar DTP</div>
+        </div>
+      </div>
+
+      <!-- App Attacks -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,123,79,.2);">💉</div>
+          <span class="node-title">Ataques de Aplicación</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>SQLi</b> — Inyecta SQL en inputs → manipula BD (comillas simples como prueba)</div>
+          <div class="tree-item"><b>Blind SQLi</b> — Sin mensajes de error, pero comportamiento diferente <span class="badge-exam">EXAM</span></div>
+          <div class="tree-item"><b>XSS Stored</b> — Script en BD → afecta a todos los visitantes</div>
+          <div class="tree-item"><b>XSS Reflected</b> — Script en URL → requiere que víctima haga clic</div>
+          <div class="tree-item"><b>CSRF</b> — Fuerza acciones en nombre del usuario autenticado (sin su consentimiento)</div>
+          <div class="tree-item"><b>SSRF</b> — Servidor hace solicitudes internas a instancia del atacante</div>
+          <div class="tree-item"><b>IDOR</b> — Cambias ID en URL y accedes a datos ajenos <span class="badge-trap">≠ SQLi</span></div>
+          <div class="tree-item"><b>Directory Traversal</b> — ../../../etc/passwd: accede fuera del directorio web</div>
+          <div class="tree-item"><b>XXE</b> — XML External Entity: el parser XML lee archivos del servidor</div>
+          <div class="tree-item"><b>Buffer Overflow</b> — Sobreescribe memoria adyacente → ejecución de código</div>
+          <div class="tree-item"><b>Race Condition / TOCTOU</b> — Explota ventana entre verificar y usar</div>
+        </div>
+      </div>
+
+      <!-- Password + Kerberos -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(201,126,249,.2);">🗝️</div>
+          <span class="node-title">Ataques de Credenciales + Kerberos</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Brute Force</b> — Prueba todas las combinaciones posibles</div>
+          <div class="tree-item"><b>Dictionary attack</b> — Lista de palabras comunes contra hashes</div>
+          <div class="tree-item"><b>Password Spraying</b> — Pocas contraseñas comunes contra muchas cuentas</div>
+          <div class="tree-item"><b>Credential Stuffing</b> — Reutiliza credenciales de brechas anteriores</div>
+          <div class="tree-item"><b>Rainbow Table</b> — Hashes precalculados. Prevenido con salting</div>
+          <div class="tree-item"><b>Pass-the-Hash</b> — Usa hash NTLM directamente sin crackearlo → Lateral Movement</div>
+          <div class="tree-item"><b>Kerberoasting</b> — Solicita TGS para SPN → crackeo offline contraseña de servicio <span class="badge-exam">EXAM</span></div>
+          <div class="tree-item"><b>Golden Ticket</b> — Forja TGT con hash de KRBTGT → acceso total al dominio</div>
+          <div class="tree-item"><b>Pass-the-Ticket</b> — Roba y reutiliza ticket Kerberos válido</div>
+        </div>
+      </div>
+
+      <!-- Vuln Mgmt -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(79,201,139,.2);">🔍</div>
+          <span class="node-title">Gestión de Vulnerabilidades</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>CVSS v3.1</b> — Puntuación 0-10. Componentes: AV, AC, PR, UI, S, C, I, A</div>
+          <div class="tree-item"><b>CVE</b> — Identificador único de vulnerabilidad (CVE-YYYY-NNNNN)</div>
+          <div class="tree-item"><b>Zero-day</b> — Vulnerabilidad sin parche conocido. Máximo riesgo</div>
+          <div class="tree-item"><b>Vuln scanning</b> — Identifica vulnerabilidades sin explotarlas (no destructivo)</div>
+          <div class="tree-item"><b>Pentesting</b> — Explota vulnerabilidades con autorización</div>
+          <div class="tree-item"><b>Patch management</b> — Proceso de aplicar parches. Reto: compatibilidad vs rapidez</div>
+          <div class="tree-item"><b>Responsible disclosure</b> — 90 días de embargo antes de publicar</div>
+        </div>
+      </div>
+
+      <!-- Evasion Techniques -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,200,79,.2);">🥷</div>
+          <span class="node-title">Técnicas de Evasión + LotL</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Living off the Land (LotL)</b> — Usa herramientas nativas del OS para evadir detección</div>
+          <div class="tree-item"><b>LOLBins</b> — Binarios legítimos usados con fines maliciosos (certutil, mshta, wmic)</div>
+          <div class="tree-item"><b>Polymorphism</b> — Cambia código en cada replicación (misma funcionalidad)</div>
+          <div class="tree-item"><b>Metamorphism</b> — Reescribe completamente su código</div>
+          <div class="tree-item"><b>Anti-VM/Anti-Analysis</b> — Detecta entorno sandbox y duerme o cambia comportamiento</div>
+          <div class="tree-item"><b>Timestomping</b> — Modifica timestamps de archivos para ocultar actividad (Defense Evasion)</div>
+          <div class="tree-item"><b>DNS Tunneling</b> — Usa consultas DNS para comunicación C2 (difícil de detectar)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANE 3: D3 -->
+<div class="pane" id="pane3">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="domain-header d3">
+      <div class="dh-pct d3">18%</div>
+      <div class="dh-info">
+        <div class="dh-name">D3 · Security Architecture</div>
+        <div class="dh-desc">~16 preguntas | Cloud, firewalls, IDS/IPS, VPN, Zero Trust Architecture, contenedores, diseño seguro</div>
+      </div>
+    </div>
+
+    <div class="tree-grid">
+      <!-- Cloud -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(79,201,139,.2);">☁️</div>
+          <span class="node-title">Cloud — Modelos de Servicio</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>IaaS</b> — Cliente: SO + apps + datos. Proveedor: hardware/hipervisor. Ej: AWS EC2 <span class="badge-exam">EXAM</span></div>
+          <div class="tree-item"><b>PaaS</b> — Cliente: apps + datos. Proveedor: SO + plataforma. Ej: Heroku</div>
+          <div class="tree-item"><b>SaaS</b> — Cliente: solo datos/acceso. Proveedor: TODO. Ej: Gmail, O365</div>
+          <div class="tree-item"><b>Proveedor SIEMPRE</b> responsable de: seguridad física del datacenter</div>
+          <div class="tree-item"><b>Pública</b> — Compartida | <b>Privada</b> — Exclusiva | <b>Híbrida</b> — Ambas | <b>Multi-cloud</b> — Varios proveedores</div>
+          <div class="tree-item"><b>CSPM</b> — Cloud Security Posture Mgmt: detecta misconfiguraciones en multi-cloud</div>
+          <div class="tree-item"><b>CASB</b> — Cloud Access Security Broker: visibilidad y control de apps cloud</div>
+          <div class="tree-item"><b>Data sovereignty</b> — Los datos se rigen por leyes del país donde se almacenan físicamente</div>
+        </div>
+      </div>
+
+      <!-- Firewalls -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(79,201,139,.2);">🔥</div>
+          <span class="node-title">Firewalls — Tipos por Capa OSI</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Packet filter (stateless)</b> — Capa 3. Solo ve IP/puerto. No rastrea conexiones. El más básico</div>
+          <div class="tree-item"><b>Stateful firewall</b> — Capa 3-4. Rastrea estado TCP (SYN, ACK). No inspecciona payload HTTP</div>
+          <div class="tree-item"><b>NGFW</b> — Capa 7. Firewall + IPS + inspección de apps + TLS inspection. Ve dentro del tráfico cifrado</div>
+          <div class="tree-item"><b>WAF</b> — Capa 7. Específico para apps web: SQLi, XSS, CSRF. Delante del servidor web</div>
+          <div class="tree-item" style="border-left-color:var(--d2);"><b>Trampa:</b> SQLi pasa por stateful firewall (opera en L3-4, no ve payload HTTP). Necesitas WAF o NGFW</div>
+          <div class="tree-item"><b>DMZ</b> — Zona entre Internet y red interna. Con 2 firewalls: si cae el externo, la LAN sigue protegida</div>
+        </div>
+      </div>
+
+      <!-- IDS/IPS -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(79,201,139,.2);">🚨</div>
+          <span class="node-title">IDS vs IPS — Detección</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>IDS pasivo (out-of-band)</b> — Recibe copia del tráfico (SPAN/TAP). Solo ALERTA. No introduce latencia</div>
+          <div class="tree-item"><b>IPS inline</b> — En el camino del tráfico. Puede BLOQUEAR. Introduce latencia <span class="badge-exam">EXAM</span></div>
+          <div class="tree-item"><b>NIDS</b> — Network IDS: monitorea red entera</div>
+          <div class="tree-item"><b>HIDS</b> — Host IDS: monitorea un sistema individual</div>
+          <div class="tree-item"><b>Detección por firmas</b> — Solo detecta lo ya visto (AV clásico)</div>
+          <div class="tree-item"><b>Detección por comportamiento</b> — Detecta amenazas nuevas (zero-day). EDR/XDR</div>
+          <div class="tree-item"><b>Network TAP</b> — Copia física del tráfico. Fiable, no pierde paquetes</div>
+          <div class="tree-item"><b>SPAN (Port Mirroring)</b> — Copia por software. Puede perder paquetes bajo alta carga</div>
+        </div>
+      </div>
+
+      <!-- 802.1X + AAA -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(79,201,139,.2);">📡</div>
+          <span class="node-title">802.1X — NAC + RADIUS</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Supplicant</b> — El cliente (PC/laptop) que pide acceso</div>
+          <div class="tree-item"><b>Authenticator</b> — El switch o AP: intermediario. NO valida credenciales <span class="badge-exam">EXAM</span></div>
+          <div class="tree-item"><b>Authentication Server (RADIUS)</b> — Quien DECIDE si se permite el acceso</div>
+          <div class="tree-item">Flujo: <b style="color:var(--d3)">Supplicant → Authenticator → RADIUS</b></div>
+          <div class="tree-item"><b>RADIUS</b> — UDP 1812 (auth) / 1813 (acct). Cifra solo la contraseña</div>
+          <div class="tree-item"><b>TACACS+</b> — TCP 49. Cifra TODO el paquete. Más seguro. Preferido para dispositivos de red</div>
+          <div class="tree-item"><b>EAP</b> — Extensible Authentication Protocol: transporta la autenticación dentro de 802.1X</div>
+        </div>
+      </div>
+
+      <!-- VPN + Encryption in Transit -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(79,201,139,.2);">🔐</div>
+          <span class="node-title">VPN + TLS + Cifrado en Tránsito</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>TLS 1.3</b> — Versión actual segura. Elimina algoritmos débiles (RC4, MD5)</div>
+          <div class="tree-item"><b>SSL</b> — Deprecated. No usar. HTTPS actual usa TLS, no SSL</div>
+          <div class="tree-item"><b>IPSec</b> — Capa 3. VPN site-to-site. AH (integridad) + ESP (confidencialidad)</div>
+          <div class="tree-item"><b>SSL VPN</b> — Capa 7. VPN de acceso remoto. Usa TLS. No requiere cliente especial</div>
+          <div class="tree-item"><b>Split tunneling</b> — Solo el tráfico corporativo pasa por VPN (riesgo: bypass de controles)</div>
+          <div class="tree-item"><b>SFTP</b> — SSH (puerto 22). No confundir con FTPS (TLS, puerto 990)</div>
+        </div>
+      </div>
+
+      <!-- SASE + Zero Trust Arch -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(79,201,139,.2);">🏗️</div>
+          <span class="node-title">SASE + Zero Trust Architecture</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>SASE</b> = SD-WAN + SWG + CASB + ZTNA + FWaaS. Red + seguridad convergida en la nube <span class="badge-exam">EXAM</span></div>
+          <div class="tree-item" style="border-left-color:var(--d2);"><b>SASE ≠ SIEM/SOAR/XDR</b> — SASE es acceso y red, no detección</div>
+          <div class="tree-item"><b>ZTNA</b> — Zero Trust Network Access: reemplaza VPN tradicional</div>
+          <div class="tree-item"><b>Contenedores</b> — Aislamiento base: namespaces + cgroups. SELinux = capa adicional</div>
+          <div class="tree-item"><b>Container escape</b> — Container con root + socket Docker → escape al host</div>
+          <div class="tree-item"><b>Defense in Depth</b> — Múltiples capas de seguridad. Si falla una, las otras protegen</div>
+          <div class="tree-item"><b>Secure by Design</b> — Seguridad integrada desde el diseño, no añadida después</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANE 4: D4 -->
+<div class="pane" id="pane4">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="domain-header d4">
+      <div class="dh-pct d4">28%</div>
+      <div class="dh-info">
+        <div class="dh-name">D4 · Security Operations</div>
+        <div class="dh-desc">~25 preguntas | El dominio más pesado. SIEM/SOAR, IR, forense, IAM, monitoreo, pentesting</div>
+      </div>
+    </div>
+
+    <div class="tree-grid">
+      <!-- Detection Stack -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(201,126,249,.2);">🔭</div>
+          <span class="node-title">Stack de Detección: AV→EDR→XDR→SIEM→SOAR</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>AV</b> — Firmas conocidas. Solo detecta malware ya visto</div>
+          <div class="tree-item"><b>EDR</b> — Behavioral analysis en endpoint. Detecta zero-day. Respuesta automatizada</div>
+          <div class="tree-item"><b>XDR</b> — EDR + red + cloud + email. Visión unificada. Correlaciona todo</div>
+          <div class="tree-item"><b>SIEM</b> — Centraliza y correlaciona logs. Motor de correlación. Genera alertas <span class="badge-exam">EXAM</span></div>
+          <div class="tree-item"><b>SOAR</b> — Automatiza la respuesta. Componente central: <b>Playbook</b> <span class="badge-trap">≠ motor de correlación (SIEM)</span></div>
+          <div class="tree-item">Flujo: <b style="color:var(--d4)">AV → EDR → XDR → SIEM alerta → SOAR responde</b></div>
+          <div class="tree-item"><b>Alert fatigue</b> — Exceso de FP → analistas ignoran → más FN. Solución: alert tuning + SOAR</div>
+        </div>
+      </div>
+
+      <!-- True/False Positive Matrix -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(201,126,249,.2);">📊</div>
+          <span class="node-title">Matriz TP/FP/TN/FN</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="matrix" style="margin-bottom:8px;">
+            <div class="matrix-cell tp"><div class="matrix-label">✅ TRUE POSITIVE</div><div class="matrix-desc">Ataque real detectado correctamente</div></div>
+            <div class="matrix-cell fp"><div class="matrix-label">⚠️ FALSE POSITIVE</div><div class="matrix-desc">Falsa alarma. Tráfico legítimo alertado. Causa alert fatigue</div></div>
+            <div class="matrix-cell tn"><div class="matrix-label">✅ TRUE NEGATIVE</div><div class="matrix-desc">Tráfico legítimo no alertado. Correcto</div></div>
+            <div class="matrix-cell fn"><div class="matrix-label">🚨 FALSE NEGATIVE</div><div class="matrix-desc">Ataque real NO detectado. EL MÁS PELIGROSO</div></div>
+          </div>
+          <div class="tree-item"><b style="color:#f94f4f">FN = más peligroso</b> (el ataque pasa desapercibido)</div>
+          <div class="tree-item"><b>FP = causa alert fatigue</b> (analistas se vuelven insensibles)</div>
+        </div>
+      </div>
+
+      <!-- IAM / PAM -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(201,126,249,.2);">👤</div>
+          <span class="node-title">IAM — Gestión de Identidad y Acceso</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>MFA</b> — Algo que sabes + tienes + eres. 2 de los 3 factores</div>
+          <div class="tree-item"><b>TOTP</b> — Time-based OTP (Google Auth). Válido ~30 segundos</div>
+          <div class="tree-item"><b>HOTP</b> — Event-based OTP (counter-based). No expira por tiempo</div>
+          <div class="tree-item"><b>FIDO2 / WebAuthn</b> — Sin contraseña. Llave de seguridad física (YubiKey)</div>
+          <div class="tree-item"><b>SSO</b> — Single Sign-On: un login para múltiples apps</div>
+          <div class="tree-item"><b>OAuth 2.0</b> — AUTORIZACIÓN ("puede acceder a X en mi nombre") <span class="badge-trap">≠ OIDC</span></div>
+          <div class="tree-item"><b>OIDC</b> — AUTENTICACIÓN sobre OAuth 2.0 ("¿quién eres?")</div>
+          <div class="tree-item"><b>SAML</b> — Federación de identidad (SSO empresarial). XML-based</div>
+          <div class="tree-item"><b>PAM</b> — Privileged Access Management: gestión de cuentas privilegiadas</div>
+          <div class="tree-item"><b>RBAC</b> — Role-Based: permisos según rol. | <b>ABAC</b> — Attribute-Based: según atributos</div>
+          <div class="tree-item"><b>Separation of Duties</b> — Ninguna persona tiene todo el control de un proceso crítico</div>
+          <div class="tree-item"><b>Job rotation</b> — Rota puestos. Detecta fraude por Mandatory vacation</div>
+        </div>
+      </div>
+
+      <!-- Incident Response -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(201,126,249,.2);">🚒</div>
+          <span class="node-title">Incident Response — NIST 800-61</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>1. Preparación</b> — Políticas, playbooks, herramientas, equipo CSIRT</div>
+          <div class="tree-item"><b>2. Detección & Análisis</b> — Identificar, clasificar, priorizar el incidente</div>
+          <div class="tree-item"><b>3. Contención</b> — Aislar el sistema comprometido (corta/limitar el daño)</div>
+          <div class="tree-item"><b>4. Erradicación</b> — Eliminar malware, cuentas comprometidas, vulnerabilidades</div>
+          <div class="tree-item"><b>5. Recuperación</b> — Restaurar sistemas, verificar funcionamiento normal</div>
+          <div class="tree-item"><b>6. Lecciones aprendidas</b> — Post-incident review, mejorar procesos</div>
+          <div class="tree-item" style="border-left-color:var(--d4);">Nemotecnia: <b style="color:var(--tx)">PaPá Dice Cosas Limpias</b></div>
+          <div class="tree-item"><b>Tabla inout</b>: Contención SHORT-TERM (aislar) vs LONG-TERM (parche, cambios)</div>
+        </div>
+      </div>
+
+      <!-- Forensics -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(201,126,249,.2);">🔬</div>
+          <span class="node-title">Forense Digital</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Order of Volatility</b> — CPU cache → RAM → Red → Disco → Logs <span class="badge-exam">EXAM</span></div>
+          <div class="tree-item"><b>Chain of Custody</b> — Registro documental de quién toca la evidencia y cuándo</div>
+          <div class="tree-item"><b>Legal hold</b> — Preservar evidencia ante litigio. No borrar backups</div>
+          <div class="tree-item"><b>Disk imaging</b> — Copia bit a bit. Verificar con hash (MD5/SHA). Siempre en copia, nunca en original</div>
+          <div class="tree-item"><b>Write blocker</b> — Previene escrituras accidentales en evidencia original</div>
+          <div class="tree-item"><b>Steganography</b> — Oculta datos en archivos (imagen, audio). Detectado por esteganálisis</div>
+          <div class="tree-item"><b>NetFlow</b> — Metadatos (quién habla, cuánto). Sin contenido</div>
+          <div class="tree-item"><b>PCAP/Wireshark</b> — Captura completa con contenido. Evidencia forense de red</div>
+        </div>
+      </div>
+
+      <!-- Syslog -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(201,126,249,.2);">📋</div>
+          <span class="node-title">Syslog Severidades + Monitoring</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>0 Emergency</b> — Sistema inutilizable <span class="badge-trap">0 = PEOR</span></div>
+          <div class="tree-item"><b>1 Alert</b> — Acción inmediata requerida</div>
+          <div class="tree-item"><b>2 Critical</b> — Condición crítica</div>
+          <div class="tree-item"><b>3 Error</b> — Condición de error</div>
+          <div class="tree-item"><b>4 Warning</b> — Advertencia</div>
+          <div class="tree-item"><b>5 Notice</b> — Normal pero significativo</div>
+          <div class="tree-item"><b>6 Informational</b> — Informativo</div>
+          <div class="tree-item"><b>7 Debug</b> — Depuración. 7 = MENOS grave</div>
+          <div class="tree-item" style="margin-top:6px;">Nemotecnia: <b style="color:var(--tx)">Every Awful Crisis Erodes Warning Notices, Including Debugging</b></div>
+          <div class="tree-item"><b>UEBA</b> — User & Entity Behavior Analytics: detecta anomalías vs baseline</div>
+          <div class="tree-item"><b>TPM</b> — Chip hardware: almacena claves criptográficas de forma segura <span class="badge-exam">EXAM</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANE 5: D5 -->
+<div class="pane" id="pane5">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="domain-header d5">
+      <div class="dh-pct d5">20%</div>
+      <div class="dh-info">
+        <div class="dh-name">D5 · Security Program Management & Oversight</div>
+        <div class="dh-desc">~18 preguntas | Gobernanza, riesgo, compliance, BCP/DRP, privacidad, frameworks</div>
+      </div>
+    </div>
+
+    <div class="tree-grid">
+      <!-- Risk Management -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,200,79,.2);">⚖️</div>
+          <span class="node-title">Gestión de Riesgos — Cálculos</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Riesgo</b> = Amenaza × Vulnerabilidad × Impacto</div>
+          <div class="tree-item"><b>ALE</b> = SLE × ARO (pérdida anual esperada)</div>
+          <div class="tree-item"><b>SLE</b> = Valor activo × Factor exposición (pérdida por evento)</div>
+          <div class="tree-item"><b>ARO</b> = Frecuencia anual del evento</div>
+          <div class="tree-item">Regla: Si control cuesta más que ALE → <b>No implementar</b></div>
+          <div class="tree-item"><b>Mitigar</b> — Reducir probabilidad/impacto con controles</div>
+          <div class="tree-item"><b>Transferir</b> — Ciberseguro, outsourcing a tercero</div>
+          <div class="tree-item"><b>Aceptar</b> — Documentar y asumir. Válido si coste > impacto</div>
+          <div class="tree-item"><b>Evitar</b> — Eliminar la actividad que genera el riesgo</div>
+          <div class="tree-item"><b>Riesgo inherente</b> — Antes de controles | <b>Residual</b> — Después de controles</div>
+          <div class="tree-item"><b>Risk appetite</b> — Cuánto riesgo quiere asumir (estratégico, board)</div>
+          <div class="tree-item"><b>Risk tolerance</b> — Variación operativa aceptable del día a día</div>
+        </div>
+      </div>
+
+      <!-- RTO/RPO/BCP -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,200,79,.2);">🏥</div>
+          <span class="node-title">BIA · BCP · DRP — Continuidad</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>BIA</b> — Business Impact Analysis: identifica procesos críticos y su impacto si fallan</div>
+          <div class="tree-item"><b>BCP</b> — Business Continuity Plan: cómo seguir operando durante el desastre</div>
+          <div class="tree-item"><b>DRP</b> — Disaster Recovery Plan: cómo recuperar sistemas IT después del desastre</div>
+          <div class="tree-item" style="border-left-color:var(--d5);"><b>BCP = durante el desastre</b> | <b>DRP = después del desastre</b></div>
+          <div class="tree-item"><b>RPO</b> — Recovery Point Objective: máxima pérdida de datos tolerable (← pasado) <span class="badge-exam">EXAM</span></div>
+          <div class="tree-item"><b>RTO</b> — Recovery Time Objective: tiempo máximo de inactividad tolerable (→ futuro)</div>
+          <div class="tree-item" style="border-left-color:var(--d2);">Nemotecnia: RPO = <b>P</b>unto en el pasado (datos) | RTO = <b>T</b>iempo de vuelta (downtime)</div>
+          <div class="tree-item"><b>Hot site</b> — Listo para operar inmediatamente. Más caro</div>
+          <div class="tree-item"><b>Warm site</b> — Parcialmente equipado. Horas para activar</div>
+          <div class="tree-item"><b>Cold site</b> — Solo infraestructura. Días para activar. Más barato</div>
+        </div>
+      </div>
+
+      <!-- Compliance -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,200,79,.2);">📜</div>
+          <span class="node-title">Compliance — Regulaciones</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>GDPR</b> — Datos personales UE. Notificación en 72h. Right to be forgotten. Multa: 4% facturación global o 20M€</div>
+          <div class="tree-item"><b>HIPAA</b> — Datos médicos EEUU. PHI protegida. BAA obligatorio. Cifrado recomendado</div>
+          <div class="tree-item"><b>PCI-DSS</b> — Datos de tarjetas de pago. Segmentación de red. Auditoría anual</div>
+          <div class="tree-item"><b>SOC 2</b> — Auditoría de controles de seguridad en proveedores de servicios (5 Trust Criteria)</div>
+          <div class="tree-item"><b>ISO 27001</b> — Estándar internacional para SGSI (Sistema de Gestión de Seguridad de la Información)</div>
+          <div class="tree-item"><b>NIST CSF</b> — Framework: Identify → Protect → Detect → Respond → Recover</div>
+          <div class="tree-item"><b>NIST CSF orden</b>: <b style="color:var(--d5)">I-P-D-R-R</b> (Identify, Protect, Detect, Respond, Recover)</div>
+        </div>
+      </div>
+
+      <!-- Governance -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,200,79,.2);">🏛️</div>
+          <span class="node-title">Gobernanza y Frameworks</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Gap analysis</b> — Compara postura actual vs estándar para identificar brechas</div>
+          <div class="tree-item"><b>Risk register</b> — Lista todos los riesgos con probabilidad, impacto, owner, estado</div>
+          <div class="tree-item"><b>Risk assessment</b> — Evalúa probabilidad e impacto de cada riesgo</div>
+          <div class="tree-item"><b>Cualitativo</b> — Categorías descriptivas (Alto/Medio/Bajo). Sin cifras monetarias</div>
+          <div class="tree-item"><b>Cuantitativo</b> — Valores monetarios (SLE, ARO, ALE). Más objetivo</div>
+          <div class="tree-item"><b>Auditoría interna</b> — Hecha por personal propio. Sin valor para terceros</div>
+          <div class="tree-item"><b>Auditoría externa</b> — Hecha por tercero independiente. Requerida para compliance</div>
+          <div class="tree-item"><b>Penetration test</b> — Simulación de ataque real autorizado</div>
+        </div>
+      </div>
+
+      <!-- Data Privacy -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,200,79,.2);">🔏</div>
+          <span class="node-title">Privacidad y Protección de Datos</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Anonimización</b> — Irreversible. Los datos no pueden re-identificarse</div>
+          <div class="tree-item"><b>Pseudonimización</b> — Reversible con clave. Nombre → ID, guardando el mapping</div>
+          <div class="tree-item"><b>Data masking</b> — Oculta datos sensibles en entornos no productivos</div>
+          <div class="tree-item"><b>Tokenización</b> — Sustituye dato real por token. Usado en pagos (PCI-DSS)</div>
+          <div class="tree-item"><b>DLP deployment</b> — Endpoint / Network / Cloud <span class="badge-trap">≠ modos de operación (inline/pasivo)</span></div>
+          <div class="tree-item"><b>Data classification</b> — Top Secret → Secret → Confidential → Unclassified (gobierno)</div>
+          <div class="tree-item"><b>Data retention</b> — Cuánto tiempo conservar datos según regulación</div>
+        </div>
+      </div>
+
+      <!-- Security Awareness -->
+      <div class="tree-node open">
+        <div class="tree-node-head" onclick="toggleNode(this)">
+          <div class="node-icon" style="background:rgba(249,200,79,.2);">🎓</div>
+          <span class="node-title">Security Awareness + Políticas</span>
+          <span class="node-toggle">▶</span>
+        </div>
+        <div class="tree-body">
+          <div class="tree-item"><b>Security awareness training</b> — Formación continua al personal. El control más efectivo</div>
+          <div class="tree-item"><b>Phishing simulation</b> — Testea sin avisar. Mide click rate, mejora comportamiento</div>
+          <div class="tree-item"><b>AUP</b> — Acceptable Use Policy: qué pueden/no pueden hacer los empleados</div>
+          <div class="tree-item"><b>NDA</b> — Non-Disclosure Agreement: acuerdo de confidencialidad</div>
+          <div class="tree-item"><b>MOU</b> — Memorandum of Understanding: acuerdo no vinculante entre organizaciones</div>
+          <div class="tree-item"><b>SLA</b> — Service Level Agreement: compromisos de disponibilidad/rendimiento con proveedor</div>
+          <div class="tree-item"><b>Mandatory vacation</b> — Detecta fraude: obliga a alguien más a cubrir el puesto</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANE 6: COMPARATIVAS -->
+<div class="pane" id="pane6">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="font-size:20px;font-weight:700;color:var(--tx);margin-bottom:6px;">⚡ Comparativas Críticas</div>
+    <div style="font-size:13px;color:var(--tx2);margin-bottom:20px;">Los conceptos que el examen usa para crear confusión</div>
+
+    <div class="compare-grid">
+      <!-- RTO vs RPO -->
+      <div class="compare-card">
+        <div class="compare-title">🕒 RTO vs RPO <span class="badge-trap">CLÁSICO</span></div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">RPO — Recovery Point</div><div class="compare-text"><b>Pérdida de datos máxima</b> tolerable. Mira al <b>pasado</b>. Define frecuencia de backups.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">RTO — Recovery Time</div><div class="compare-text"><b>Tiempo de inactividad máximo</b> tolerable. Mira al <b>futuro</b>. Define velocidad de recuperación.</div></div>
+        </div>
+      </div>
+
+      <!-- Salt vs Pepper -->
+      <div class="compare-card">
+        <div class="compare-title">🧂 Salt vs Pepper</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">Salt</div><div class="compare-text">Único por usuario. <b>Público</b>. Se almacena <b>con el hash</b> en la BD.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">Pepper</div><div class="compare-text">Global (mismo para todos). <b>Secreto</b>. Se almacena <b>fuera de la BD</b>.</div></div>
+        </div>
+      </div>
+
+      <!-- IDS vs IPS -->
+      <div class="compare-card">
+        <div class="compare-title">🚨 IDS vs IPS</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">IDS (pasivo)</div><div class="compare-text">Recibe <b>copia</b> del tráfico (SPAN/TAP). Solo <b>alerta</b>. No bloquea. No introduce latencia.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">IPS (inline)</div><div class="compare-text">En el <b>camino</b> del tráfico. Puede <b>bloquear</b>. Introduce latencia. Si falla → fail-open o fail-closed.</div></div>
+        </div>
+      </div>
+
+      <!-- OAuth vs OIDC -->
+      <div class="compare-card">
+        <div class="compare-title">🪪 OAuth vs OIDC</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">OAuth 2.0</div><div class="compare-text"><b>AUTORIZACIÓN</b>. "Esta app puede acceder a X en mi nombre". Tokens de acceso.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">OIDC</div><div class="compare-text"><b>AUTENTICACIÓN</b> sobre OAuth. "¿Quién eres?". ID tokens. Login con Google usa OIDC.</div></div>
+        </div>
+      </div>
+
+      <!-- SFTP vs FTPS -->
+      <div class="compare-card">
+        <div class="compare-title">📁 SFTP vs FTPS</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">SFTP</div><div class="compare-text">Usa <b>SSH</b> (puerto <b>22</b>). No tiene relación con FTP clásico. Un solo canal.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">FTPS</div><div class="compare-text">FTP + <b>TLS/SSL</b> (puerto <b>990</b>). Es FTP clásico cifrado. Dos canales (datos + control).</div></div>
+        </div>
+      </div>
+
+      <!-- Rootkit vs Bootkit -->
+      <div class="compare-card">
+        <div class="compare-title">💾 Rootkit vs Bootkit</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">Rootkit (kernel)</div><div class="compare-text">Vive en el <b>kernel del OS</b>. Reinstalar el OS = eliminado.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">Bootkit</div><div class="compare-text">Vive en <b>MBR/UEFI</b>. <b>Sobrevive a reinstalar el OS</b>. Se activa antes de que cargue el OS.</div></div>
+        </div>
+      </div>
+
+      <!-- Evil Twin vs Rogue AP -->
+      <div class="compare-card">
+        <div class="compare-title">📶 Evil Twin vs Rogue AP</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">Evil Twin</div><div class="compare-text">AP falso con el <b>mismo SSID</b> que una red legítima. Objetivo: MITM sobre los usuarios.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">Rogue AP</div><div class="compare-text">Cualquier AP <b>no autorizado</b> en la red. No necesariamente imita a nadie.</div></div>
+        </div>
+      </div>
+
+      <!-- Kerberoasting vs Golden Ticket -->
+      <div class="compare-card">
+        <div class="compare-title">🎟️ Kerberoasting vs Golden Ticket</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">Kerberoasting</div><div class="compare-text">Solicita <b>TGS</b> para SPN. Crackea offline la contraseña de <b>cuenta de servicio</b>.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">Golden Ticket</div><div class="compare-text">Forja un <b>TGT</b> con hash de KRBTGT. Acceso total sin credenciales reales. Más poderoso.</div></div>
+        </div>
+      </div>
+
+      <!-- SIEM vs SOAR -->
+      <div class="compare-card">
+        <div class="compare-title">⚙️ SIEM vs SOAR</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">SIEM</div><div class="compare-text"><b>Detecta</b>. Correlaciona logs. Motor de <b>correlación</b> central. Genera alertas.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">SOAR</div><div class="compare-text"><b>Responde</b>. Automatiza respuesta. <b>Playbook</b> central. Orquesta herramientas.</div></div>
+        </div>
+      </div>
+
+      <!-- IDOR vs SQLi -->
+      <div class="compare-card">
+        <div class="compare-title">💉 IDOR vs SQL Injection</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">IDOR</div><div class="compare-text">Cambias un <b>ID en la URL</b> (/users/123 → 124) y ves datos ajenos. Control de acceso roto.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">SQL Injection</div><div class="compare-text">Inyectas <b>código SQL</b> en inputs para manipular la BD. ' OR 1=1--</div></div>
+        </div>
+      </div>
+
+      <!-- RADIUS vs TACACS+ -->
+      <div class="compare-card">
+        <div class="compare-title">🔐 RADIUS vs TACACS+</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">RADIUS</div><div class="compare-text"><b>UDP</b> 1812/1813. Cifra solo la <b>contraseña</b>. Para acceso de usuarios (802.1X, VPN).</div></div>
+          <div class="compare-col b"><div class="compare-col-title">TACACS+</div><div class="compare-text"><b>TCP 49</b>. Cifra <b>todo el paquete</b>. Más seguro. Preferido para <b>dispositivos de red</b> (routers, switches).</div></div>
+        </div>
+      </div>
+
+      <!-- Namespaces vs SELinux -->
+      <div class="compare-card">
+        <div class="compare-title">📦 Contenedores: Aislamiento</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">Namespaces + cgroups</div><div class="compare-text"><b>Mecanismo base</b> de aislamiento. Namespaces = paredes. cgroups = límites de recursos.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">SELinux / AppArmor</div><div class="compare-text"><b>Capa adicional</b> de seguridad (MAC). Refuerza el aislamiento pero no es el mecanismo fundamental.</div></div>
+        </div>
+      </div>
+
+      <!-- BCP vs DRP -->
+      <div class="compare-card">
+        <div class="compare-title">🏥 BCP vs DRP</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">BCP</div><div class="compare-text"><b>Durante</b> el desastre. Cómo seguir operando el negocio mientras el desastre ocurre.</div></div>
+          <div class="compare-col b"><div class="compare-col-title">DRP</div><div class="compare-text"><b>Después</b> del desastre. Cómo recuperar los sistemas IT a operación normal.</div></div>
+        </div>
+      </div>
+
+      <!-- Vulnerability scanning vs Pentest -->
+      <div class="compare-card">
+        <div class="compare-title">🔍 Vulnerability Scan vs Pentest</div>
+        <div class="compare-row">
+          <div class="compare-col a"><div class="compare-col-title">Vulnerability Scanning</div><div class="compare-text"><b>No explota</b> vulnerabilidades. Identifica y reporta. No destructivo. Frecuente (automatizable).</div></div>
+          <div class="compare-col b"><div class="compare-col-title">Penetration Test</div><div class="compare-text"><b>Explota</b> vulnerabilidades (con autorización). Simula ataque real. Más profundo. Puntual.</div></div>
+        </div>
+      </div>
+
+      <!-- Ports quick ref -->
+      <div class="compare-card" style="grid-column: 1/-1;">
+        <div class="compare-title">🔌 Puertos Críticos — Quick Reference</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;margin-top:4px;">
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d1);font-weight:700;font-family:monospace;">22</span> &nbsp;SSH / SFTP / SCP</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d1);font-weight:700;font-family:monospace;">53</span> &nbsp;DNS</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d1);font-weight:700;font-family:monospace;">80/443</span> &nbsp;HTTP / HTTPS</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d1);font-weight:700;font-family:monospace;">88</span> &nbsp;Kerberos</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d1);font-weight:700;font-family:monospace;">389/636</span> &nbsp;LDAP / LDAPS</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d1);font-weight:700;font-family:monospace;">445</span> &nbsp;SMB</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d1);font-weight:700;font-family:monospace;">514</span> &nbsp;Syslog</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d1);font-weight:700;font-family:monospace;">1812/1813</span> &nbsp;RADIUS</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d1);font-weight:700;font-family:monospace;">3389</span> &nbsp;RDP</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d2);font-weight:700;font-family:monospace;">23</span> &nbsp;Telnet ❌</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d2);font-weight:700;font-family:monospace;">21</span> &nbsp;FTP ❌</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d3);font-weight:700;font-family:monospace;">49</span> &nbsp;TACACS+</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d3);font-weight:700;font-family:monospace;">990</span> &nbsp;FTPS</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d3);font-weight:700;font-family:monospace;">993/995</span> &nbsp;IMAPS / POP3S</div>
+          <div style="background:var(--bg3);border-radius:8px;padding:8px 12px;font-size:12px;"><span style="color:var(--d3);font-weight:700;font-family:monospace;">161/162</span> &nbsp;SNMP agent/traps</div>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--tx2);">Regla: Puerto seguro = inseguro + TLS. &nbsp;|&nbsp; <span style="color:var(--d2);">Rojo = inseguro/deprecated</span> &nbsp;|&nbsp; <span style="color:var(--d3);">Verde = seguro</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showPane(n) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===n));
+  document.querySelectorAll('.pane').forEach((p,i) => p.classList.toggle('active', i===n));
+  window.scrollTo(0,0);
+}
+function toggleNode(head) {
+  const node = head.closest('.tree-node');
+  node.classList.toggle('open');
+}
+// Open all nodes by default on page load
+document.querySelectorAll('.tree-node').forEach(n => n.classList.add('open'));
+</script>
+</body>
+</html>

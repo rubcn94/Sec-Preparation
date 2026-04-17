@@ -1,0 +1,90 @@
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+*.old
+
+# Archivos de editor / IDEs
+.vscode/
+.idea/
+*.sublime-*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Archivos de logs
+*.log
+
+# Windows
+*.lnk
+
+# Archivos personales de estudio
+notas-personales/
+mis-ejercicios/
+simulacros-privados/
+
+# Archivos grandes (evitar subir ISOs, VMs)
+*.iso
+*.ova
+*.vmdk
+*.vdi
+*.vhd
+
+# Material comercial (no debe estar en repo público)
+cursos-pagos/
+material-premium/
+
+# Node (por si hay herramientas JavaScript futuras)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Certificados y claves (NUNCA subir)
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+id_rsa*
+*.ovpn
+
+# Configuraciones locales y secretos
+config.local.*
+.env
+.env.local
+secrets.*
+credentials*.json
+token*.json
+*password*
+*api_key*
+
+# Configuración local de Claude
+.claude/
+
+# Backups de JSON
+*.json.bak
+
+# Cookies
+*.cookies.txt
+youtube_cookies.txt
+www.youtube.com_cookies.txt
+
+*.md

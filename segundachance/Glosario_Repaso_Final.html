@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glosario Sec+ — Repaso Final</title>
+<style>
+  :root {
+    --d1: #6c63ff; --d1-bg: #f0effe; --d1-border: #c7c2ff;
+    --d2: #e04c4c; --d2-bg: #fff0f0; --d2-border: #ffc7c7;
+    --d3: #2196F3; --d3-bg: #e8f4fd; --d3-border: #b3d9f7;
+    --d4: #4CAF50; --d4-bg: #edfaee; --d4-border: #b8e6bb;
+    --d5: #ff9800; --d5-bg: #fff8e1; --d5-border: #ffe082;
+    --hot: #e53935; --hot-bg: #fff3f3;
+    --bg: #f5f7fa; --card: #ffffff;
+    --text: #1a1a2e; --muted: #6b7280;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 24px 32px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  header h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+  header p { font-size: 0.82rem; opacity: 0.7; }
+  .header-stats { display: flex; gap: 20px; margin-top: 14px; flex-wrap: wrap; }
+  .stat { background: rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 14px; font-size: 0.78rem; border: 1px solid rgba(255,255,255,0.15); }
+  .stat span { font-weight: 700; font-size: 1rem; display: block; color: #ffd700; }
+
+  /* CONTROLES */
+  .controls { padding: 16px 32px; background: white; border-bottom: 1px solid #e5e7eb; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; position: sticky; top: 84px; z-index: 90; }
+  #search { flex: 1; min-width: 200px; padding: 8px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; transition: border-color .2s; }
+  #search:focus { outline: none; border-color: var(--d1); }
+  .filter-btn { padding: 7px 14px; border-radius: 20px; border: 2px solid transparent; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all .2s; background: #f3f4f6; color: var(--muted); }
+  .filter-btn.active { background: var(--d1); color: white; border-color: var(--d1); }
+  .filter-btn[data-d="1"].active { background: var(--d1); border-color: var(--d1); }
+  .filter-btn[data-d="2"].active { background: var(--d2); border-color: var(--d2); }
+  .filter-btn[data-d="3"].active { background: var(--d3); border-color: var(--d3); }
+  .filter-btn[data-d="4"].active { background: var(--d4); border-color: var(--d4); }
+  .filter-btn[data-d="5"].active { background: var(--d5); border-color: var(--d5); }
+  .filter-btn[data-d="hot"].active { background: var(--hot); border-color: var(--hot); }
+  #counter { font-size: 0.82rem; color: var(--muted); margin-left: auto; white-space: nowrap; }
+
+  /* GRID */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; padding: 24px 32px; }
+
+  /* CARD */
+  .card { background: var(--card); border-radius: 12px; box-shadow: var(--shadow); border: 1px solid #e5e7eb; overflow: hidden; transition: transform .15s, box-shadow .15s; display: flex; flex-direction: column; }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+  .card-header { padding: 14px 16px 10px; display: flex; align-items: flex-start; gap: 10px; }
+  .domain-badge { font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .d1 .domain-badge { background: var(--d1-bg); color: var(--d1); border: 1px solid var(--d1-border); }
+  .d2 .domain-badge { background: var(--d2-bg); color: var(--d2); border: 1px solid var(--d2-border); }
+  .d3 .domain-badge { background: var(--d3-bg); color: var(--d3); border: 1px solid var(--d3-border); }
+  .d4 .domain-badge { background: var(--d4-bg); color: var(--d4); border: 1px solid var(--d4-border); }
+  .d5 .domain-badge { background: var(--d5-bg); color: var(--d5); border: 1px solid var(--d5-border); }
+  .card-title { font-size: 0.98rem; font-weight: 700; line-height: 1.3; flex: 1; }
+  .hot-badge { font-size: 0.65rem; font-weight: 700; background: var(--hot-bg); color: var(--hot); border: 1px solid #ffcdd2; padding: 2px 7px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+
+  .card-body { padding: 0 16px 14px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+  /* DEFINICIÓN */
+  .def { font-size: 0.84rem; line-height: 1.6; color: var(--text); }
+
+  /* TABLA COMPARATIVA */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 4px; }
+  .compare-table th { padding: 5px 8px; font-weight: 700; text-align: left; border-bottom: 2px solid #e5e7eb; color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: .04em; }
+  .compare-table td { padding: 5px 8px; border-bottom: 1px solid #f3f4f6; vertical-align: top; }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table .key { font-weight: 600; white-space: nowrap; }
+
+  /* NEMOTECNIA */
+  .mnemonic { background: linear-gradient(135deg, #fff9e6, #fff3cd); border-left: 3px solid #ffc107; border-radius: 0 8px 8px 0; padding: 8px 12px; font-size: 0.8rem; }
+  .mnemonic-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #e65100; margin-bottom: 3px; }
+  .mnemonic-text { color: var(--text); line-height: 1.5; }
+  .mnemonic em { font-style: italic; color: #e65100; font-weight: 600; }
+
+  /* KEY RULE */
+  .key-rule { background: #e8f5e9; border-left: 3px solid #4CAF50; border-radius: 0 8px 8px 0; padding: 8px 12px; font-size: 0.8rem; }
+  .key-rule-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #2e7d32; margin-bottom: 3px; }
+  .key-rule em { font-weight: 700; color: #2e7d32; font-style: normal; }
+
+  /* FORMULA */
+  .formula { background: #e3f2fd; border-radius: 8px; padding: 8px 12px; font-size: 0.82rem; font-family: 'Courier New', monospace; text-align: center; color: #0d47a1; font-weight: 600; }
+
+  /* FLOW */
+  .flow { background: #f8f9ff; border-radius: 8px; padding: 8px 12px; font-size: 0.76rem; font-family: 'Courier New', monospace; color: #333; overflow-x: auto; line-height: 1.6; }
+
+  /* TAG */
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag { font-size: 0.68rem; padding: 2px 8px; border-radius: 12px; background: #f3f4f6; color: var(--muted); border: 1px solid #e5e7eb; }
+
+  /* D1 accent */
+  .d1 .card-header { border-top: 3px solid var(--d1); }
+  .d2 .card-header { border-top: 3px solid var(--d2); }
+  .d3 .card-header { border-top: 3px solid var(--d3); }
+  .d4 .card-header { border-top: 3px solid var(--d4); }
+  .d5 .card-header { border-top: 3px solid var(--d5); }
+
+  .hidden { display: none !important; }
+  .section-header { grid-column: 1/-1; padding: 8px 4px 4px; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); border-bottom: 2px solid #e5e7eb; margin-top: 8px; }
+
+  @media (max-width: 600px) {
+    .grid { padding: 16px; gap: 12px; grid-template-columns: 1fr; }
+    header { padding: 16px; }
+    .controls { padding: 12px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📘 Glosario Sec+ — Palabras Clave & Nemotecnias</h1>
+  <p>Extraído de errores reales en Simulacros #22–#34 · CompTIA Security+ SY0-701</p>
+  <div class="header-stats">
+    <div class="stat"><span>11</span>Simulacros</div>
+    <div class="stat"><span>~155</span>Errores analizados</div>
+    <div class="stat"><span>60+</span>Conceptos críticos</div>
+    <div class="stat"><span>5</span>Dominios</div>
+  </div>
+</header>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="🔍 Buscar concepto, término o palabra clave…" oninput="filterCards()">
+  <button class="filter-btn active" data-d="all" onclick="setFilter('all',this)">Todos</button>
+  <button class="filter-btn" data-d="hot" onclick="setFilter('hot',this)">🔥 Más fallados</button>
+  <button class="filter-btn" data-d="1" onclick="setFilter('1',this)">D1 General</button>
+  <button class="filter-btn" data-d="2" onclick="setFilter('2',this)">D2 Amenazas</button>
+  <button class="filter-btn" data-d="3" onclick="setFilter('3',this)">D3 Arquitectura</button>
+  <button class="filter-btn" data-d="4" onclick="setFilter('4',this)">D4 Operaciones</button>
+  <button class="filter-btn" data-d="5" onclick="setFilter('5',this)">D5 Programa</button>
+  <span id="counter"></span>
+</div>
+
+<div class="grid" id="grid">
+
+<!-- ══════════════════════════════════════════════════════════════
+     DOMINIO 1 — GENERAL SECURITY CONCEPTS
+══════════════════════════════════════════════════════════════ -->
+
+<!-- RPO vs RTO -->
+<div class="card d1" data-domain="1" data-hot="true" data-tags="kerberos tgt tgs as kdc ticket authentication server">
+  <div class="card-header">
+    <span class="domain-badge">D1 · General</span>
+    <span class="card-title">Kerberos — Componentes y Flujo</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Componente</th><th>Función</th></tr>
+      <tr><td class="key">KDC</td><td>Key Distribution Center — contiene AS + TGS</td></tr>
+      <tr><td class="key">AS</td><td>Authentication Server — emite el <em>TGT inicial</em></td></tr>
+      <tr><td class="key">TGS</td><td>Ticket Granting Server — emite <em>tickets de servicio (TGS)</em></td></tr>
+      <tr><td class="key">TGT</td><td>Ticket Granting Ticket — "pase" para pedir más tickets</td></tr>
+    </table>
+    <div class="flow">1. AS-REQ → KDC/AS → TGT (cifrado con KRBTGT)
+2. TGS-REQ → KDC/TGS → TGS ticket (cifrado con hash cuenta servicio)
+3. AP-REQ → Servicio → acceso</div>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Confusiones comunes</div>
+      TGT ≠ componente que lo emite. <em>El AS emite el TGT.</em><br>
+      TGS = servidor Y ticket (contexto distingue). El <em>TGS emite tickets de servicio.</em>
+    </div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>AS → TGT → TGS → servicio</em><br>
+      "El AS te da el pase (TGT); con el pase, el TGS te da la entrada al concierto"</div>
+    </div>
+  </div>
+</div>
+
+<!-- SAML vs OAuth vs OIDC -->
+<div class="card d1" data-domain="1" data-hot="true" data-tags="saml oauth oidc federacion identidad sso">
+  <div class="card-header">
+    <span class="domain-badge">D1 · General</span>
+    <span class="card-title">SAML vs OAuth 2.0 vs OIDC</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Protocolo</th><th>Para qué</th><th>Contexto típico</th></tr>
+      <tr><td class="key">SAML 2.0</td><td>Autenticación + Federación SSO</td><td><em>SSO entre empresas</em>, XML</td></tr>
+      <tr><td class="key">OAuth 2.0</td><td>Solo Autorización delegada</td><td>"Permitir app X acceder a mis datos"</td></tr>
+      <tr><td class="key">OIDC</td><td>Autenticación sobre OAuth</td><td>"Login con Google" (consumer)</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Clave examen</div>
+      <em>"Federación de identidades empresariales / SSO entre organizaciones"</em> → siempre <em>SAML 2.0</em><br>
+      OIDC es para consumidor. OAuth nunca autentica por sí solo.
+    </div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>S</em>AML = <em>S</em>SO empresarial · <em>O</em>Auth = <em>O</em>torga permisos · <em>O</em>IDC = <em>O</em>Auth + identidad</div>
+    </div>
+  </div>
+</div>
+
+<!-- TPM vs HSM vs Smart Card -->
+<div class="card d1" data-domain="1" data-tags="tpm hsm smart card criptografia hardware bitlocker">
+  <div class="card-header">
+    <span class="domain-badge">D1 · General</span>
+    <span class="card-title">TPM vs HSM vs Smart Card</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Dispositivo</th><th>Forma</th><th>Uso principal</th></tr>
+      <tr><td class="key">TPM</td><td>Chip en la placa base</td><td>Almacén seguro de claves + medición arranque. <em>NO cifra tráfico de red</em></td></tr>
+      <tr><td class="key">HSM</td><td>Appliance de red o PCIe</td><td>Operaciones criptográficas a escala, PKI, CA</td></tr>
+      <tr><td class="key">Smart Card</td><td>Tarjeta con procesador criptográfico</td><td>Autenticación personal portátil</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Trampas del examen</div>
+      TPM NO cifra tráfico de red (eso es IPsec/TLS). TPM = caja fuerte de claves en placa base.<br>
+      HSM de red = centralizado (varios servidores). HSM PCIe = solo un servidor.<br>
+      "Tarjeta con procesador criptográfico" = <em>Smart Card</em>, no TPM.
+    </div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>T</em>PM = <em>T</em>uyo en la placa · <em>H</em>SM = <em>H</em>ardware dedicado grande · <em>S</em>mart = <em>S</em>e lleva encima</div>
+    </div>
+  </div>
+</div>
+
+<!-- Salt vs Pepper -->
+<div class="card d1" data-domain="1" data-tags="salt pepper hash password rainbow table contraseña">
+  <div class="card-header">
+    <span class="domain-badge">D1 · General</span>
+    <span class="card-title">Salt vs Pepper</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th></th><th>Salt</th><th>Pepper</th></tr>
+      <tr><td class="key">Único por usuario</td><td>✅ Sí</td><td>❌ No (mismo para todos)</td></tr>
+      <tr><td class="key">Se almacena</td><td>En la BD (junto al hash)</td><td>Fuera de la BD (secreto)</td></tr>
+      <tr><td class="key">Propósito</td><td>Anti-rainbow table</td><td>Capa extra si BD comprometida</td></tr>
+    </table>
+    <div class="formula">hash = H(password + salt + pepper)</div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>Sal = en la mesa</em> (pública con el hash, diferente por usuario)<br>
+      <em>Pimienta = receta secreta del chef</em> (no aparece en la BD)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Criptografía asimétrica vs simétrica -->
+<div class="card d1" data-domain="1" data-hot="true" data-tags="hmac hash integridad autenticidad mac clave secreta">
+  <div class="card-header">
+    <span class="domain-badge">D1 · General</span>
+    <span class="card-title">HMAC vs Hash Simple</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <div class="def">
+      <strong>Hash simple (SHA-256):</strong> verifica integridad, pero cualquiera puede recalcular el hash de un mensaje modificado.<br><br>
+      <strong>HMAC:</strong> incorpora una <em>clave secreta compartida</em> en el cálculo. Solo quien conoce la clave puede generar/verificar el HMAC → garantiza <em>integridad + autenticidad</em>.
+    </div>
+    <div class="formula">HMAC = H(clave_secreta ‖ mensaje)</div>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Clave examen</div>
+      "Verificar que el mensaje no ha sido alterado <em>y</em> proviene del remitente" → <em>HMAC</em><br>
+      "Solo integridad" → hash simple. HMAC NO cifra; solo autentica.
+    </div>
+  </div>
+</div>
+
+<!-- MFA Factores -->
+<div class="card d1" data-domain="1" data-tags="ntlm challenge response autenticacion hash windows">
+  <div class="card-header">
+    <span class="domain-badge">D1 · General</span>
+    <span class="card-title">NTLM Challenge-Response</span>
+  </div>
+  <div class="card-body">
+    <div class="def">NTLM usa un mecanismo de <em>desafío-respuesta basado en hash</em> sin transmitir la contraseña en texto plano.<br><br>
+    Flujo: servidor envía nonce (challenge) → cliente responde con H(hash_NTLM + nonce) → servidor verifica.</div>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Confusión con otros</div>
+      Autenticación básica HTTP = envía contraseña en Base64 (texto plano)<br>
+      Kerberos = usa tickets cifrados (no challenge-response directo)<br>
+      OAuth = autorización delegada (no autenticación directa)
+    </div>
+  </div>
+</div>
+
+<!-- Certificado X.509 -->
+<div class="card d2" data-domain="2" data-hot="true" data-tags="kerberoasting golden ticket asrep pass hash overpass lateral movement ad active directory">
+  <div class="card-header">
+    <span class="domain-badge">D2 · Amenazas</span>
+    <span class="card-title">Ataques Kerberos — Taxonomía Completa</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Ataque</th><th>Mecanismo</th><th>Objetivo</th></tr>
+      <tr><td class="key">Kerberoasting</td><td>Solicita <em>TGS</em> para SPN; crackea hash de cuenta de servicio offline</td><td>Contraseña de cuenta de servicio</td></tr>
+      <tr><td class="key">AS-REP Roasting</td><td>Cuenta con preautenticación deshabilitada → KDC devuelve TGT cifrable</td><td>Contraseña de cuenta de dominio</td></tr>
+      <tr><td class="key">Golden Ticket</td><td>Forja TGT con hash <em>KRBTGT</em> → acceso total sin credenciales</td><td>Persistencia total en dominio</td></tr>
+      <tr><td class="key">Pass-the-Hash</td><td>Usa hash NTLM directamente en NTLM auth → lateral movement</td><td>Acceso a otros sistemas</td></tr>
+      <tr><td class="key">Overpass-the-Hash</td><td>Convierte hash NTLM en solicitud AS-REQ Kerberos → TGT legítimo</td><td>Lateral movement sigiloso</td></tr>
+    </table>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>Kerberoasting</em> = "pesca tickets de servicio (TGS)" → crackea contraseña de servicio<br>
+      <em>AS-REP</em> = "no necesitas contraseña para pedir el TGT" → preauth deshabilitada<br>
+      <em>Golden Ticket</em> = "falsifica el pase maestro (TGT)" → hash de KRBTGT<br>
+      <em>Pass-the-Hash</em> = "la llave es el hash NTLM" → lateral movement<br>
+      <em>Overpass</em> = "convierte hash NTLM en ticket Kerberos" → más sigiloso</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootkit vs Rootkit -->
+<div class="card d2" data-domain="2" data-tags="xxe ssrf command injection path traversal vuln web">
+  <div class="card-header">
+    <span class="domain-badge">D2 · Amenazas</span>
+    <span class="card-title">XXE / SSRF / Command Injection / Path Traversal</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Vuln</th><th>Señal clave</th><th>Ejemplo</th></tr>
+      <tr><td class="key">XXE</td><td>XML con DOCTYPE y ENTITY SYSTEM</td><td>&lt;!ENTITY xxe SYSTEM "file:///etc/passwd"&gt;</td></tr>
+      <tr><td class="key">SSRF</td><td>Servidor hace petición a URL controlada por atacante</td><td>Accede a 169.254.169.254 (metadata AWS)</td></tr>
+      <tr><td class="key">Command Injection</td><td>Concatena comandos del OS en parámetros de entrada</td><td>; cat /etc/passwd, | whoami</td></tr>
+      <tr><td class="key">Path Traversal</td><td>../../ para salir del directorio permitido</td><td>../../etc/passwd en URL</td></tr>
+      <tr><td class="key">Unrestricted Upload</td><td>Sube archivo sin validación → RCE</td><td>Subir shell.php como imagen</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Distinción XXE vs SSRF</div>
+      XXE = explota procesador XML para leer archivos locales.<br>
+      SSRF = hace peticiones HTTP desde el servidor hacia recursos internos.
+    </div>
+  </div>
+</div>
+
+<!-- DNS attacks -->
+<div class="card d3" data-domain="3" data-tags="sase sd-wan swg casb ztna fwaas nube seguridad acceso">
+  <div class="card-header">
+    <span class="domain-badge">D3 · Arquitectura</span>
+    <span class="card-title">SASE — Componentes</span>
+  </div>
+  <div class="card-body">
+    <div class="def">SASE (Secure Access Service Edge) = convergencia de <em>red + seguridad</em> en la nube. No es detección ni correlación (eso es SIEM/XDR).</div>
+    <table class="compare-table">
+      <tr><th>Componente</th><th>Función</th></tr>
+      <tr><td class="key">SD-WAN</td><td>Red inteligente y optimizada</td></tr>
+      <tr><td class="key">SWG</td><td>Filtrado web (Secure Web Gateway)</td></tr>
+      <tr><td class="key">CASB</td><td>Visibilidad y control en cloud</td></tr>
+      <tr><td class="key">ZTNA</td><td>Acceso Zero Trust (reemplaza VPN)</td></tr>
+      <tr><td class="key">FWaaS</td><td>Firewall como servicio</td></tr>
+    </table>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>SASE = "el borde seguro"</em> — protege el acceso desde cualquier lugar<br>
+      Frase: <em>"Sigo Caminando Zigzag Fácilmente"</em> (SD-WAN, SWG, CASB, ZTNA, FWaaS)<br>
+      SASE ≠ SIEM/SOAR: SASE conecta; SIEM detecta; SOAR responde</div>
+    </div>
+  </div>
+</div>
+
+<!-- IPsec AH vs ESP -->
+<div class="card d3" data-domain="3" data-tags="contenedores kubernetes namespaces cgroups selinux aislamiento network policy">
+  <div class="card-header">
+    <span class="domain-badge">D3 · Arquitectura</span>
+    <span class="card-title">Contenedores — Aislamiento y Kubernetes</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Mecanismo</th><th>Función</th><th>Es el principal?</th></tr>
+      <tr><td class="key">Namespaces</td><td>Separan recursos (PID, red, mount, usuarios)</td><td>✅ <em>Sí — aislamiento base</em></td></tr>
+      <tr><td class="key">cgroups</td><td>Limitan CPU, memoria, disco por contenedor</td><td>✅ Sí — junto a namespaces</td></tr>
+      <tr><td class="key">SELinux</td><td>MAC adicional (Mandatory Access Control)</td><td>❌ Capa extra, no base</td></tr>
+    </table>
+    <table class="compare-table" style="margin-top:8px">
+      <tr><th>K8s recurso</th><th>Función</th></tr>
+      <tr><td class="key">NetworkPolicy</td><td><em>Define reglas de tráfico entre pods</em></td></tr>
+      <tr><td class="key">SecurityContext</td><td>Permisos mínimos por contenedor</td></tr>
+      <tr><td class="key">RBAC</td><td>Control de acceso a API de Kubernetes</td></tr>
+    </table>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>Namespaces = paredes</em> · <em>cgroups = presupuesto</em> · <em>SELinux = candado extra</em><br>
+      Restricciones tráfico entre pods K8s → siempre <em>NetworkPolicy</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- OT/ICS Purdue -->
+<div class="card d3" data-domain="3" data-tags="ot ics purdue scada industrial control system air gap vlan segmentacion">
+  <div class="card-header">
+    <span class="domain-badge">D3 · Arquitectura</span>
+    <span class="card-title">OT/ICS — Modelo Purdue</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Nivel</th><th>Descripción</th></tr>
+      <tr><td class="key">L0</td><td><em>Procesos físicos</em> (sensores, actuadores, equipos de planta)</td></tr>
+      <tr><td class="key">L1</td><td>Sistemas de control directo (PLC)</td></tr>
+      <tr><td class="key">L2</td><td>Supervisión (SCADA, HMI)</td></tr>
+      <tr><td class="key">L3 DMZ</td><td>Zona demilitarizada IT/OT</td></tr>
+      <tr><td class="key">L4</td><td>Red corporativa IT</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Estrategia de segmentación</div>
+      SCADA legacy → <em>DMZ + air gap entre IT y OT</em>. No VPN directa entre IT-OT.<br>
+      Dispositivos OT en <em>VLANs separadas</em> con ACLs estrictas entre zonas.
+    </div>
+  </div>
+</div>
+
+<!-- Forward vs Reverse Proxy -->
+<div class="card d3" data-domain="3" data-tags="dnssec firmas digitales split tunneling stateful stateless firewall hsrp snmp">
+  <div class="card-header">
+    <span class="domain-badge">D3 · Arquitectura</span>
+    <span class="card-title">DNSSEC / Stateful FW / Split Tunneling / HSRP</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Concepto</th><th>Clave</th></tr>
+      <tr><td class="key">DNSSEC</td><td><em>Firmas digitales</em> en registros DNS → previene cache poisoning. NO cifra consultas (para eso: DoH/DoT). NO mitiga tunneling.</td></tr>
+      <tr><td class="key">Stateful FW</td><td>Mantiene tabla de conexiones → permite tráfico de retorno. Stateless evalúa paquete a paquete.</td></tr>
+      <tr><td class="key">Split Tunneling</td><td>Habilitado = VPN solo para red corporativa (resto va directo). <em>Deshabilitado = todo va por el túnel VPN</em> (más seguro).</td></tr>
+      <tr><td class="key">HSRP</td><td>Hot Standby Router Protocol → IP virtual compartida para alta disponibilidad de routers/firewalls</td></tr>
+      <tr><td class="key">SNMP</td><td>Monitoriza y gestiona dispositivos de red, envía <em>traps</em> de alertas</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Trampa Split Tunneling</div>
+      "Previene exposición innecesaria de otros segmentos" = Split tunneling <em>deshabilitado</em><br>
+      (con split tunneling <em>habilitado</em>, parte del tráfico va sin control)
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     DOMINIO 4 — SECURITY OPERATIONS
+══════════════════════════════════════════════════════════════ -->
+
+<!-- SIEM vs SOAR -->
+<div class="card d4" data-domain="4" data-hot="true" data-tags="nist ir incident response containment eradication recovery fases">
+  <div class="card-header">
+    <span class="domain-badge">D4 · Operaciones</span>
+    <span class="card-title">NIST IR 800-61 — Fases</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>#</th><th>Fase</th><th>Qué se hace</th></tr>
+      <tr><td>1</td><td class="key">Preparation</td><td>Establecer capacidades, entrenamiento, políticas</td></tr>
+      <tr><td>2</td><td class="key">Detection & Analysis</td><td>Detectar el incidente, determinar alcance</td></tr>
+      <tr><td>3</td><td class="key">Containment</td><td>Aislar el sistema afectado (no eliminar aún)</td></tr>
+      <tr><td>4</td><td class="key">Eradication</td><td><em>Eliminar malware y causa raíz</em></td></tr>
+      <tr><td>5</td><td class="key">Recovery</td><td>Restaurar sistemas a operación normal</td></tr>
+      <tr><td>6</td><td class="key">Post-Incident</td><td>Lecciones aprendidas, mejora continua</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Confusión Containment vs Eradication</div>
+      <em>Containment</em> = aislar/limitar el daño (el malware AÚN está ahí)<br>
+      <em>Eradication</em> = eliminar el malware y la causa raíz (investigación completada aquí)
+    </div>
+  </div>
+</div>
+
+<!-- Syslog -->
+<div class="card d4" data-domain="4" data-hot="true" data-tags="syslog severidad nivel emergency alert critical error warning">
+  <div class="card-header">
+    <span class="domain-badge">D4 · Operaciones</span>
+    <span class="card-title">Syslog — Niveles de Severidad</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Nº</th><th>Nombre</th><th>Descripción</th></tr>
+      <tr><td><strong>0</strong></td><td class="key" style="color:#e53935">Emergency</td><td>Sistema inutilizable</td></tr>
+      <tr><td><strong>1</strong></td><td class="key" style="color:#e53935">Alert</td><td>Acción inmediata requerida</td></tr>
+      <tr><td><strong>2</strong></td><td class="key" style="color:#e65100">Critical</td><td>Condición <em>crítica</em></td></tr>
+      <tr><td><strong>3</strong></td><td class="key" style="color:#e65100">Error</td><td>Condición de error</td></tr>
+      <tr><td><strong>4</strong></td><td class="key" style="color:#f57f17">Warning</td><td>Advertencia</td></tr>
+      <tr><td><strong>5</strong></td><td class="key" style="color:#388e3c">Notice</td><td>Normal pero significativo</td></tr>
+      <tr><td><strong>6</strong></td><td class="key" style="color:#388e3c">Informational</td><td>Informativo</td></tr>
+      <tr><td><strong>7</strong></td><td class="key" style="color:#1565c0">Debug</td><td>Depuración</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Truco</div>
+      0 = <em>peor</em> (emergencia) · 7 = <em>menos grave</em> (debug) — al revés de lo intuitivo
+    </div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>"Every Awful Crisis Erodes Warning Notices, Including Debugging"</em><br>
+      Emergency / Alert / Critical / Error / Warning / Notice / Informational / Debug</div>
+    </div>
+  </div>
+</div>
+
+<!-- Chain of Custody / Forense -->
+<div class="card d5" data-domain="5" data-hot="true" data-tags="riesgo inherente residual apetito tolerancia tratamiento mitigar transferir aceptar evitar">
+  <div class="card-header">
+    <span class="domain-badge">D5 · Programa</span>
+    <span class="card-title">Tipos de Riesgo y Tratamiento</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Término</th><th>Definición</th></tr>
+      <tr><td class="key">Riesgo Inherente</td><td><em>Antes</em> de aplicar cualquier control</td></tr>
+      <tr><td class="key">Riesgo Residual</td><td>El que <em>queda después</em> de aplicar controles</td></tr>
+      <tr><td class="key">Apetito de Riesgo</td><td>Cuánto riesgo la organización quiere asumir</td></tr>
+      <tr><td class="key">Tolerancia al Riesgo</td><td>Variación aceptable alrededor del apetito</td></tr>
+    </table>
+    <div class="def" style="margin-top:6px"><strong>Opciones de tratamiento:</strong> <em>Aceptar · Evitar · Transferir (seguro/tercero) · Mitigar</em></div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>ATEM</em>: Aceptar, Transferir, Evitar, Mitigar<br>
+      Inherente = sin control · Residual = después del control · NO son lo mismo</div>
+    </div>
+  </div>
+</div>
+
+<!-- Jerarquía de documentos de gobernanza -->
+<div class="card d5" data-domain="5" data-hot="true" data-tags="gdpr pci dss sox ccpa lgpd dpia hipaa regulacion cumplimiento">
+  <div class="card-header">
+    <span class="domain-badge">D5 · Programa</span>
+    <span class="card-title">Marcos Regulatorios — Aspectos Clave</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Marco</th><th>Qué regula</th><th>Dato clave para examen</th></tr>
+      <tr><td class="key">GDPR</td><td>Protección datos EU</td><td>72h para notificar breach · DPIA obligatoria si alto riesgo</td></tr>
+      <tr><td class="key">CCPA</td><td>Privacidad California</td><td><em>Otorga derechos de privacidad a residentes de California</em> (no 6 meses, no Nueva York)</td></tr>
+      <tr><td class="key">PCI-DSS</td><td>Pagos con tarjeta</td><td>Nivel determinado por <em>volumen anual de transacciones</em> (no tipo de datos)</td></tr>
+      <tr><td class="key">SOX (S404)</td><td>Informes financieros EEUU</td><td>Controles IT sobre datos financieros: acceso privilegiado, audit trails, SoD</td></tr>
+      <tr><td class="key">HIPAA</td><td>Datos sanitarios EEUU</td><td>PHI (Protected Health Information), notificación de breach</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 DPIA — Cuándo es obligatoria (GDPR)</div>
+      Cuando el procesamiento implica <em>alto riesgo</em>: vigilancia masiva, datos sensibles (biometría, salud), scoring automatizado. No es obligatoria para todo.
+    </div>
+  </div>
+</div>
+
+<!-- BCP / BIA / DRP -->
+<div class="card d5" data-domain="5" data-tags="bcp bia drp continuidad negocio recuperacion desastre rto rpo impacto">
+  <div class="card-header">
+    <span class="domain-badge">D5 · Programa</span>
+    <span class="card-title">BIA / BCP / DRP</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Documento</th><th>Qué es</th><th>Objetivo</th></tr>
+      <tr><td class="key">BIA</td><td>Business Impact Analysis</td><td>Identifica procesos críticos, cuantifica impacto, establece RTO/RPO</td></tr>
+      <tr><td class="key">BCP</td><td>Business Continuity Plan</td><td>Mantener operaciones durante una crisis</td></tr>
+      <tr><td class="key">DRP</td><td>Disaster Recovery Plan</td><td>Recuperar IT/sistemas después del desastre</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Orden correcto</div>
+      <em>BIA primero</em> — sin BIA no sabes qué proteger ni con qué urgencia. BIA → BCP/DRP.
+    </div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>BIA = análisis del impacto</em> · <em>BCP = no parar</em> · <em>DRP = recuperar IT</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- CIS Controls vs NIST -->
+<div class="card d5" data-domain="5" data-tags="cis controls nist benchmarks framework hardening gobierno industria">
+  <div class="card-header">
+    <span class="domain-badge">D5 · Programa</span>
+    <span class="card-title">CIS Controls vs NIST</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th></th><th>CIS Controls</th><th>NIST CSF</th></tr>
+      <tr><td class="key">Enfoque</td><td>Acciones <em>específicas</em> y priorizadas</td><td>Framework amplio orientado a funciones (ID/PR/DE/RS/RC)</td></tr>
+      <tr><td class="key">Audiencia</td><td>Profesionales técnicos</td><td>Gestión, estrategia organizativa</td></tr>
+      <tr><td class="key">Relación</td><td><em>CIS proporciona implementación concreta de NIST</em></td><td>Proporciona el marco conceptual</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 CIS Benchmarks</div>
+      Configuraciones base probadas y validadas para hardening de servidores, SO, aplicaciones.<br>
+      Objetivo: <em>proporcionar configuraciones base seguras probadas</em> (no compatibilidad de software).
+    </div>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text">NIST = el <em>mapa</em> · CIS = las <em>instrucciones paso a paso</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- DLP modos -->
+<div class="card d5" data-domain="5" data-tags="dlp data loss prevention endpoint network cloud modos despliegue inline pasivo">
+  <div class="card-header">
+    <span class="domain-badge">D5 · Programa</span>
+    <span class="card-title">DLP — Modos de Despliegue</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Modo</th><th>Dónde vive</th><th>Qué controla</th></tr>
+      <tr><td class="key">Endpoint DLP</td><td>Agente en el dispositivo</td><td><em>Todos los canales locales</em>: USB, email, impresora, clipboard</td></tr>
+      <tr><td class="key">Network DLP</td><td>Gateway en la red</td><td>Tráfico en tránsito (inline o pasivo)</td></tr>
+      <tr><td class="key">Cloud DLP</td><td>Integrado con cloud (M365, GDrive)</td><td>Datos en servicios cloud</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Distinciones importantes</div>
+      "Agente en dispositivo que bloquea USB, email, impresora" = <em>Endpoint DLP</em><br>
+      DLP modos de <em>despliegue</em> = Endpoint/Network/Cloud (dónde está)<br>
+      DLP modos de <em>operación</em> = Inline/Pasivo (cómo actúa)
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     AÑADIDOS DESDE SIMULACRO #34
+══════════════════════════════════════════════════════════════ -->
+
+<!-- Modelo OSI -->
+<div class="card d3" data-domain="3" data-hot="true" data-tags="osi modelo capas fisico enlace red transporte sesion presentacion aplicacion arp syn dns http">
+  <div class="card-header">
+    <span class="domain-badge">D3 · Arquitectura</span>
+    <span class="card-title">Modelo OSI — 7 Capas + Ataques por Capa</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>#</th><th>Capa</th><th>Protocolo/Ejemplo</th><th>Ataque típico</th></tr>
+      <tr><td><strong>1</strong></td><td class="key">Física</td><td>Cable, fibra, radio</td><td>Corte físico, jamming</td></tr>
+      <tr><td><strong>2</strong></td><td class="key">Enlace de datos</td><td>Ethernet, MAC, ARP</td><td><em>ARP poisoning</em>, VLAN hopping</td></tr>
+      <tr><td><strong>3</strong></td><td class="key">Red</td><td>IP, ICMP, routing</td><td>IP spoofing, ICMP flood</td></tr>
+      <tr><td><strong>4</strong></td><td class="key">Transporte</td><td>TCP, UDP</td><td><em>SYN flood</em>, UDP flood</td></tr>
+      <tr><td><strong>5</strong></td><td class="key">Sesión</td><td>NetBIOS, RPC</td><td>Session hijacking</td></tr>
+      <tr><td><strong>6</strong></td><td class="key">Presentación</td><td>SSL/TLS, cifrado, compresión</td><td>SSL stripping</td></tr>
+      <tr><td><strong>7</strong></td><td class="key">Aplicación</td><td>HTTP, DNS, SMTP, FTP</td><td>SQLi, XSS, DNS poisoning, Slowloris</td></tr>
+    </table>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia (de abajo a arriba)</div>
+      <div class="mnemonic-text"><em>"Por Favor Nadie Tire Sal Por Aquí"</em><br>
+      Física · eDatos · Red · Transporte · Sesión · Presentación · Aplicación</div>
+    </div>
+  </div>
+</div>
+
+<!-- Cyber Kill Chain -->
+<div class="card d2" data-domain="2" data-hot="true" data-tags="cyber kill chain lockheed martin fases reconocimiento weaponization delivery exploitation installation c2 actions">
+  <div class="card-header">
+    <span class="domain-badge">D2 · Amenazas</span>
+    <span class="card-title">Cyber Kill Chain — 7 Fases en Orden</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>#</th><th>Fase</th><th>Qué hace el atacante</th></tr>
+      <tr><td>1</td><td class="key">Reconnaissance</td><td>Investiga el objetivo (OSINT, escaneo)</td></tr>
+      <tr><td>2</td><td class="key">Weaponization</td><td>Crea el exploit o payload malicioso</td></tr>
+      <tr><td>3</td><td class="key">Delivery</td><td>Entrega el payload (email, USB, web)</td></tr>
+      <tr><td>4</td><td class="key">Exploitation</td><td>Ejecuta la vulnerabilidad en el sistema objetivo</td></tr>
+      <tr><td>5</td><td class="key">Installation</td><td>Instala backdoor / RAT para persistencia</td></tr>
+      <tr><td>6</td><td class="key">Command & Control</td><td>Canal C2 para controlar la máquina remotamente</td></tr>
+      <tr><td>7</td><td class="key">Actions on Objectives</td><td>Exfiltración, cifrado ransomware, destrucción</td></tr>
+    </table>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>Re-We-De-Ex-In-C2-Ac</em><br>
+      "Reconozco, fabrico el arma, la entrego, exploto, me instalo, conecto al C2, actúo"<br>
+      Trampa: <em>Exploitation va ANTES que Installation</em> (se explota para después instalarse)</div>
+    </div>
+  </div>
+</div>
+
+<!-- MITRE ATT&CK tácticas -->
+<div class="card d4" data-domain="4" data-hot="true" data-tags="mitre attack tacticas initial access execution persistence privilege escalation defense evasion lateral movement exfiltration">
+  <div class="card-header">
+    <span class="domain-badge">D4 · Operaciones</span>
+    <span class="card-title">MITRE ATT&CK — Orden de Tácticas</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>#</th><th>Táctica</th><th>Qué busca</th></tr>
+      <tr><td>1</td><td class="key">Initial Access</td><td>Entrar al entorno (phishing, exploit web)</td></tr>
+      <tr><td>2</td><td class="key">Execution</td><td>Ejecutar código malicioso</td></tr>
+      <tr><td>3</td><td class="key">Persistence</td><td>Mantenerse tras reinicios</td></tr>
+      <tr><td>4</td><td class="key">Privilege Escalation</td><td>Ganar más permisos</td></tr>
+      <tr><td>5</td><td class="key">Defense Evasion</td><td>Evitar detección (AV, logs)</td></tr>
+      <tr><td>6</td><td class="key">Credential Access</td><td>Robar credenciales</td></tr>
+      <tr><td>7</td><td class="key">Discovery</td><td>Explorar la red interna</td></tr>
+      <tr><td>8</td><td class="key">Lateral Movement</td><td>Moverse a otros sistemas</td></tr>
+      <tr><td>9</td><td class="key">Collection</td><td>Recopilar datos de interés</td></tr>
+      <tr><td>10</td><td class="key">Exfiltration</td><td>Sacar los datos fuera</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Trampa del examen</div>
+      Execution va justo <em>después de Initial Access</em>, no al final.<br>
+      Defense Evasion va <em>después de Privilege Escalation</em>, no al principio.
+    </div>
+  </div>
+</div>
+
+<!-- Tipos de backup -->
+<div class="card d3" data-domain="3" data-hot="true" data-tags="backup full incremental diferencial synthetic completo diferencial tiempo restauracion">
+  <div class="card-header">
+    <span class="domain-badge">D3 · Arquitectura</span>
+    <span class="card-title">Tipos de Backup</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Tipo</th><th>Qué copia</th><th>Restauración</th><th>Velocidad backup</th></tr>
+      <tr><td class="key">Full</td><td>Todo siempre</td><td>1 archivo → rápida</td><td>Lenta (mucho volumen)</td></tr>
+      <tr><td class="key">Diferencial</td><td>Cambios desde el <em>último Full</em></td><td>Full + 1 diferencial</td><td>Media (crece con el tiempo)</td></tr>
+      <tr><td class="key">Incremental</td><td>Cambios desde el <em>último backup cualquiera</em></td><td>Full + cada incremental</td><td>Rápida (solo lo nuevo)</td></tr>
+      <tr><td class="key">Synthetic Full</td><td>Combina anteriores en un nuevo Full sin tocar producción</td><td>1 archivo → rápida</td><td>Sin impacto en producción</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Distinción clave Diferencial vs Incremental</div>
+      <em>Diferencial</em> = "todo desde el último Full" → crece cada día, restauración más fácil<br>
+      <em>Incremental</em> = "solo lo de hoy" → backup pequeño, restauración más lenta (necesitas la cadena entera)
+    </div>
+  </div>
+</div>
+
+<!-- RADIUS vs TACACS+ -->
+<div class="card d2" data-domain="2" data-tags="fileless malware memoria ram sin archivo disco antivirus evasion powershell living off the land">
+  <div class="card-header">
+    <span class="domain-badge">D2 · Amenazas</span>
+    <span class="card-title">Fileless Malware</span>
+  </div>
+  <div class="card-body">
+    <div class="def">Malware que reside y se ejecuta <em>únicamente en memoria RAM</em> sin escribir archivos en disco. Evade antivirus tradicionales basados en análisis de archivos.</div>
+    <table class="compare-table">
+      <tr><th>Técnica común</th><th>Mecanismo</th></tr>
+      <tr><td class="key">PowerShell sin archivo</td><td>Código descargado y ejecutado directo en memoria</td></tr>
+      <tr><td class="key">LOLBins</td><td>Abusa de herramientas legítimas del OS (certutil, mshta, wmic)</td></tr>
+      <tr><td class="key">Process injection</td><td>Inyecta código malicioso en procesos legítimos (lsass, svchost)</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Señal en el examen</div>
+      "Se ejecuta en memoria sin escribir en disco" / "evade antivirus basados en archivos" → <em>Fileless malware</em><br>
+      Detección: PowerShell ScriptBlock Logging, EDR con análisis de comportamiento en memoria.
+    </div>
+  </div>
+</div>
+
+<!-- Tipos DoS -->
+<div class="card d2" data-domain="2" data-hot="true" data-tags="syn flood udp slowloris http dos ddos denegacion servicio volumetrico">
+  <div class="card-header">
+    <span class="domain-badge">D2 · Amenazas</span>
+    <span class="card-title">Tipos de DoS — Distinción por Mecanismo</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Ataque</th><th>Capa OSI</th><th>Mecanismo</th></tr>
+      <tr><td class="key">SYN flood</td><td>L4 (TCP)</td><td>Inunda con SYN sin completar el handshake → tabla de conexiones llena</td></tr>
+      <tr><td class="key">UDP flood</td><td>L4 (UDP)</td><td>Paquetes UDP masivos a puertos aleatorios</td></tr>
+      <tr><td class="key">HTTP Slowloris</td><td>L7 (HTTP)</td><td>Mantiene conexiones HTTP abiertas muy lentamente → agota conexiones del servidor</td></tr>
+      <tr><td class="key">DNS Amplification</td><td>L7 (DNS/UDP)</td><td>IP spoofed + open resolvers → respuesta masiva a la víctima</td></tr>
+      <tr><td class="key">ICMP flood (Ping)</td><td>L3 (IP)</td><td>Satura con paquetes ICMP Echo Request</td></tr>
+    </table>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>SYN = medio handshake</em> · <em>Slowloris = muy despacio para agotar</em> · <em>Amplification = spoofeas y amplificas</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- SFTP vs FTPS -->
+<div class="card d3" data-domain="3" data-tags="sftp ftps ftp tftp transferencia archivos segura ssh ssl tls puertos">
+  <div class="card-header">
+    <span class="domain-badge">D3 · Arquitectura</span>
+    <span class="card-title">FTP / SFTP / FTPS / TFTP</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Protocolo</th><th>Cifrado</th><th>Base</th><th>Puerto</th></tr>
+      <tr><td class="key">FTP</td><td>❌ Texto plano</td><td>—</td><td>21</td></tr>
+      <tr><td class="key">SFTP</td><td>✅ <em>SSH</em></td><td>Subsistema de SSH</td><td>22</td></tr>
+      <tr><td class="key">FTPS</td><td>✅ <em>TLS/SSL</em></td><td>FTP + TLS</td><td>990 (implícito) / 21 (explícito)</td></tr>
+      <tr><td class="key">TFTP</td><td>❌ Sin cifrado ni autenticación</td><td>UDP</td><td>69</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Distinción SFTP vs FTPS</div>
+      <em>SFTP</em> = usa SSH (puerto 22), no es FTP en absoluto — es un protocolo distinto encima de SSH<br>
+      <em>FTPS</em> = FTP tradicional + capa TLS/SSL (puerto 990/21)<br>
+      Señal: "cifrado con SSH" → SFTP · "cifrado con SSL/TLS sobre FTP" → FTPS
+    </div>
+  </div>
+</div>
+
+<!-- ISO 27001 vs 27002 vs NIST -->
+<div class="card d5" data-domain="5" data-hot="true" data-tags="iso 27001 27002 nist csf cis certificable isms sistema gestion seguridad">
+  <div class="card-header">
+    <span class="domain-badge">D5 · Programa</span>
+    <span class="card-title">ISO 27001 vs 27002 vs NIST CSF vs CIS</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Framework</th><th>Qué es</th><th>¿Certificable?</th></tr>
+      <tr><td class="key">ISO 27001</td><td>Estándar para implementar un ISMS (Sistema de Gestión de Seguridad)</td><td>✅ <em>SÍ — auditable y certificable</em></td></tr>
+      <tr><td class="key">ISO 27002</td><td>Guía de controles de seguridad (complemento de 27001)</td><td>❌ No certificable — es una guía</td></tr>
+      <tr><td class="key">NIST CSF</td><td>Framework voluntario: Identify/Protect/Detect/Respond/Recover</td><td>❌ No certificable — es un marco</td></tr>
+      <tr><td class="key">CIS Controls</td><td>18 controles priorizados y accionables</td><td>❌ No certificable — son buenas prácticas</td></tr>
+    </table>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>Solo ISO 27001 se certifica</em> — es el único con proceso de auditoría formal<br>
+      27002 = el "cómo" (controles) · 27001 = el "qué demuestras" (el sistema completo)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Firewalls por capa OSI -->
+<div class="card d3" data-domain="3" data-hot="true" data-tags="firewall packet filter stateful waf ngfw capa osi aplicacion red transporte">
+  <div class="card-header">
+    <span class="domain-badge">D3 · Arquitectura</span>
+    <span class="card-title">Firewalls — Tipos y Capa OSI</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Tipo</th><th>Capa</th><th>Qué inspecciona</th></tr>
+      <tr><td class="key">Packet Filter</td><td>L3/L4 sin estado</td><td>IP origen/destino, puerto — evalúa paquete a paquete</td></tr>
+      <tr><td class="key">Stateful</td><td>L3/L4 con estado</td><td>Igual + <em>tabla de conexiones establecidas</em></td></tr>
+      <tr><td class="key">WAF</td><td>L7 (HTTP)</td><td>Contenido de peticiones HTTP: SQLi, XSS, CSRF</td></tr>
+      <tr><td class="key">NGFW</td><td>L3–L7</td><td>Todo lo anterior + DPI, identidad de usuario, apps</td></tr>
+      <tr><td class="key">Proxy Firewall</td><td>L7</td><td>Actúa como intermediario completo — rompe la conexión</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Stateful vs Stateless</div>
+      <em>Stateless</em>: evalúa cada paquete por separado — no sabe si la conexión fue iniciada desde dentro<br>
+      <em>Stateful</em>: permite tráfico de retorno de conexiones establecidas → más seguro y común
+    </div>
+  </div>
+</div>
+
+<!-- Análisis de malware -->
+<div class="card d4" data-domain="4" data-hot="true" data-tags="analisis malware estatico dinamico memoria reverso sandbox strings import table">
+  <div class="card-header">
+    <span class="domain-badge">D4 · Operaciones</span>
+    <span class="card-title">Análisis de Malware — 4 Tipos</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Tipo</th><th>Se ejecuta?</th><th>Qué analiza / cómo</th></tr>
+      <tr><td class="key">Estático</td><td>❌ No</td><td>Headers, strings, import table, secciones del binario sin ejecutar</td></tr>
+      <tr><td class="key">Dinámico</td><td>✅ Sí</td><td>Comportamiento en sandbox: llamadas a API, red, registro, procesos</td></tr>
+      <tr><td class="key">Análisis de memoria</td><td>✅ Post-ejecución</td><td>Volcado de RAM con Volatility — detecta fileless, procesos ocultos</td></tr>
+      <tr><td class="key">Ingeniería inversa (Reverso)</td><td>❌ No</td><td>Desensambla/descompila el código (IDA Pro, Ghidra)</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Señales en el examen</div>
+      "Sin ejecutarlo / file headers / strings / import table" → <em>estático</em><br>
+      "En sandbox / comportamiento en tiempo real" → <em>dinámico</em><br>
+      "Proceso en memoria / parent process / command-line args en ejecución" → <em>dinámico</em> (no estático)
+    </div>
+  </div>
+</div>
+
+<!-- Gestión vulnerabilidades orden -->
+<div class="card d4" data-domain="4" data-hot="true" data-tags="vulnerability management gestion vulnerabilidades orden fases descubrimiento escaneo priorizacion remediacion verificacion">
+  <div class="card-header">
+    <span class="domain-badge">D4 · Operaciones</span>
+    <span class="card-title">Gestión de Vulnerabilidades — Orden de Fases</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>#</th><th>Fase</th><th>Qué se hace</th></tr>
+      <tr><td>1</td><td class="key">Descubrimiento</td><td>Inventariar activos — no puedes proteger lo que no conoces</td></tr>
+      <tr><td>2</td><td class="key">Escaneo</td><td>Detectar CVEs en los activos conocidos</td></tr>
+      <tr><td>3</td><td class="key">Priorización</td><td>CVSS score + contexto de negocio → qué parchear primero</td></tr>
+      <tr><td>4</td><td class="key">Remediación</td><td>Aplicar parches, mitigaciones o workarounds</td></tr>
+      <tr><td>5</td><td class="key">Verificación</td><td>Escanear de nuevo para confirmar que se corrigió</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Trampa del examen</div>
+      <em>Descubrimiento va ANTES que escaneo</em> — primero sabes qué hay, luego lo escaneas<br>
+      Sin inventario de activos no tiene sentido escanear nada
+    </div>
+  </div>
+</div>
+
+<!-- ARP poisoning capa 2 -->
+<div class="card d2" data-domain="2" data-tags="arp poisoning capa 2 mac ip tabla vlan hopping llmnr red local">
+  <div class="card-header">
+    <span class="domain-badge">D2 · Amenazas</span>
+    <span class="card-title">Ataques de Red Local — ARP / LLMNR / VLAN Hopping</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Ataque</th><th>Capa OSI</th><th>Mecanismo</th><th>Resultado</th></tr>
+      <tr><td class="key">ARP Poisoning</td><td><em>L2</em> (Enlace)</td><td>Envía respuestas ARP falsas → tabla ARP envenenada</td><td>MitM en la red local</td></tr>
+      <tr><td class="key">DNS Poisoning</td><td>L7 (Aplicación)</td><td>Inyecta registros DNS falsos en caché</td><td>Redirige tráfico a servidor malicioso</td></tr>
+      <tr><td class="key">LLMNR Poisoning</td><td>L2/L3</td><td>Responde a consultas de nombres Windows no resueltas</td><td>Captura hashes NTLM</td></tr>
+      <tr><td class="key">VLAN Hopping</td><td>L2</td><td>Explota configuración de trunk/native VLAN</td><td>Salta a segmentos restringidos</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Clave examen</div>
+      ARP opera en <em>capa 2</em> (Enlace de datos) → manipula tablas MAC-IP, no rutas IP<br>
+      SYN flood = L4 · DNS = L7 · ARP = L2
+    </div>
+  </div>
+</div>
+
+<!-- AWS Services -->
+<div class="card d3" data-domain="3" data-tags="aws iam security group cloudtrail ebs encryption cloud servicios">
+  <div class="card-header">
+    <span class="domain-badge">D3 · Arquitectura</span>
+    <span class="card-title">AWS — Servicios de Seguridad Clave</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Servicio</th><th>Función principal</th></tr>
+      <tr><td class="key">IAM Policy</td><td>Controla <em>quién</em> puede hacer <em>qué</em> sobre qué recurso</td></tr>
+      <tr><td class="key">Security Group</td><td>Firewall de instancia EC2 (stateful, reglas de entrada/salida)</td></tr>
+      <tr><td class="key">Encryption at rest (EBS)</td><td>Cifra discos de instancias EC2 con KMS</td></tr>
+      <tr><td class="key">CloudTrail</td><td>Audita todas las llamadas a la API de AWS (quién hizo qué)</td></tr>
+      <tr><td class="key">AWS Config</td><td>Monitoriza configuraciones y detecta desviaciones (CSPM)</td></tr>
+      <tr><td class="key">GuardDuty</td><td>Detección de amenazas (análisis de CloudTrail, VPC Flow Logs, DNS)</td></tr>
+    </table>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>IAM = quién accede</em> · <em>Security Group = qué entra/sale</em> · <em>CloudTrail = quién hizo qué</em> · <em>Config = cómo está configurado</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- Network Segmentation vs Microsegmentation -->
+<div class="card d3" data-domain="3" data-tags="network segmentation microsegmentation vlan zero trust lateral movement workload">
+  <div class="card-header">
+    <span class="domain-badge">D3 · Arquitectura</span>
+    <span class="card-title">Network Segmentation vs Microsegmentation</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th></th><th>Network Segmentation</th><th>Microsegmentation</th></tr>
+      <tr><td class="key">Granularidad</td><td>Divide en subredes / VLANs</td><td>A nivel de workload o aplicación individual</td></tr>
+      <tr><td class="key">Cómo</td><td>VLANs, ACLs, firewalls entre zonas</td><td>Políticas por host/contenedor (Software-Defined)</td></tr>
+      <tr><td class="key">Objetivo</td><td>Limitar movimiento lateral entre segmentos</td><td>Limitar movimiento lateral incluso dentro del mismo segmento</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Clave examen</div>
+      "Dividir red en segmentos más pequeños para limitar movimiento lateral" → <em>Network Segmentation</em><br>
+      Microsegmentation es más granular — nivel de workload individual, típico en Zero Trust
+    </div>
+  </div>
+</div>
+
+<!-- CCTV y 2FA -->
+<div class="card d1" data-domain="1" data-hot="true" data-tags="cctv camara vigilancia control detectivo preventivo 2fa mfa factores distintos categorias">
+  <div class="card-header">
+    <span class="domain-badge">D1 · General</span>
+    <span class="card-title">CCTV = Detectivo · 2FA = Factores Distintos</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <div class="def"><strong>CCTV (cámara):</strong> su función principal es <em>detectar y registrar</em> — no evita el acto físicamente. Puede tener efecto disuasorio secundario, pero el control primario es <em>detectivo</em>, no preventivo.</div>
+    <table class="compare-table" style="margin-top:10px">
+      <tr><th>Combinación 2FA</th><th>¿Es válida?</th><th>Por qué</th></tr>
+      <tr><td class="key">Contraseña + PIN</td><td>❌ NO</td><td>Ambos son "algo que sabes" → mismo factor</td></tr>
+      <tr><td class="key">Contraseña + fecha de nacimiento</td><td>❌ NO</td><td>Ambos son "algo que sabes"</td></tr>
+      <tr><td class="key">Token OTP + código de recuperación</td><td>❌ NO</td><td>Ambos son "algo que tienes"</td></tr>
+      <tr><td class="key">Huella + token OTP</td><td>✅ SÍ</td><td>"Algo que eres" + "algo que tienes" → <em>categorías distintas</em></td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Regla 2FA</div>
+      Para que sea MFA válido, los factores deben ser de <em>categorías diferentes</em>. Dos contraseñas o dos PINs = un solo factor repetido.
+    </div>
+  </div>
+</div>
+
+<!-- Command Injection vs XSS vs SQLi -->
+<div class="card d2" data-domain="2" data-hot="true" data-tags="command injection xss sqli distincion ejecuta servidor os sistema operativo navegador base datos">
+  <div class="card-header">
+    <span class="domain-badge">D2 · Amenazas</span>
+    <span class="card-title">Command Injection vs XSS vs SQLi — Distinción Definitiva</span>
+    <span class="hot-badge">🔥 MUY FALLADO</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Ataque</th><th>Qué se inyecta</th><th>Dónde ejecuta</th><th>Señal clave</th></tr>
+      <tr><td class="key">Command Injection</td><td>Comandos del SO (bash, cmd)</td><td><em>Servidor — sistema operativo</em></td><td>"concatenando comandos", ";cat /etc", "| whoami"</td></tr>
+      <tr><td class="key">SQL Injection</td><td>Sentencias SQL</td><td><em>Servidor — base de datos</em></td><td>Comillas simples, OR 1=1, UNION SELECT</td></tr>
+      <tr><td class="key">XSS</td><td>JavaScript / HTML</td><td><em>Navegador del cliente víctima</em></td><td>&lt;script&gt;, alert(), document.cookie</td></tr>
+      <tr><td class="key">Path Traversal</td><td>Rutas de archivos (../../)</td><td>Servidor — sistema de archivos</td><td>../../etc/passwd</td></tr>
+    </table>
+    <div class="mnemonic">
+      <div class="mnemonic-label">⚡ Nemotecnia</div>
+      <div class="mnemonic-text"><em>Command = el servidor ejecuta tu comando de OS</em><br>
+      <em>SQLi = el servidor consulta tu SQL en la BD</em><br>
+      <em>XSS = el navegador de otro usuario ejecuta tu JS</em></div>
+    </div>
+  </div>
+</div>
+
+<!-- TLS en HTTPS -->
+<div class="card d3" data-domain="3" data-tags="tls ssl https rsa aes sha256 protocolo cifrado navegador web handshake">
+  <div class="card-header">
+    <span class="domain-badge">D3 · Arquitectura</span>
+    <span class="card-title">TLS en HTTPS — Qué hace cada algoritmo</span>
+  </div>
+  <div class="card-body">
+    <table class="compare-table">
+      <tr><th>Elemento</th><th>Rol en HTTPS</th></tr>
+      <tr><td class="key">TLS</td><td><em>El protocolo completo</em> que gestiona todo el proceso de cifrado en HTTPS</td></tr>
+      <tr><td class="key">RSA / ECC</td><td>Asimétrico — usado en el <em>handshake</em> para intercambiar claves de sesión</td></tr>
+      <tr><td class="key">AES</td><td>Simétrico — cifra los <em>datos reales</em> (rápido, usado durante la sesión)</td></tr>
+      <tr><td class="key">SHA-256</td><td>Hash — verifica <em>integridad</em> de los datos, NO cifra nada</td></tr>
+    </table>
+    <div class="key-rule">
+      <div class="key-rule-label">🔑 Clave examen</div>
+      "Protocolo que cifra comunicación entre navegador y servidor web" → <em>TLS</em> (no RSA, no AES, no SHA)<br>
+      TLS es el contenedor — RSA/AES/SHA son las piezas que usa internamente
+    </div>
+  </div>
+</div>
+
+
+</div><!-- /grid -->
+
+<script>
+let currentFilter = 'all';
+let currentSearch = '';
+
+function filterCards() {
+  currentSearch = document.getElementById('search').value.toLowerCase();
+  applyFilters();
+}
+
+function setFilter(domain, btn) {
+  currentFilter = domain;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  const cards = document.querySelectorAll('.card');
+  let visible = 0;
+  cards.forEach(card => {
+    const domain = card.dataset.domain;
+    const hot = card.dataset.hot === 'true';
+    const tags = (card.dataset.tags || '') + ' ' + card.innerText.toLowerCase();
+
+    let domainMatch = currentFilter === 'all' ||
+      (currentFilter === 'hot' && hot) ||
+      domain === currentFilter;
+
+    let searchMatch = !currentSearch || tags.includes(currentSearch);
+
+    if (domainMatch && searchMatch) {
+      card.classList.remove('hidden');
+      visible++;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+  document.getElementById('counter').textContent = visible + ' conceptos';
+}
+
+// Init
+window.onload = function() { applyFilters(); };
+</script>
+
+</body>
+</html>

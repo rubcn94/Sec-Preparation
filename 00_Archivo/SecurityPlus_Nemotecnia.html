@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Mayor · Nemotecnia Sec+</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --orange: #f0883e;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --cyan: #39d353;
+    --d1: #4fc3f7;
+    --d2: #ef5350;
+    --d3: #66bb6a;
+    --d4: #ffa726;
+    --d5: #ab47bc;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #1a2332, #0d1117);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  header .icon { font-size: 2rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+  header p { color: var(--text2); font-size: 0.85rem; }
+  .badge {
+    margin-left: auto;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.75rem;
+    color: var(--text2);
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 12px 24px 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    transition: all .2s;
+    border-radius: 6px 6px 0 0;
+  }
+  .tab-btn:hover { color: var(--text); background: var(--bg3); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--bg3); }
+
+  /* ── PANELS ── */
+  .panel { display: none; padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
+  .panel.active { display: block; }
+
+  /* ── SECTION HEADINGS ── */
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── PHONETIC CODE TABLE ── */
+  .phonetic-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .phonetic-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+    transition: transform .15s;
+  }
+  .phonetic-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .phonetic-card .digit {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .phonetic-card .sounds {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+  .phonetic-card .hint {
+    font-size: 0.72rem;
+    color: var(--text2);
+    line-height: 1.4;
+  }
+  .phonetic-card .example {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: var(--green);
+    font-style: italic;
+  }
+  /* digit colors */
+  .d0 .digit { color: #ef5350; }
+  .d1 .digit { color: #ffa726; }
+  .d2 .digit { color: #ffee58; }
+  .d3 .digit { color: #66bb6a; }
+  .d4 .digit { color: #26c6da; }
+  .d5 .digit { color: #42a5f5; }
+  .d6 .digit { color: #7e57c2; }
+  .d7 .digit { color: #ec407a; }
+  .d8 .digit { color: #ff7043; }
+  .d9 .digit { color: #26a69a; }
+
+  /* ── RULES BOX ── */
+  .rules-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+  }
+  .rules-box h3 { color: var(--yellow); margin-bottom: 10px; font-size: 0.9rem; }
+  .rules-list { list-style: none; }
+  .rules-list li {
+    padding: 4px 0;
+    color: var(--text2);
+    font-size: 0.82rem;
+    border-bottom: 1px solid var(--bg3);
+  }
+  .rules-list li:last-child { border: none; }
+  .rules-list li span { color: var(--text); font-weight: 600; }
+
+  /* ── 00-99 MATRIX ── */
+  .matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+  }
+  .matrix-cell {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .15s;
+    position: relative;
+  }
+  .matrix-cell:hover { border-color: var(--accent); transform: scale(1.05); z-index: 10; background: var(--bg3); }
+  .matrix-cell .num {
+    font-size: 0.65rem;
+    color: var(--text2);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .matrix-cell .w1 {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .matrix-cell .w2, .matrix-cell .w3 {
+    font-size: 0.65rem;
+    color: var(--text2);
+  }
+  /* Row colors */
+  .row0 { border-left: 3px solid #ef5350; }
+  .row1 { border-left: 3px solid #ffa726; }
+  .row2 { border-left: 3px solid #ffee58; }
+  .row3 { border-left: 3px solid #66bb6a; }
+  .row4 { border-left: 3px solid #26c6da; }
+  .row5 { border-left: 3px solid #42a5f5; }
+  .row6 { border-left: 3px solid #7e57c2; }
+  .row7 { border-left: 3px solid #ec407a; }
+  .row8 { border-left: 3px solid #ff7043; }
+  .row9 { border-left: 3px solid #26a69a; }
+
+  .matrix-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text2);
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  /* ── PORTS TABLE ── */
+  .ports-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 28px;
+  }
+  .ports-table th {
+    background: var(--bg3);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 0.78rem;
+    color: var(--text2);
+    border-bottom: 2px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .ports-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 0.82rem;
+  }
+  .ports-table tr:hover td { background: var(--bg3); }
+  .port-num {
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--accent);
+    font-family: monospace;
+  }
+  .port-proto {
+    font-weight: 700;
+    color: var(--green);
+  }
+  .port-encoding {
+    font-family: monospace;
+    font-size: 0.78rem;
+    color: var(--text2);
+  }
+  .port-word {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--yellow);
+  }
+  .port-story {
+    color: var(--text2);
+    font-style: italic;
+    font-size: 0.78rem;
+  }
+  .port-category {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+  .cat-remote { background: #1a3a5c; color: #4fc3f7; }
+  .cat-web    { background: #1a3b1a; color: #66bb6a; }
+  .cat-mail   { background: #3b2a1a; color: #ffa726; }
+  .cat-dir    { background: #2a1a3b; color: #ab47bc; }
+  .cat-net    { background: #3b1a1a; color: #ef5350; }
+  .cat-file   { background: #1a3b3b; color: #26c6da; }
+  .cat-sec    { background: #3b3b1a; color: #ffee58; }
+  .cat-mon    { background: #1a2a1a; color: #3fb950; }
+
+  /* ── DOMAIN PERCENTAGES ── */
+  .domain-cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .domain-card {
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .domain-card .pct { font-size: 2rem; font-weight: 800; margin-bottom: 4px; }
+  .domain-card .dname { font-size: 0.72rem; color: var(--text2); margin-bottom: 10px; }
+  .domain-card .enc { font-family: monospace; font-size: 0.75rem; color: var(--text2); margin-bottom: 6px; }
+  .domain-card .word { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+  .domain-card .phrase { font-size: 0.72rem; font-style: italic; color: var(--text2); }
+
+  /* ── TIME LIMITS ── */
+  .time-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .time-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .time-card .regulation {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .time-card .time-val {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .time-card .enc { font-family: monospace; font-size: 0.75rem; color: var(--text2); }
+  .time-card .mnemonic { font-size: 1rem; font-weight: 700; color: var(--yellow); margin: 6px 0; }
+  .time-card .desc { font-size: 0.75rem; color: var(--text2); }
+
+  /* ── CVSS ── */
+  .cvss-bar {
+    display: flex;
+    height: 48px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+  }
+  .cvss-seg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: default;
+    transition: opacity .2s;
+  }
+  .cvss-seg:hover { opacity: .85; }
+  .cvss-low    { background: #2d5a27; color: #66bb6a; flex: 39; }
+  .cvss-med    { background: #5a4a00; color: #ffd600; flex: 30; }
+  .cvss-high   { background: #5a2d00; color: #ffa726; flex: 19; }
+  .cvss-crit   { background: #5a0d0d; color: #ef5350; flex: 12; }
+  .cvss-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 28px;
+  }
+  .cvss-table th, .cvss-table td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+  }
+  .cvss-table th { background: var(--bg3); color: var(--text2); font-size: 0.75rem; text-transform: uppercase; }
+
+  /* ── FORMULAS ── */
+  .formula-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .formula-card .fname { font-weight: 700; color: var(--accent); margin-bottom: 10px; font-size: 0.9rem; }
+  .formula-eq {
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-family: monospace;
+    font-size: 0.88rem;
+    color: var(--green);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .formula-card .mnemo { color: var(--yellow); font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+  .formula-card .exp { color: var(--text2); font-size: 0.78rem; }
+
+  /* ── MISC ── */
+  .tip {
+    background: #1a2d1a;
+    border: 1px solid #3fb950;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    color: #a5d6a7;
+    margin-bottom: 20px;
+  }
+  .tip strong { color: #3fb950; }
+  .info {
+    background: #1a2a3b;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    color: #90caf9;
+    margin-bottom: 20px;
+  }
+  .tag-consonant {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: monospace;
+    margin: 0 2px;
+  }
+  table.encode-demo { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+  table.encode-demo td { padding: 6px 10px; border: 1px solid var(--border); font-size: 0.8rem; }
+  table.encode-demo td:first-child { color: var(--accent); font-weight: 700; font-family: monospace; width: 90px; }
+
+  .chart-container { margin-bottom: 28px; }
+  .mini-phrase {
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    border-left: 3px solid var(--purple);
+  }
+  .mini-phrase .phrase-key { font-weight: 700; color: var(--purple); margin-bottom: 4px; }
+  .mini-phrase .phrase-val { color: var(--text); font-size: 0.88rem; }
+  .mini-phrase .phrase-exp { color: var(--text2); font-size: 0.75rem; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="icon">🧠</div>
+  <div>
+    <h1>Sistema Mayor · Nemotecnia Sec+</h1>
+    <p>Código fonético personal · Casillero 00–99 · Puertos, dominios, tiempos y fórmulas</p>
+  </div>
+  <div class="badge">SY0-701</div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('codigo')">📖 Código Fonético</button>
+  <button class="tab-btn" onclick="showTab('casillero')">🔢 Casillero 00–99</button>
+  <button class="tab-btn" onclick="showTab('puertos')">🔌 Puertos</button>
+  <button class="tab-btn" onclick="showTab('dominios')">📊 Dominios %</button>
+  <button class="tab-btn" onclick="showTab('tiempos')">⏱ Tiempos Límite</button>
+  <button class="tab-btn" onclick="showTab('formulas')">⚡ Fórmulas & CVSS</button>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     TAB 1: CÓDIGO FONÉTICO
+     ════════════════════════════════════════════════════════ -->
+<div id="tab-codigo" class="panel active">
+
+  <div class="tip">
+    <strong>Sistema Mayor:</strong> Cada dígito (0–9) se mapea a uno o más sonidos consonánticos.
+    Las <strong>vocales no cuentan</strong>. La H es muda. Inserta vocales libremente para crear palabras memorables.
+  </div>
+
+  <div class="section-title">🔑 Las 10 Reglas Fonéticas</div>
+
+  <div class="phonetic-grid">
+    <div class="phonetic-card d0">
+      <div class="digit">0</div>
+      <div class="sounds">R · RR</div>
+      <div class="hint">La R suena como cero redondo</div>
+      <div class="example">Raro · Rorro · Roer</div>
+    </div>
+    <div class="phonetic-card d1">
+      <div class="digit">1</div>
+      <div class="sounds">T · D</div>
+      <div class="hint">T tiene 1 trazo vertical</div>
+      <div class="example">Toro · Dato · Diva</div>
+    </div>
+    <div class="phonetic-card d2">
+      <div class="digit">2</div>
+      <div class="sounds">N · Ñ</div>
+      <div class="hint">N tiene 2 trazos verticales</div>
+      <div class="example">Nena · Niño · Nilo</div>
+    </div>
+    <div class="phonetic-card d3">
+      <div class="digit">3</div>
+      <div class="sounds">M</div>
+      <div class="hint">M tiene 3 trazos verticales</div>
+      <div class="example">Mora · Mago · Mimo</div>
+    </div>
+    <div class="phonetic-card d4">
+      <div class="digit">4</div>
+      <div class="sounds">C · K · Q</div>
+      <div class="hint">C, K, Q: sonido oclusivo velar</div>
+      <div class="example">Cara · Coco · Queso</div>
+    </div>
+    <div class="phonetic-card d5">
+      <div class="digit">5</div>
+      <div class="sounds">L</div>
+      <div class="hint">L en romana = 50</div>
+      <div class="example">Loro · Lima · Lava</div>
+    </div>
+    <div class="phonetic-card d6">
+      <div class="digit">6</div>
+      <div class="sounds">S · Z</div>
+      <div class="hint">6 y S tienen forma similar</div>
+      <div class="example">Sarro · Rosa · Raza</div>
+    </div>
+    <div class="phonetic-card d7">
+      <div class="digit">7</div>
+      <div class="sounds">F · J</div>
+      <div class="hint">7 parece una J invertida</div>
+      <div class="example">Jarra · Faro · Rojo</div>
+    </div>
+    <div class="phonetic-card d8">
+      <div class="digit">8</div>
+      <div class="sounds">CH · G</div>
+      <div class="hint">8 tiene 2 curvas como CH</div>
+      <div class="example">Churro · Gato · Mago</div>
+    </div>
+    <div class="phonetic-card d9">
+      <div class="digit">9</div>
+      <div class="sounds">V · B · P</div>
+      <div class="hint">9 parece una P invertida</div>
+      <div class="example">Pera · Barra · Vaca</div>
+    </div>
+  </div>
+
+  <div class="section-title">⚙️ Reglas de Aplicación</div>
+  <div class="rules-box">
+    <h3>💡 Cómo construir una palabra</h3>
+    <ul class="rules-list">
+      <li>✅ <span>Las vocales son libres</span> — no codifican ningún dígito, úsalas para que suene bien</li>
+      <li>✅ <span>H es muda</span> — "Hotel" = T+L = 15, no 015</li>
+      <li>✅ <span>LL y Y</span> — son vocales en este sistema (sonido palatal, no consonántico fuerte)</li>
+      <li>✅ <span>Letras dobles</span> — "ll" cuenta como un sonido; "RR" = un solo 0; "MM" = dos 3s</li>
+      <li>✅ <span>G suave</span> (antes de a,o,u) = 8 · <span>G fuerte/J</span> (antes de e,i) = 7 si suena /x/</li>
+      <li>✅ <span>C + e/i</span> (suena /θ/ o /s/) = 6 · <span>C + a/o/u</span> = 4</li>
+      <li>✅ <span>QU</span> (suena /k/) = 4</li>
+      <li>✅ <span>X</span> (suena /ks/) = 46 · o tratar como /s/ = 6 según contexto</li>
+      <li>⚠️ Lo más importante: que la imagen sea <span>VÍVIDA y ÚNICA</span>. La exactitud perfecta es secundaria.</li>
+    </ul>
+  </div>
+
+  <div class="section-title">🎯 Ejemplos de Codificación (Puertos Sec+)</div>
+  <table class="encode-demo">
+    <tr>
+      <td>22 → SSH</td>
+      <td>2=<strong>N</strong> · 2=<strong>N</strong> → <strong>NENA</strong></td>
+      <td style="color:#8b949e;font-style:italic">"La Nena entra segura por SSH"</td>
+    </tr>
+    <tr>
+      <td>80 → HTTP</td>
+      <td>8=<strong>CH</strong> · 0=<strong>R</strong> → <strong>CHURRO</strong></td>
+      <td style="color:#8b949e;font-style:italic">"El Churro viaja por la web (HTTP)"</td>
+    </tr>
+    <tr>
+      <td>443 → HTTPS</td>
+      <td>4=<strong>C</strong> · 4=<strong>C</strong> · 3=<strong>M</strong> → <strong>CÓCLEA</strong></td>
+      <td style="color:#8b949e;font-style:italic">"La Cóclea escucha el HTTPS cifrado"</td>
+    </tr>
+    <tr>
+      <td>636 → LDAPS</td>
+      <td>6=<strong>S</strong> · 3=<strong>M</strong> · 6=<strong>S</strong> → <strong>SAMOSA</strong></td>
+      <td style="color:#8b949e;font-style:italic">"La Samosa cifra el directorio (LDAPS)"</td>
+    </tr>
+    <tr>
+      <td>3389 → RDP</td>
+      <td>3=<strong>M</strong> · 3=<strong>M</strong> · 8=<strong>CH</strong> · 9=<strong>P</strong> → <strong>MIMO CHAPÓ</strong></td>
+      <td style="color:#8b949e;font-style:italic">"El Mimo hace Chapó al entrar por RDP"</td>
+    </tr>
+    <tr>
+      <td>110 → POP3</td>
+      <td>1=<strong>T</strong> · 1=<strong>T</strong> · 0=<strong>R</strong> → <strong>TUTOR</strong></td>
+      <td style="color:#8b949e;font-style:italic">"El Tutor recibe correo por POP3"</td>
+    </tr>
+    <tr>
+      <td>143 → IMAP</td>
+      <td>1=<strong>D</strong> · 4=<strong>C</strong> · 3=<strong>M</strong> → <strong>DÉCIMA</strong></td>
+      <td style="color:#8b949e;font-style:italic">"La Décima parte del correo llega por IMAP"</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     TAB 2: CASILLERO 00–99
+     ════════════════════════════════════════════════════════ -->
+<div id="tab-casillero" class="panel">
+
+  <div class="info">
+    Cada celda = 3 palabras candidatas. La <strong>primera</strong> (en blanco) es el casillero principal. Haz clic en una celda para fijar el foco. Escoge la que mejor te funcione y úsala <em>siempre</em> para ese número.
+  </div>
+
+  <div class="matrix-legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#ef5350"></div>0x (R/RR+…)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ffa726"></div>1x (T/D+…)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ffee58"></div>2x (N/Ñ+…)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#66bb6a"></div>3x (M+…)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#26c6da"></div>4x (C/K/Q+…)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#42a5f5"></div>5x (L+…)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#7e57c2"></div>6x (S/Z+…)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ec407a"></div>7x (F/J+…)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ff7043"></div>8x (CH/G+…)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#26a69a"></div>9x (V/B/P+…)</div>
+  </div>
+
+  <div class="matrix-grid" id="matrixGrid"></div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     TAB 3: PUERTOS
+     ════════════════════════════════════════════════════════ -->
+<div id="tab-puertos" class="panel">
+
+  <div class="tip">
+    <strong>Técnica de puertos:</strong> Para 2 dígitos usa el casillero directo. Para 3–4 dígitos, busca una palabra o frase con los sonidos en orden. Prioriza imágenes <em>absurdas o emotivas</em>.
+  </div>
+
+  <div class="section-title">🌐 Puertos Críticos Sec+ SY0-701</div>
+
+  <table class="ports-table">
+    <thead>
+      <tr>
+        <th>Puerto</th>
+        <th>Protocolo</th>
+        <th>Codificación</th>
+        <th>Palabra/Imagen</th>
+        <th>Historia mnemónica</th>
+        <th>Categoría</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- REMOTE ACCESS -->
+      <tr>
+        <td><span class="port-num">20/21</span></td>
+        <td><span class="port-proto">FTP</span></td>
+        <td><span class="port-encoding">20=NR→NORA · 21=NT→NATA</span></td>
+        <td><span class="port-word">Nora con Nata</span></td>
+        <td class="port-story">Nora unta nata en los archivos antes de transferirlos (FTP, sin cifrar)</td>
+        <td><span class="port-category cat-file">Archivo</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">22</span></td>
+        <td><span class="port-proto">SSH / SFTP / SCP</span></td>
+        <td><span class="port-encoding">2+2 = N+N</span></td>
+        <td><span class="port-word">NENA 🔐</span></td>
+        <td class="port-story">La Nena entra <em>segura</em> al servidor — SSH siempre va cifrado</td>
+        <td><span class="port-category cat-remote">Remoto</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">23</span></td>
+        <td><span class="port-proto">Telnet</span></td>
+        <td><span class="port-encoding">2+3 = N+M</span></td>
+        <td><span class="port-word">NEMO 🐟</span></td>
+        <td class="port-story">Nemo nada en aguas <em>sin cifrar</em> — Telnet envía texto plano, peligroso</td>
+        <td><span class="port-category cat-remote">Remoto</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">3389</span></td>
+        <td><span class="port-proto">RDP</span></td>
+        <td><span class="port-encoding">3+3+8+9 = M+M+CH+P</span></td>
+        <td><span class="port-word">MIMO ¡CHAPÓ! 🎭</span></td>
+        <td class="port-story">El Mimo hace un Chapó al entrar al escritorio remoto — RDP 3389</td>
+        <td><span class="port-category cat-remote">Remoto</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">5900</span></td>
+        <td><span class="port-proto">VNC</span></td>
+        <td><span class="port-encoding">5+9+0+0 = L+P+R+R</span></td>
+        <td><span class="port-word">La Liebre Perra</span></td>
+        <td class="port-story">Una liebre perra controla el ratón remotamente — VNC sin cifrado</td>
+        <td><span class="port-category cat-remote">Remoto</span></td>
+      </tr>
+      <!-- WEB -->
+      <tr>
+        <td><span class="port-num">80</span></td>
+        <td><span class="port-proto">HTTP</span></td>
+        <td><span class="port-encoding">8+0 = CH+R</span></td>
+        <td><span class="port-word">CHURRO 🍩</span></td>
+        <td class="port-story">El Churro rueda por la web sin cifrar — HTTP en texto plano</td>
+        <td><span class="port-category cat-web">Web</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">443</span></td>
+        <td><span class="port-proto">HTTPS / TLS</span></td>
+        <td><span class="port-encoding">4+4+3 = C+C+M → "Cócuma"</span></td>
+        <td><span class="port-word">CÓCUMA 🔒</span></td>
+        <td class="port-story">La Cócuma (vasija sellada) guarda el secreto cifrado — HTTPS. <em>Nota: 4+4+3=443; Cóclea es 4+4+5=445 (SMB)</em></td>
+        <td><span class="port-category cat-web">Web</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">8080</span></td>
+        <td><span class="port-proto">HTTP-alt / Proxy</span></td>
+        <td><span class="port-encoding">8+0+8+0 = CH+R+CH+R</span></td>
+        <td><span class="port-word">CHURRO CHURRO 🍩🍩</span></td>
+        <td class="port-story">Dos churros — el proxy web alternativo (HTTP alternativo sin cifrar)</td>
+        <td><span class="port-category cat-web">Web</span></td>
+      </tr>
+      <!-- MAIL -->
+      <tr>
+        <td><span class="port-num">25</span></td>
+        <td><span class="port-proto">SMTP</span></td>
+        <td><span class="port-encoding">2+5 = N+L</span></td>
+        <td><span class="port-word">NILO 🌊</span></td>
+        <td class="port-story">El Nilo lleva cartas flotando — SMTP envía correo entre servidores</td>
+        <td><span class="port-category cat-mail">Correo</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">110</span></td>
+        <td><span class="port-proto">POP3</span></td>
+        <td><span class="port-encoding">1+1+0 = T+T+R</span></td>
+        <td><span class="port-word">TUTOR 📚</span></td>
+        <td class="port-story">El Tutor descarga los deberes y los borra del servidor — POP3 descarga y elimina</td>
+        <td><span class="port-category cat-mail">Correo</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">143</span></td>
+        <td><span class="port-proto">IMAP</span></td>
+        <td><span class="port-encoding">1+4+3 = D+C+M</span></td>
+        <td><span class="port-word">DÉCIMA 🎼</span></td>
+        <td class="port-story">La Décima (poema) permanece en el archivo — IMAP mantiene el correo en el servidor</td>
+        <td><span class="port-category cat-mail">Correo</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">465/587</span></td>
+        <td><span class="port-proto">SMTP-S / SMTP-TLS</span></td>
+        <td><span class="port-encoding">465=C+S+L · 587=L+CH+J</span></td>
+        <td><span class="port-word">CÓNSUL · LUCHA</span></td>
+        <td class="port-story">El Cónsul manda cartas selladas (465 SSL) · La Lucha de TLS (587 STARTTLS)</td>
+        <td><span class="port-category cat-mail">Correo</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">993</span></td>
+        <td><span class="port-proto">IMAPS (TLS)</span></td>
+        <td><span class="port-encoding">9+9+3 = P+P+M</span></td>
+        <td><span class="port-word">PAPÁ MÍO 🔒</span></td>
+        <td class="port-story">Papá mío guarda los emails cifrados en el servidor — IMAPS seguro</td>
+        <td><span class="port-category cat-mail">Correo</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">995</span></td>
+        <td><span class="port-proto">POP3S (TLS)</span></td>
+        <td><span class="port-encoding">9+9+5 = P+P+L</span></td>
+        <td><span class="port-word">PAPEL 📄🔒</span></td>
+        <td class="port-story">El Papel sale cifrado del buzón — POP3S descarga cifrada</td>
+        <td><span class="port-category cat-mail">Correo</span></td>
+      </tr>
+      <!-- DIRECTORY -->
+      <tr>
+        <td><span class="port-num">389</span></td>
+        <td><span class="port-proto">LDAP</span></td>
+        <td><span class="port-encoding">3+8+9 = M+CH+P</span></td>
+        <td><span class="port-word">MACHO PIBE 💪</span></td>
+        <td class="port-story">El Macho Pibe busca usuarios en el directorio — LDAP sin cifrar</td>
+        <td><span class="port-category cat-dir">Directorio</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">636</span></td>
+        <td><span class="port-proto">LDAPS</span></td>
+        <td><span class="port-encoding">6+3+6 = S+M+S</span></td>
+        <td><span class="port-word">SAMOSA 🥟🔒</span></td>
+        <td class="port-story">La Samosa guarda secretos cifrados del directorio — LDAPS con TLS</td>
+        <td><span class="port-category cat-dir">Directorio</span></td>
+      </tr>
+      <!-- NETWORK -->
+      <tr>
+        <td><span class="port-num">53</span></td>
+        <td><span class="port-proto">DNS</span></td>
+        <td><span class="port-encoding">5+3 = L+M</span></td>
+        <td><span class="port-word">LIMA 🍋</span></td>
+        <td class="port-story">Lima afila nombres hasta encontrar la IP — DNS resuelve dominios</td>
+        <td><span class="port-category cat-net">Red</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">67/68</span></td>
+        <td><span class="port-proto">DHCP</span></td>
+        <td><span class="port-encoding">67=S+J · 68=S+G</span></td>
+        <td><span class="port-word">SOJA · SOGA 🌿🪢</span></td>
+        <td class="port-story">Soja (67, client) pide IP; Soga (68, server) amarra la asignación</td>
+        <td><span class="port-category cat-net">Red</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">123</span></td>
+        <td><span class="port-proto">NTP</span></td>
+        <td><span class="port-encoding">1+2+3 = T+N+M</span></td>
+        <td><span class="port-word">DÍNAMO ⚡</span></td>
+        <td class="port-story">El Dínamo sincroniza el tiempo — NTP es el reloj de la red</td>
+        <td><span class="port-category cat-net">Red</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">161/162</span></td>
+        <td><span class="port-proto">SNMP</span></td>
+        <td><span class="port-encoding">161=T+S+T · 162=T+S+N</span></td>
+        <td><span class="port-word">DISTA · DISENA</span></td>
+        <td class="port-story">Dista (161) monitoriza; Disena (162) recibe traps — SNMP vigilancia de red</td>
+        <td><span class="port-category cat-mon">Monitor</span></td>
+      </tr>
+      <!-- FILE -->
+      <tr>
+        <td><span class="port-num">445</span></td>
+        <td><span class="port-proto">SMB / CIFS</span></td>
+        <td><span class="port-encoding">4+4+5 = C+C+L</span></td>
+        <td><span class="port-word">CÓCLEA 2 💾</span></td>
+        <td class="port-story">La Cóclea (dos) comparte archivos en Windows — SMB, ojo con EternalBlue</td>
+        <td><span class="port-category cat-file">Archivo</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">137–139</span></td>
+        <td><span class="port-proto">NetBIOS</span></td>
+        <td><span class="port-encoding">137=T+M+J · 139=T+M+P</span></td>
+        <td><span class="port-word">TAMAJE · TROMPA</span></td>
+        <td class="port-story">Tamaje y Trompa son el viejo NetBIOS — solo LAN, deshabilitar siempre</td>
+        <td><span class="port-category cat-file">Archivo</span></td>
+      </tr>
+      <!-- SECURITY -->
+      <tr>
+        <td><span class="port-num">88</span></td>
+        <td><span class="port-proto">Kerberos</span></td>
+        <td><span class="port-encoding">8+8 = CH+CH</span></td>
+        <td><span class="port-word">CHACHI 🐕</span></td>
+        <td class="port-story">Chachi (guay) el perro Kerberos guarda la entrada — autenticación AD</td>
+        <td><span class="port-category cat-sec">Seguridad</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">135</span></td>
+        <td><span class="port-proto">MS-RPC</span></td>
+        <td><span class="port-encoding">1+3+5 = T+M+L</span></td>
+        <td><span class="port-word">TAMAL 🫔</span></td>
+        <td class="port-story">El Tamal envuelve llamadas remotas — RPC, vector de WannaCry</td>
+        <td><span class="port-category cat-sec">Seguridad</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">500</span></td>
+        <td><span class="port-proto">IKE / IPSec</span></td>
+        <td><span class="port-encoding">5+0+0 = L+R+R</span></td>
+        <td><span class="port-word">LORO RARO 🦜</span></td>
+        <td class="port-story">El Loro Raro negocia las llaves del túnel VPN — IKE/IPSec</td>
+        <td><span class="port-category cat-sec">Seguridad</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">1194</span></td>
+        <td><span class="port-proto">OpenVPN</span></td>
+        <td><span class="port-encoding">1+1+9+4 = T+T+P+C</span></td>
+        <td><span class="port-word">TIPICO OPEN</span></td>
+        <td class="port-story">Lo típico para el VPN abierto — OpenVPN UDP/TCP 1194</td>
+        <td><span class="port-category cat-sec">Seguridad</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">514</span></td>
+        <td><span class="port-proto">Syslog</span></td>
+        <td><span class="port-encoding">5+1+4 = L+T+C</span></td>
+        <td><span class="port-word">LETICIA 📋</span></td>
+        <td class="port-story">Leticia recoge todos los logs del sistema — Syslog (UDP)</td>
+        <td><span class="port-category cat-mon">Monitor</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">1433</span></td>
+        <td><span class="port-proto">SQL Server</span></td>
+        <td><span class="port-encoding">1+4+3+3 = T+C+M+M</span></td>
+        <td><span class="port-word">TACO MAMA 🌮</span></td>
+        <td class="port-story">La Taco Mamá (MSSQL) guarda la base de datos de Windows</td>
+        <td><span class="port-category cat-file">Base Datos</span></td>
+      </tr>
+      <tr>
+        <td><span class="port-num">3306</span></td>
+        <td><span class="port-proto">MySQL</span></td>
+        <td><span class="port-encoding">3+3+0+6 = M+M+R+S</span></td>
+        <td><span class="port-word">MIRA MOROS</span></td>
+        <td class="port-story">Mira Moros (MySQL) lleva la base de datos del servidor web</td>
+        <td><span class="port-category cat-file">Base Datos</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">⚡ Tabla Rápida de Referencia</div>
+  <table class="ports-table">
+    <thead><tr><th>Puerto</th><th>Protocolo</th><th>Palabra</th><th>Cifrado</th></tr></thead>
+    <tbody id="quickref"></tbody>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     TAB 4: DOMINIOS
+     ════════════════════════════════════════════════════════ -->
+<div id="tab-dominios" class="panel">
+
+  <div class="tip">
+    <strong>Frase maestra de dominios:</strong> <span style="color:#58a6ff;font-size:1.1em;font-weight:700">
+    "TINO - NENA - TECHO - NACHO - NORA"</span><br>
+    = 12% · 22% · 18% · 28% · 20% → D1 · D2 · D3 · D4 · D5
+  </div>
+
+  <div class="section-title">📊 Los 5 Dominios con Porcentajes</div>
+
+  <div class="domain-cards">
+    <div class="domain-card" style="background:#1a2030;border-color:#4fc3f7;">
+      <div class="pct" style="color:#4fc3f7;">12%</div>
+      <div class="dname">D1 · General Security Concepts</div>
+      <div class="enc">1+2 = T+N</div>
+      <div class="word" style="color:#4fc3f7;">TINO</div>
+      <div class="phrase">"Tener tino en seguridad general"</div>
+    </div>
+    <div class="domain-card" style="background:#2a1a1a;border-color:#ef5350;">
+      <div class="pct" style="color:#ef5350;">22%</div>
+      <div class="dname">D2 · Threats, Vulnerabilities & Mitigations</div>
+      <div class="enc">2+2 = N+N</div>
+      <div class="word" style="color:#ef5350;">NENA</div>
+      <div class="phrase">"Las amenazas atacan a la Nena"</div>
+    </div>
+    <div class="domain-card" style="background:#1a2a1a;border-color:#66bb6a;">
+      <div class="pct" style="color:#66bb6a;">18%</div>
+      <div class="dname">D3 · Security Architecture</div>
+      <div class="enc">1+8 = T+CH</div>
+      <div class="word" style="color:#66bb6a;">TECHO</div>
+      <div class="phrase">"La Arquitectura es el Techo de todo"</div>
+    </div>
+    <div class="domain-card" style="background:#2a1e0a;border-color:#ffa726;">
+      <div class="pct" style="color:#ffa726;">28%</div>
+      <div class="dname">D4 · Security Operations</div>
+      <div class="enc">2+8 = N+CH</div>
+      <div class="word" style="color:#ffa726;">NACHO</div>
+      <div class="phrase">"Nacho opera y monitoriza (más peso = más %)"</div>
+    </div>
+    <div class="domain-card" style="background:#1e1a2a;border-color:#ab47bc;">
+      <div class="pct" style="color:#ab47bc;">20%</div>
+      <div class="dname">D5 · Security Program Management</div>
+      <div class="enc">2+0 = N+R</div>
+      <div class="word" style="color:#ab47bc;">NORA</div>
+      <div class="phrase">"Nora gestiona el programa de seguridad"</div>
+    </div>
+  </div>
+
+  <div class="section-title">🎯 Preguntas por dominio en un simulacro de 90 preguntas</div>
+  <table class="ports-table">
+    <thead>
+      <tr>
+        <th>Dominio</th>
+        <th>%</th>
+        <th>~Preguntas</th>
+        <th>Palabra</th>
+        <th>Temas clave</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color:#4fc3f7;font-weight:700">D1 · General</td>
+        <td><span style="color:#4fc3f7">12%</span></td>
+        <td>~11</td>
+        <td><strong style="color:#ffee58">TINO</strong></td>
+        <td style="color:#8b949e">CIA, AAA, Zero Trust, PKI, controles, criptografía</td>
+      </tr>
+      <tr>
+        <td style="color:#ef5350;font-weight:700">D2 · Amenazas</td>
+        <td><span style="color:#ef5350">22%</span></td>
+        <td>~20</td>
+        <td><strong style="color:#ffee58">NENA</strong></td>
+        <td style="color:#8b949e">Malware, phishing, threat actors, vulnerabilidades, IoC</td>
+      </tr>
+      <tr>
+        <td style="color:#66bb6a;font-weight:700">D3 · Arquitectura</td>
+        <td><span style="color:#66bb6a">18%</span></td>
+        <td>~16</td>
+        <td><strong style="color:#ffee58">TECHO</strong></td>
+        <td style="color:#8b949e">Firewalls, IDS/IPS, cloud, VPN, segmentación, datos</td>
+      </tr>
+      <tr>
+        <td style="color:#ffa726;font-weight:700">D4 · Operaciones</td>
+        <td><span style="color:#ffa726">28%</span></td>
+        <td>~25</td>
+        <td><strong style="color:#ffee58">NACHO</strong></td>
+        <td style="color:#8b949e">SIEM, IR, forense, hardening, IAM, email, activos</td>
+      </tr>
+      <tr>
+        <td style="color:#ab47bc;font-weight:700">D5 · Gestión</td>
+        <td><span style="color:#ab47bc">20%</span></td>
+        <td>~18</td>
+        <td><strong style="color:#ffee58">NORA</strong></td>
+        <td style="color:#8b949e">Gobernanza, riesgo, cumplimiento, auditorías, privacidad</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">🃏 Frases de asociación por dominio</div>
+  <div class="mini-phrase">
+    <div class="phrase-key">D1 (12%) — TINO 🎯</div>
+    <div class="phrase-val">"Un TINO (maestría) en conceptos generales: CIA, AAA, Zero Trust"</div>
+    <div class="phrase-exp">Ti→1 · No→2 = 12 ✓ · Tino = habilidad/destreza = "saber de seguridad"</div>
+  </div>
+  <div class="mini-phrase">
+    <div class="phrase-key">D2 (22%) — NENA 💀</div>
+    <div class="phrase-val">"Las amenazas atacan a la NENA — el dominio más peligroso después del D4"</div>
+    <div class="phrase-exp">Ne→2 · Na→2 = 22 ✓ · Nena = frágil = vulnerabilidades y amenazas</div>
+  </div>
+  <div class="mini-phrase">
+    <div class="phrase-key">D3 (18%) — TECHO 🏠</div>
+    <div class="phrase-val">"La Arquitectura es el TECHO que cubre toda la infraestructura"</div>
+    <div class="phrase-exp">Te→1 · Cho→8 = 18 ✓ · Techo = estructura que protege = arquitectura segura</div>
+  </div>
+  <div class="mini-phrase">
+    <div class="phrase-key">D4 (28%) — NACHO 🍟</div>
+    <div class="phrase-val">"NACHO opera todos los días, el dominio más grande del examen"</div>
+    <div class="phrase-exp">Na→2 · Cho→8 = 28 ✓ · 28% = mayor peso = más preguntas (~25)</div>
+  </div>
+  <div class="mini-phrase">
+    <div class="phrase-key">D5 (20%) — NORA 📋</div>
+    <div class="phrase-val">"NORA gestiona el programa, las políticas y el riesgo de la empresa"</div>
+    <div class="phrase-exp">No→2 · Ra→0 = 20 ✓ · Nora = jefa de programa = gestión y gobernanza</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     TAB 5: TIEMPOS LÍMITE
+     ════════════════════════════════════════════════════════ -->
+<div id="tab-tiempos" class="panel">
+
+  <div class="info">
+    Los tiempos límite legales y regulatorios son <strong>favoritos del examen</strong>. Memoriza cada uno con su imagen mnemónica.
+  </div>
+
+  <div class="section-title">⏱ Tiempos Regulatorios Críticos</div>
+
+  <div class="time-grid">
+    <div class="time-card" style="border-color:#ef5350;">
+      <div class="regulation" style="color:#ef5350;">🇪🇺 GDPR — Notificación de Brecha</div>
+      <div class="time-val">72 horas</div>
+      <div class="enc">7+2 = J+N</div>
+      <div class="mnemonic">JUNO ⚡</div>
+      <div class="desc">Juno (diosa del rayo) llega en 72h para notificar la brecha al regulador. Si no notificas en 72h → multa hasta 4% facturación global.</div>
+    </div>
+    <div class="time-card" style="border-color:#ffa726;">
+      <div class="regulation" style="color:#ffa726;">🏥 HIPAA — Notificación de Brecha</div>
+      <div class="time-val">60 días</div>
+      <div class="enc">6+0 = S+R</div>
+      <div class="mnemonic">SARRO 🦷</div>
+      <div class="desc">El SARRO (60 días) del dentista = HIPAA. Los datos de salud tienen 60 días para notificar la brecha al HHS y afectados.</div>
+    </div>
+    <div class="time-card" style="border-color:#66bb6a;">
+      <div class="regulation" style="color:#66bb6a;">🛡️ CISA KEV — Parche Crítico</div>
+      <div class="time-val">15 días</div>
+      <div class="enc">1+5 = T+L</div>
+      <div class="mnemonic">TELA 🧵</div>
+      <div class="desc">La TELA de seguridad (KEV) debe parchearse en 15 días para vulnerabilidades explotadas activamente (CISA Known Exploited Vulnerabilities).</div>
+    </div>
+    <div class="time-card" style="border-color:#42a5f5;">
+      <div class="regulation" style="color:#42a5f5;">🔑 Contraseñas — Caducidad Máx.</div>
+      <div class="time-val">90 días</div>
+      <div class="enc">9+0 = P+R</div>
+      <div class="mnemonic">PERA 🍐</div>
+      <div class="desc">La PERA caduca en 90 días = contraseña caduca cada trimestre. (Nota: NIST 800-63B ya no lo recomienda sin motivo, pero el examen sigue citándolo).</div>
+    </div>
+    <div class="time-card" style="border-color:#ab47bc;">
+      <div class="regulation" style="color:#ab47bc;">📜 PCI DSS — Notificación de Brecha</div>
+      <div class="time-val">72 horas</div>
+      <div class="enc">7+2 = J+N</div>
+      <div class="mnemonic">JUNO 💳</div>
+      <div class="desc">Mismo que GDPR — JUNO vuelve a aparecer. PCI DSS también exige 72h para notificar brechas de datos de tarjetas de crédito.</div>
+    </div>
+    <div class="time-card" style="border-color:#ffee58;">
+      <div class="regulation" style="color:#ffee58;">🔄 Incident Response — Contención</div>
+      <div class="time-val">Inmediata</div>
+      <div class="enc">Prep → Id → Cont → Erad → Rec → Lessons</div>
+      <div class="mnemonic">PICERL 🔁</div>
+      <div class="desc">Proceso IR: <strong>P</strong>reparación → <strong>I</strong>dentificación → <strong>C</strong>ontención → <strong>E</strong>radicación → <strong>R</strong>ecuperación → <strong>L</strong>ecciones aprendidas.</div>
+    </div>
+  </div>
+
+  <div class="section-title">📅 Otros tiempos importantes</div>
+  <table class="ports-table">
+    <thead>
+      <tr>
+        <th>Regulación/Estándar</th>
+        <th>Tiempo</th>
+        <th>Codificación</th>
+        <th>Mnemónico</th>
+        <th>Contexto</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color:#ef5350">GDPR Art. 33</td>
+        <td><strong>72 horas</strong></td>
+        <td class="port-encoding">7+2 = J+N → JUNO</td>
+        <td><span class="port-word">JUNO ⚡</span></td>
+        <td style="color:#8b949e">Notificar al supervisory authority</td>
+      </tr>
+      <tr>
+        <td style="color:#ffa726">HIPAA Breach Rule</td>
+        <td><strong>60 días</strong></td>
+        <td class="port-encoding">6+0 = S+R → SARRO</td>
+        <td><span class="port-word">SARRO 🦷</span></td>
+        <td style="color:#8b949e">PHI (Protected Health Info)</td>
+      </tr>
+      <tr>
+        <td style="color:#66bb6a">CISA KEV</td>
+        <td><strong>15 días</strong></td>
+        <td class="port-encoding">1+5 = T+L → TELA</td>
+        <td><span class="port-word">TELA 🧵</span></td>
+        <td style="color:#8b949e">Federal agencies (FCEB)</td>
+      </tr>
+      <tr>
+        <td style="color:#42a5f5">SOX — Retención</td>
+        <td><strong>7 años</strong></td>
+        <td class="port-encoding">7 = J/F → JARRA</td>
+        <td><span class="port-word">JARRA 🏺</span></td>
+        <td style="color:#8b949e">Registros financieros auditables</td>
+      </tr>
+      <tr>
+        <td style="color:#ab47bc">GDPR — Derecho olvido</td>
+        <td><strong>1 mes</strong></td>
+        <td class="port-encoding">1 = T/D → TORO</td>
+        <td><span class="port-word">TORO 🐂</span></td>
+        <td style="color:#8b949e">Responder solicitud de erasure</td>
+      </tr>
+      <tr>
+        <td style="color:#ffee58">Cert. TLS/SSL</td>
+        <td><strong>397 días</strong></td>
+        <td class="port-encoding">3+9+7 = M+P+J → "Mi Paje"</td>
+        <td><span class="port-word">MI PAJE 👑</span></td>
+        <td style="color:#8b949e">Máx. validez certificado browser</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     TAB 6: FÓRMULAS & CVSS
+     ════════════════════════════════════════════════════════ -->
+<div id="tab-formulas" class="panel">
+
+  <div class="section-title">📐 Fórmulas de Riesgo</div>
+
+  <div class="formula-card">
+    <div class="fname">💰 SLE — Single Loss Expectancy (Pérdida Única)</div>
+    <div class="formula-eq">SLE = AV × EF</div>
+    <div class="mnemo">🐄 "La Vaca (AV) Enferma (EF) pierde un Solo Litro (SLE)"</div>
+    <div class="exp">
+      <strong style="color:#4fc3f7">AV</strong> = Asset Value (valor del activo en €) ·
+      <strong style="color:#4fc3f7">EF</strong> = Exposure Factor (% del activo que se pierde: 0.0–1.0) ·
+      <strong style="color:#4fc3f7">SLE</strong> = pérdida esperada en un incidente
+    </div>
+  </div>
+
+  <div class="formula-card">
+    <div class="fname">📅 ALE — Annual Loss Expectancy (Pérdida Anual)</div>
+    <div class="formula-eq">ALE = SLE × ARO</div>
+    <div class="mnemo">🎲 "El ALEatorio año (ALE) = Solo Litro (SLE) por Año Roto (ARO)"</div>
+    <div class="exp">
+      <strong style="color:#4fc3f7">ARO</strong> = Annual Rate of Occurrence (veces/año que ocurre el incidente) ·
+      <strong style="color:#4fc3f7">ALE</strong> = pérdida total esperada en un año ·
+      Ejemplo: AV=€100k, EF=0.3 → SLE=€30k; ARO=2/año → ALE=€60k/año
+    </div>
+  </div>
+
+  <div class="formula-card">
+    <div class="fname">🛡️ Decisión de Inversión en Seguridad</div>
+    <div class="formula-eq">Beneficio = ALE(antes) − ALE(después) − Coste_control_anual</div>
+    <div class="mnemo">💡 "Si el ahorro en ALE supera el coste del control, implementar"</div>
+    <div class="exp">
+      Si ALE_antes = €60k, ALE_después = €15k, coste_control = €20k/año →
+      Beneficio = 60k − 15k − 20k = <strong style="color:#3fb950">€25k/año ✓ (implantar)</strong>
+    </div>
+  </div>
+
+  <div class="formula-card">
+    <div class="fname">⏱ RTO y RPO</div>
+    <div class="formula-eq">RPO ≤ RTO  (en la práctica, RPO suele ser menor)</div>
+    <div class="mnemo">🔄 "RPO = cuántos datos puedo <em>Perder</em> · RTO = en cuánto <em>Tiempo</em> vuelvo a operar"</div>
+    <div class="exp">
+      <strong style="color:#4fc3f7">RPO</strong> (Recovery <em>Point</em> Objective) = antigüedad máxima de los datos a restaurar (ventana de pérdida de datos) ·
+      <strong style="color:#4fc3f7">RTO</strong> (Recovery <em>Time</em> Objective) = tiempo máximo tolerable para restaurar el servicio ·
+      <strong style="color:#ffa726">MTTR</strong> = Mean Time To Repair · <strong style="color:#ffa726">MTBF</strong> = Mean Time Between Failures
+    </div>
+  </div>
+
+  <div class="formula-card">
+    <div class="fname">📊 Disponibilidad (Availability)</div>
+    <div class="formula-eq">Availability = MTBF / (MTBF + MTTR)</div>
+    <div class="mnemo">⚡ "Cuanto mayor el MTBF y menor el MTTR, más 9s de disponibilidad"</div>
+    <div class="exp">
+      99.9% = "tres nueves" = 8.7h downtime/año ·
+      99.99% = "cuatro nueves" = 52min downtime/año ·
+      99.999% = "cinco nueves" = 5.26min downtime/año
+    </div>
+  </div>
+
+  <div class="section-title">🎯 Puntuaciones CVSS v3.1</div>
+
+  <div class="cvss-bar">
+    <div class="cvss-seg cvss-low">0.1–3.9<br>Bajo</div>
+    <div class="cvss-seg cvss-med">4.0–6.9<br>Medio</div>
+    <div class="cvss-seg cvss-high">7.0–8.9<br>Alto</div>
+    <div class="cvss-seg cvss-crit">9.0–10.0<br>Crítico</div>
+  </div>
+
+  <table class="cvss-table">
+    <thead>
+      <tr>
+        <th>Severidad</th>
+        <th>Rango</th>
+        <th>Codificación</th>
+        <th>Imagen</th>
+        <th>Acción recomendada</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color:#ef5350;font-weight:700">🔴 CRÍTICO</td>
+        <td><strong>9.0 – 10.0</strong></td>
+        <td class="port-encoding">9+0 = P+R → PERA</td>
+        <td><span class="port-word">PERA en llamas 🍐🔥</span></td>
+        <td style="color:#8b949e">Parche <strong style="color:#ef5350">inmediato</strong> — explotación activa probable</td>
+      </tr>
+      <tr>
+        <td style="color:#ffa726;font-weight:700">🟠 ALTO</td>
+        <td><strong>7.0 – 8.9</strong></td>
+        <td class="port-encoding">7+0 = J+R → JARRA</td>
+        <td><span class="port-word">JARRA caliente 🏺🔥</span></td>
+        <td style="color:#8b949e">Parche en <strong style="color:#ffa726">días</strong> — riesgo significativo</td>
+      </tr>
+      <tr>
+        <td style="color:#ffee58;font-weight:700">🟡 MEDIO</td>
+        <td><strong>4.0 – 6.9</strong></td>
+        <td class="port-encoding">4+0 = C+R → CARA</td>
+        <td><span class="port-word">CARA seria 😐</span></td>
+        <td style="color:#8b949e">Parche planificado en el <strong style="color:#ffee58">ciclo normal</strong></td>
+      </tr>
+      <tr>
+        <td style="color:#66bb6a;font-weight:700">🟢 BAJO</td>
+        <td><strong>0.1 – 3.9</strong></td>
+        <td class="port-encoding">0+1 = R+T → RATA</td>
+        <td><span class="port-word">RATA tranquila 🐭</span></td>
+        <td style="color:#8b949e">Monitorizar, parche en <strong style="color:#66bb6a">próxima ventana</strong></td>
+      </tr>
+      <tr>
+        <td style="color:#8b949e;font-weight:700">⚪ NINGUNO</td>
+        <td><strong>0.0</strong></td>
+        <td class="port-encoding">—</td>
+        <td><span class="port-word">Sin impacto</span></td>
+        <td style="color:#8b949e">No requiere acción inmediata</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">🔑 Acrónimos críticos con nemotecnia</div>
+
+  <div class="mini-phrase">
+    <div class="phrase-key">CIA Triad</div>
+    <div class="phrase-val">Confidentiality · Integrity · Availability</div>
+    <div class="phrase-exp">"La CIA quiere que todo sea Confidencial, Íntegro y siempre Accesible"</div>
+  </div>
+  <div class="mini-phrase">
+    <div class="phrase-key">AAA Framework</div>
+    <div class="phrase-val">Authentication · Authorization · Accounting</div>
+    <div class="phrase-exp">"¿Eres tú (Authn)? ¿Puedes entrar (Authz)? ¿Qué hiciste (Accounting)?" — Triple A como la batería</div>
+  </div>
+  <div class="mini-phrase">
+    <div class="phrase-key">SIEM vs SOAR</div>
+    <div class="phrase-val">SIEM = recopila/correlaciona · SOAR = automatiza respuesta</div>
+    <div class="phrase-exp">"SIEM VE el problema. SOAR ACTÚA sobre él automáticamente. Juntos = NOC eficiente."</div>
+  </div>
+  <div class="mini-phrase">
+    <div class="phrase-key">Incident Response: PICERL</div>
+    <div class="phrase-val">Preparación → Identificación → Contención → Erradicación → Recuperación → Lecciones</div>
+    <div class="phrase-exp">"<strong>P</strong>apa <strong>I</strong>taliano <strong>C</strong>ome <strong>E</strong>spagueti <strong>R</strong>ico con <strong>L</strong(emon)" — PICERL</div>
+  </div>
+  <div class="mini-phrase">
+    <div class="phrase-key">PKI Chain of Trust</div>
+    <div class="phrase-val">Root CA → Intermediate CA → End-entity cert</div>
+    <div class="phrase-exp">"El Abuelo (Root) firma al Padre (Intermediate) que firma al Hijo (End-entity)" — nunca uses Root directamente</div>
+  </div>
+  <div class="mini-phrase">
+    <div class="phrase-key">Tipos de Malware: RAWVBT</div>
+    <div class="phrase-val">Ransomware · Adware · Worm · Virus · Bot · Trojan</div>
+    <div class="phrase-exp">"RAW ViBe Trojan" — los 6 tipos más preguntados. Worm=autorreplica; Virus=necesita host; Trojan=disfrazado</div>
+  </div>
+  <div class="mini-phrase">
+    <div class="phrase-key">Ports rápidos: NENO ¡NACHO! (22, 23, 25 → SSH/Telnet/SMTP)</div>
+    <div class="phrase-val">NENA=22=SSH · NEMO=23=Telnet · NILO=25=SMTP</div>
+    <div class="phrase-exp">Todos empiezan con N (2-algo). SSH es seguro, Telnet no, SMTP envía.</div>
+  </div>
+</div>
+
+<script>
+// ── CASILLERO DATA ──────────────────────────────────────────────────
+const CASILLERO = [
+  // 00-09
+  ["00","Raro","Rorro","Roer"],
+  ["01","Rata","Roto","Rueda"],
+  ["02","Rana","Reno","Runa"],
+  ["03","Roma","Rima","Remo"],
+  ["04","Roca","Rico","Rueca"],
+  ["05","Riel","Ralo","Ralea"],
+  ["06","Rosa","Risa","Raza"],
+  ["07","Rafa","Rojo","Rioja"],
+  ["08","Rocha","Ruge","Raga"],
+  ["09","Roba","Ropa","Rubia"],
+  // 10-19
+  ["10","Toro","Duro","Tira"],
+  ["11","Teta","Dato","Duda"],
+  ["12","Tina","Duna","Tono"],
+  ["13","Tema","Dama","Timo"],
+  ["14","Teca","Taco","Duque"],
+  ["15","Tela","Dalia","Tilo"],
+  ["16","Tasa","Dios","Tisú"],
+  ["17","Teja","Dijo","Tufo"],
+  ["18","Techo","Daga","Toga"],
+  ["19","Tubo","Diva","Tapa"],
+  // 20-29
+  ["20","Nora","Nero","Naira"],
+  ["21","Nata","Nudo","Nota"],
+  ["22","Nena","Niño","Nona"],
+  ["23","Nemo","Noma","Nimio"],
+  ["24","Nuca","Nico","Naca"],
+  ["25","Nilo","Nulo","Nela"],
+  ["26","Nasa","Niza","Nuez"],
+  ["27","Naja","Nife","Naife"],
+  ["28","Nacho","Noche","Naga"],
+  ["29","Nabo","Nave","Napa"],
+  // 30-39
+  ["30","Mora","Miro","Muro"],
+  ["31","Meta","Moda","Mito"],
+  ["32","Mina","Mono","Mano"],
+  ["33","Mama","Mimo","Memo"],
+  ["34","Meca","Mico","Maca"],
+  ["35","Mala","Mole","Mula"],
+  ["36","Mesa","Miso","Mazo"],
+  ["37","Mija","Mafe","Mojo"],
+  ["38","Macho","Mago","Mecha"],
+  ["39","Mapa","Mopa","Moví"],
+  // 40-49
+  ["40","Cara","Coro","Cura"],
+  ["41","Cata","Codo","Cita"],
+  ["42","Cana","Cuna","Cine"],
+  ["43","Cama","Como","Coma"],
+  ["44","Cacao","Coca","Coco"],
+  ["45","Cala","Cola","Celo"],
+  ["46","Casa","Caso","Caza"],
+  ["47","Caja","Café","Coja"],
+  ["48","Cacho","Cache","Coche"],
+  ["49","Cabo","Capa","Cava"],
+  // 50-59
+  ["50","Lora","Lira","Loro"],
+  ["51","Lata","Lado","Lodo"],
+  ["52","Luna","Lana","Lino"],
+  ["53","Lima","Loma","Lema"],
+  ["54","Loca","Luce","Laca"],
+  ["55","Lila","Leal","Lulo"],
+  ["56","Losa","Lazo","Lisa"],
+  ["57","Leja","Lufa","LIFO"],
+  ["58","Lucha","Liga","Logo"],
+  ["59","Loba","Lupa","Lava"],
+  // 60-69
+  ["60","Sarro","Sara","Sura"],
+  ["61","Seta","Soda","Sito"],
+  ["62","Sena","Sino","Saña"],
+  ["63","Suma","Soma","Sima"],
+  ["64","Saco","Seca","Zoco"],
+  ["65","Sala","Silo","Suela"],
+  ["66","Soso","Sisa","Seis"],
+  ["67","Soja","Sofá","Saja"],
+  ["68","Soga","Sacha","Sugo"],
+  ["69","Soba","Sopa","Savia"],
+  // 70-79
+  ["70","Jarra","Jura","Faro"],
+  ["71","Fado","Feto","Fiado"],
+  ["72","Jano","Fono","Fina"],
+  ["73","Fama","Fuma","Juma"],
+  ["74","Foca","Fique","Jaca"],
+  ["75","Fila","Fulo","Jale"],
+  ["76","Fosa","Fase","Fez"],
+  ["77","Jefe","Fofo","Fifí"],
+  ["78","Fecha","Fuga","Fuchi"],
+  ["79","Fobia","Java","Jupa"],
+  // 80-89
+  ["80","Churro","Giro","Charro"],
+  ["81","Chato","Gato","Goda"],
+  ["82","Chino","Gana","Guiño"],
+  ["83","Chama","Goma","Gamo"],
+  ["84","Chaco","Geco","Guaca"],
+  ["85","Cholo","Gala","Guila"],
+  ["86","Gasa","Goza","Choza"],
+  ["87","Chafa","Gafe","Gafa"],
+  ["88","Chachi","Gogo","Guagua"],
+  ["89","Chupa","Guapo","Chepa"],
+  // 90-99
+  ["90","Pera","Barra","Vera"],
+  ["91","Pata","Boda","Vida"],
+  ["92","Pino","Bono","Vino"],
+  ["93","Puma","Pomo","Bema"],
+  ["94","Paca","Boca","Vaca"],
+  ["95","Pala","Bola","Vela"],
+  ["96","Paso","Beso","Vaso"],
+  ["97","Paja","Bajo","Bufo"],
+  ["98","Pecho","Boga","Bache"],
+  ["99","Papa","Baba","Viva"],
+];
+
+const ROW_CLASSES = ["row0","row1","row2","row3","row4","row5","row6","row7","row8","row9"];
+const grid = document.getElementById('matrixGrid');
+CASILLERO.forEach((c,i) => {
+  const row = Math.floor(i/10);
+  const div = document.createElement('div');
+  div.className = `matrix-cell ${ROW_CLASSES[row]}`;
+  div.title = `${c[0]}: ${c[1]} / ${c[2]} / ${c[3]}`;
+  div.innerHTML = `<div class="num">${c[0]}</div>
+    <div class="w1">${c[1]}</div>
+    <div class="w2">${c[2]}</div>
+    <div class="w3">${c[3]}</div>`;
+  div.addEventListener('click', () => {
+    document.querySelectorAll('.matrix-cell').forEach(el => el.style.background='');
+    div.style.background = '#1a2d3a';
+    div.style.borderColor = '#58a6ff';
+  });
+  grid.appendChild(div);
+});
+
+// ── QUICK REF TABLE ──
+const quickPorts = [
+  [20,"FTP-data","Nora"],
+  [21,"FTP","Nata"],
+  [22,"SSH","Nena"],
+  [23,"Telnet","Nemo"],
+  [25,"SMTP","Nilo"],
+  [53,"DNS","Lima"],
+  [67,"DHCP-client","Soja"],
+  [68,"DHCP-server","Soga"],
+  [80,"HTTP","Churro"],
+  [88,"Kerberos","Chachi"],
+  [110,"POP3","Tutor"],
+  [123,"NTP","Dínamo"],
+  [135,"MS-RPC","Tamal"],
+  [143,"IMAP","Décima"],
+  [161,"SNMP","Dista"],
+  [389,"LDAP","Macho Pibe"],
+  [443,"HTTPS","Cóclea"],
+  [445,"SMB","Cóclea-2"],
+  [465,"SMTPS","Cónsul"],
+  [514,"Syslog","Leticia"],
+  [587,"SMTP-TLS","Lucha"],
+  [636,"LDAPS","Samosa"],
+  [993,"IMAPS","Papá Mío"],
+  [995,"POP3S","Papel"],
+  [1433,"MSSQL","Taco Mamá"],
+  [3306,"MySQL","Mira Moros"],
+  [3389,"RDP","Mimo Chapó"],
+  [5900,"VNC","Liebre Perra"],
+];
+const tbody = document.getElementById('quickref');
+quickPorts.forEach(([p, proto, word]) => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td><span class="port-num" style="font-size:.85rem">${p}</span></td>
+    <td><span class="port-proto">${proto}</span></td>
+    <td><span class="port-word" style="font-size:.85rem">${word}</span></td>
+    <td style="font-size:.75rem;color:#8b949e">${p<100?'✅ 2 dígitos':p<1000?'📍 3 dígitos':'🎯 4 dígitos'}</td>`;
+  tbody.appendChild(tr);
+});
+
+// ── TABS ──
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
